@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronics Shop - Complete Architecture Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --dark: #2d2d2d;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        nav {
+            background: var(--light);
+            padding: 25px 40px;
+            border-bottom: 4px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 1.2em;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        nav a {
+            color: var(--primary);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            background: white;
+            border: 2px solid var(--primary);
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .content {
+            padding: 60px;
+        }
+
+        section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 2.5em;
+            margin: 40px 0 30px 0;
+            padding-bottom: 15px;
+            border-bottom: 4px solid var(--primary);
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--secondary);
+        }
+
+        h3 {
+            color: var(--secondary);
+            font-size: 1.8em;
+            margin: 35px 0 20px 0;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+        }
+
+        h5 {
+            color: #666;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 18px;
+            line-height: 1.8;
+        }
+
+        ul, ol {
+            margin-left: 35px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', Consolas, monospace;
+            color: #e83e8c;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: var(--dark);
+            color: #f8f8f2;
+            padding: 25px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 25px 0;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        pre::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            background: #ff5f56;
+            border-radius: 50%;
+            box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
+        }
+
+        pre code {
+            background: transparent;
+            color: #f8f8f2;
+            padding: 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .box {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .box-warning {
+            background: #fff3cd;
+            border-left-color: var(--warning);
+        }
+
+        .box-success {
+            background: #d4edda;
+            border-left-color: var(--success);
+        }
+
+        .box-info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+
+        .box-danger {
+            background: #f8d7da;
+            border-left-color: var(--danger);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e9ecef;
+            transition: background 0.3s;
+        }
+
+        .method-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .method-card:hover {
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .method-card h4 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge-public {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-private {
+            background: var(--danger);
+            color: white;
+        }
+
+        .badge-static {
+            background: var(--warning);
+            color: #333;
+        }
+
+        .badge-protected {
+            background: #17a2b8;
+            color: white;
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 30px 20px;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        .algorithm {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+
+        .method-signature {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+
+        .return-values {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--warning);
+            margin: 15px 0;
+        }
+
+        strong {
+            color: #222;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 40px 0;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: var(--secondary);
+            transform: translateY(-5px);
+        }
+
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checklist li {
+            padding-left: 35px;
+            position: relative;
+        }
+
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-size: 1.3em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📱 Electronics Shop</h1>
+            <p>Complete Architecture Documentation with Access Modifiers</p>
+            <p style="font-size: 0.95em; margin-top: 15px; opacity: 0.9;">Java Project - 4-Layer Architecture with Maximum Encapsulation</p>
+        </header>
+
+        <nav>
+            <h3>📚 Quick Navigation</h3>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#model">Model Layer</a></li>
+                <li><a href="#repository">Repository Layer</a></li>
+                <li><a href="#service">Service Layer</a></li>
+                <li><a href="#view">View Layer</a></li>
+                <li><a href="#main">Main Entry</a></li>
+                <li><a href="#access-summary">Access Summary</a></li>
+                <li><a href="#flows">Data Flows</a></li>
+                <li><a href="#summary">Summary</a></li>
+                <li><a href="#checklist">Checklist</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <!-- ARCHITECTURE OVERVIEW -->
+            <section id="overview">
+                <h2>📐 Architecture Overview</h2>
+
+                <div class="box box-info">
+                    <h3>Access Modifier Guidelines</h3>
+                    <p><strong>Java Access Modifiers (from most to least restrictive):</strong></p>
+                    <ul>
+                        <li><code>private</code>: Accessible only within the same class</li>
+                        <li><code>default</code> (no modifier): Accessible within the same package (package-private)</li>
+                        <li><code>protected</code>: Accessible within the same package AND by subclasses</li>
+                        <li><code>public</code>: Accessible from anywhere</li>
+                    </ul>
+                </div>
+
+                <div class="box box-success">
+                    <h3>Our Security Policy</h3>
+                    <ul>
+                        <li><strong>Fields:</strong> Always <code>private</code> (encapsulation)</li>
+                        <li><strong>Internal helper methods:</strong> <code>private</code></li>
+                        <li><strong>Methods called by other classes:</strong> <code>public</code></li>
+                        <li><strong>Model classes:</strong> <code>public</code> (need to pass between layers)</li>
+                        <li><strong>Repository classes:</strong> <code>public</code> (dependency injection)</li>
+                        <li><strong>Service classes:</strong> <code>public</code> (dependency injection)</li>
+                        <li><strong>Static usage:</strong> ONLY in MockDatabase (simulates shared database)</li>
+                    </ul>
+                </div>
+
+                <h3>Project Philosophy</h3>
+                <p><strong>Layered Architecture with Separation of Concerns</strong></p>
+                <p>The application is structured into 4 distinct layers:</p>
+                <ol>
+                    <li><strong>Model Layer</strong> - Pure data structures (POJOs) with no logic</li>
+                    <li><strong>Repository Layer</strong> - Data access and storage management (currently in-memory arrays)</li>
+                    <li><strong>Service Layer</strong> - Business logic and rules (the "brain" of the application)</li>
+                    <li><strong>View Layer</strong> - User interface and input/output handling (Console-based)</li>
+                </ol>
+
+                <h3>Package Structure</h3>
+                <pre><code>com.university.shopping/
+├── Main.java                    # Application entry point
+├── model/                       # Data definitions
+│   ├── User.java
+│   ├── Product.java
+│   ├── Order.java
+│   ├── OrderItem.java
+│   ├── Cart.java
+│   └── MockDatabase.java        # In-memory data storage
+├── repository/                  # Data access layer
+│   ├── UserRepository.java
+│   ├── ProductRepository.java
+│   ├── OrderRepository.java
+│   └── CartRepository.java
+├── service/                     # Business logic layer
+│   ├── AuthService.java
+│   ├── ShopService.java
+│   └── AdminService.java
+└── view/                        # User interface layer
+    └── ConsoleUI.java</code></pre>
+
+                <h3>Key Design Principles</h3>
+                <ul>
+                    <li><strong>Dependency Injection:</strong> Services receive repositories via constructor</li>
+                    <li><strong>No Cross-Layer Dependencies:</strong> View never talks to Repository directly</li>
+                    <li><strong>Scalability:</strong> Repository layer can be swapped for file/database without touching Service/View</li>
+                    <li><strong>Single Responsibility:</strong> Each class has one clear purpose</li>
+                    <li><strong>Minimal Static:</strong> Only MockDatabase uses static (simulates singleton database)</li>
+                    <li><strong>Maximum Encapsulation:</strong> All fields private, access via methods only</li>
+                </ul>
+            </section>
+
+            <!-- MODEL LAYER -->
+            <section id="model">
+                <h2>📦 Layer 1: Model Package</h2>
+                <p><strong>Package:</strong> <code>com.university.shopping.model</code></p>
+                <p>The Model layer contains only data structures - no business logic, no database calls, no user interaction.</p>
+
+                <!-- User Class -->
+                <div class="method-card">
+                    <h3>Class 1: User.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Represents a system user (customer or administrator)</p>
+
+                    <h4>Fields:</h4>
+                    <pre><code>private int userId;              // unique identifier
+private String username;         // login credential
+private String password;         // plain text
+private boolean isAdmin;         // role flag
+private String createdDate;      // timestamp</code></pre>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public User(int userId, String username, String password, boolean isAdmin, String createdDate)</code></pre>
+                    <p><strong>Access:</strong> <code>public</code> - needs to be instantiated by Repository classes</p>
+
+                    <h4>Getters (all public):</h4>
+                    <pre><code>public int getUserId()
+public String getUsername()
+public String getPassword()
+public boolean isAdmin()
+public String getCreatedDate()</code></pre>
+
+                    <h4>Setters (selective, all public):</h4>
+                    <pre><code>public void setUsername(String username)
+public void setPassword(String password)
+public void setIsAdmin(boolean isAdmin)
+// NO setUserId() - immutable after creation</code></pre>
+
+                    <p><strong>Called By:</strong> Repository classes (for object creation), Service classes (for data access)</p>
+                    <p><strong>Calls:</strong> Nothing (pure data holder)</p>
+                </div>
+
+                <!-- Product Class -->
+                <div class="method-card">
+                    <h3>Class 2: Product.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Represents an electronics product in the shop inventory</p>
+
+                    <h4>Fields:</h4>
+                    <pre><code>private int productId;           // unique identifier
+private String name;             // product name
+private double price;            // base price
+private String category;         // product category
+private String description;      // detailed info
+private int stockQuantity;       // available inventory
+private boolean isDiscounted;    // discount flag
+private double discountPercentage; // 0-100</code></pre>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public Product(int productId, String name, double price, String category, 
+               String description, int stockQuantity, boolean isDiscounted, 
+               double discountPercentage)</code></pre>
+
+                    <h4>Method: getFinalPrice()</h4>
+                    <pre><code>public double getFinalPrice()</code></pre>
+                    <ul>
+                        <li><strong>Access:</strong> <code>public</code> (called by Service and View layers)</li>
+                        <li><strong>Parameters:</strong> none</li>
+                        <li><strong>Returns:</strong> double</li>
+                        <li><strong>Description:</strong> Calculates actual selling price. If isDiscounted==true, returns price × (1 - discountPercentage/100), otherwise returns base price.</li>
+                        <li><strong>Called By:</strong> ShopService (cart total calculation), ConsoleUI (display)</li>
+                        <li><strong>Calls:</strong> Nothing (pure calculation)</li>
+                    </ul>
+
+                    <h4>Getters (all public):</h4>
+                    <pre><code>public int getProductId()
+public String getName()
+public double getPrice()
+public String getCategory()
+public String getDescription()
+public int getStockQuantity()
+public boolean isDiscounted()
+public double getDiscountPercentage()</code></pre>
+
+                    <h4>Setters (all public):</h4>
+                    <pre><code>public void setName(String name)
+public void setPrice(double price)
+public void setCategory(String category)
+public void setDescription(String description)
+public void setStockQuantity(int stockQuantity)
+public void setIsDiscounted(boolean isDiscounted)
+public void setDiscountPercentage(double discountPercentage)
+// NO setProductId() - immutable</code></pre>
+                </div>
+
+                <!-- Order Class -->
+                <div class="method-card">
+                    <h3>Class 3: Order.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Represents a completed purchase transaction</p>
+
+                    <h4>Fields:</h4>
+                    <pre><code>private int orderId;             // unique identifier
+private int userId;              // customer reference
+private String orderDate;        // timestamp
+private double totalPrice;       // final amount
+private String status;           // order status
+private OrderItem[] items;       // purchased products</code></pre>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public Order(int orderId, int userId, String orderDate, double totalPrice, 
+             String status, OrderItem[] items)</code></pre>
+
+                    <h4>Getters (all public):</h4>
+                    <pre><code>public int getOrderId()
+public int getUserId()
+public String getOrderDate()
+public double getTotalPrice()
+public String getStatus()
+public OrderItem[] getItems()</code></pre>
+
+                    <h4>Setters (selective):</h4>
+                    <pre><code>public void setStatus(String status)
+// Other fields immutable after creation</code></pre>
+
+                    <p><strong>Called By:</strong> ShopService (creates Order objects), OrderRepository (stores/retrieves)</p>
+                    <p><strong>Calls:</strong> Nothing (data container)</p>
+                </div>
+
+                <!-- OrderItem Class -->
+                <div class="method-card">
+                    <h3>Class 4: OrderItem.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Represents a single line item in an order</p>
+
+                    <h4>Fields:</h4>
+                    <pre><code>private int productId;           // product reference
+private String productName;      // snapshot at purchase
+private int quantity;            // units purchased
+private double priceAtPurchase;  // locked price</code></pre>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public OrderItem(int productId, String productName, int quantity, double priceAtPurchase)</code></pre>
+
+                    <h4>Getters (all public, NO setters - immutable):</h4>
+                    <pre><code>public int getProductId()
+public String getProductName()
+public int getQuantity()
+public double getPriceAtPurchase()</code></pre>
+
+                    <p><strong>Called By:</strong> ShopService (creates from cart items), Order class (stores array of these)</p>
+                    <p><strong>Calls:</strong> Nothing</p>
+                </div>
+
+                <!-- Cart Class -->
+                <div class="method-card">
+                    <h3>Class 5: Cart.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Temporary storage for user's selected products before checkout</p>
+
+                    <h4>Fields:</h4>
+                    <pre><code>private int userId;              // cart owner
+private OrderItem[] items;       // selected products (size 50)
+private int itemCount;           // number of filled slots</code></pre>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public Cart(int userId) {
+    this.userId = userId;
+    this.items = new OrderItem[50];
+    this.itemCount = 0;
+}</code></pre>
+
+                    <h4>Method: addItem</h4>
+                    <pre><code>public void addItem(int productId, String productName, int quantity, double price)</code></pre>
+                    <ul>
+                        <li><strong>Access:</strong> <code>public</code> (called by ShopService)</li>
+                        <li><strong>Description:</strong> Checks if productId already exists. If yes, increases quantity. If no, adds new OrderItem to items[itemCount++].</li>
+                        <li><strong>Called By:</strong> ShopService.addToCart()</li>
+                    </ul>
+
+                    <h4>Method: removeItem</h4>
+                    <pre><code>public boolean removeItem(int productId)</code></pre>
+                    <ul>
+                        <li><strong>Returns:</strong> boolean (true if removed, false if not found)</li>
+                        <li><strong>Description:</strong> Loops through items array. If found, shifts subsequent items left, decrements itemCount.</li>
+                        <li><strong>Called By:</strong> ShopService.removeFromCart()</li>
+                    </ul>
+
+                    <h4>Method: clear</h4>
+                    <pre><code>public void clear()</code></pre>
+                    <ul>
+                        <li><strong>Description:</strong> Sets itemCount=0 (empties cart)</li>
+                        <li><strong>Called By:</strong> ShopService.checkout() (via CartRepository)</li>
+                    </ul>
+
+                    <h4>Method: getTotalPrice</h4>
+                    <pre><code>public double getTotalPrice()</code></pre>
+                    <ul>
+                        <li><strong>Description:</strong> Sums (quantity × priceAtPurchase) for all items</li>
+                        <li><strong>Called By:</strong> ConsoleUI (display), ShopService (create Order)</li>
+                    </ul>
+
+                    <h4>Getters (all public):</h4>
+                    <pre><code>public int getUserId()
+public OrderItem[] getItems()
+public int getItemCount()</code></pre>
+                </div>
+
+                <!-- MockDatabase Class -->
+                <div class="method-card">
+                    <h3>Class 6: MockDatabase.java</h3>
+                    <p><span class="badge badge-public">public class</span> <span class="badge badge-static">STATIC FIELDS</span></p>
+                    <p><strong>Purpose:</strong> Central in-memory storage simulating a database</p>
+
+                    <div class="box box-warning">
+                        <p><strong>⚠️ ONLY place in project using static!</strong></p>
+                    </div>
+
+                    <h4>Fields (ALL PUBLIC STATIC):</h4>
+                    <pre><code>public static User[] users = new User[100];
+public static int userCount = 0;
+
+public static Product[] products = new Product[200];
+public static int productCount = 0;
+
+public static Order[] orders = new Order[500];
+public static int orderCount = 0;
+
+public static Cart[] carts = new Cart[100];
+public static int cartCount = 0;
+
+public static int nextUserId = 1;
+public static int nextProductId = 1;
+public static int nextOrderId = 1;</code></pre>
+
+                    <p><strong>Why Public:</strong> Repository classes need direct access (simulates database connection)</p>
+                    <p><strong>Why Static:</strong> Single shared storage across application (singleton pattern)</p>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>private MockDatabase() {}  // Private constructor prevents instantiation</code></pre>
+
+                    <p><strong>Methods:</strong> NONE - Pure data container</p>
+                    <p><strong>Called By:</strong> All Repository classes access these arrays directly</p>
+                </div>
+            </section>
+
+            <!-- REPOSITORY LAYER -->
+            <section id="repository">
+                <h2>📦 Layer 2: Repository Package</h2>
+                <p><strong>Package:</strong> <code>com.university.shopping.repository</code></p>
+                <p>The Repository layer is the <strong>ONLY</strong> layer that directly accesses MockDatabase.</p>
+
+                <!-- UserRepository -->
+                <div class="method-card">
+                    <h3>Class 1: UserRepository.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Manages user data access and storage</p>
+
+                    <p><strong>Fields:</strong> NONE (accesses MockDatabase directly)</p>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public UserRepository() {}</code></pre>
+
+                    <h4>Static Initialization Block:</h4>
+                    <pre><code>static {
+    MockDatabase.users[0] = new User(1, "admin", "admin123", true, "2026-01-01");
+    MockDatabase.users[1] = new User(2, "customer", "pass123", false, "2026-01-15");
+    MockDatabase.userCount = 2;
+    MockDatabase.nextUserId = 3;
+}</code></pre>
+
+                    <h4>Methods:</h4>
+                    <ul>
+                        <li><code>public User findByUsername(String username)</code> - Loops through users array, returns match or null</li>
+                        <li><code>public User findById(int userId)</code> - Linear search by userId</li>
+                        <li><code>public boolean save(User user)</code> - Checks duplicates, adds to array</li>
+                        <li><code>public boolean update(User user)</code> - Finds and replaces user</li>
+                        <li><code>public boolean delete(int userId)</code> - Removes user, shifts array</li>
+                        <li><code>public User[] getAllUsers()</code> - Returns copy of active users</li>
+                        <li><code>public int getNextUserId()</code> - Returns and increments nextUserId</li>
+                    </ul>
+                </div>
+
+                <!-- ProductRepository -->
+                <div class="method-card">
+                    <h3>Class 2: ProductRepository.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Manages product inventory data</p>
+
+                    <h4>Static Initialization Block (15 products):</h4>
+                    <pre><code>static {
+    MockDatabase.products[0] = new Product(1, "iPhone 15 Pro", 1199.99, 
+        "Phone", "Latest Apple flagship with A17 Pro chip", 25, false, 0);
+    MockDatabase.products[1] = new Product(2, "Samsung Galaxy S24", 999.99, 
+        "Phone", "Android flagship with AI features", 30, true, 10);
+    MockDatabase.products[2] = new Product(3, "MacBook Pro M3", 2499.99, 
+        "Laptop", "16-inch professional laptop", 15, false, 0);
+    MockDatabase.products[3] = new Product(4, "Dell XPS 15", 1799.99, 
+        "Laptop", "Windows ultrabook", 20, true, 5);
+    MockDatabase.products[4] = new Product(5, "Sony WH-1000XM5", 399.99, 
+        "Accessory", "Noise-cancelling headphones", 50, false, 0);
+    MockDatabase.products[5] = new Product(6, "AirPods Pro 2", 249.99, 
+        "Accessory", "Apple wireless earbuds", 60, false, 0);
+    MockDatabase.products[6] = new Product(7, "iPad Air M2", 599.99, 
+        "Tablet", "10.9-inch tablet", 40, true, 8);
+    MockDatabase.products[7] = new Product(8, "Samsung Galaxy Tab S9", 799.99, 
+        "Tablet", "11-inch AMOLED display", 35, false, 0);
+    MockDatabase.products[8] = new Product(9, "Logitech MX Master 3S", 99.99, 
+        "Accessory", "Premium wireless mouse", 80, false, 0);
+    MockDatabase.products[9] = new Product(10, "Apple Magic Keyboard", 149.99, 
+        "Accessory", "Wireless keyboard", 45, false, 0);
+    MockDatabase.products[10] = new Product(11, "LG UltraWide Monitor", 499.99, 
+        "Accessory", "34-inch curved display", 20, true, 12);
+    MockDatabase.products[11] = new Product(12, "Bose QuietComfort 45", 329.99, 
+        "Accessory", "Wireless headphones", 40, false, 0);
+    MockDatabase.products[12] = new Product(13, "Google Pixel 8 Pro", 899.99, 
+        "Phone", "Google flagship phone", 28, true, 15);
+    MockDatabase.products[13] = new Product(14, "ASUS ROG Gaming Laptop", 1999.99, 
+        "Laptop", "RTX 4070 gaming laptop", 12, false, 0);
+    MockDatabase.products[14] = new Product(15, "Apple Watch Series 9", 399.99, 
+        "Accessory", "Smartwatch with health tracking", 55, false, 0);
+    
+    MockDatabase.productCount = 15;
+    MockDatabase.nextProductId = 16;
+}</code></pre>
+
+                    <h4>Methods:</h4>
+                    <ul>
+                        <li><code>public Product findById(int productId)</code></li>
+                        <li><code>public Product[] findAll()</code></li>
+                        <li><code>public Product[] findByCategory(String category)</code></li>
+                        <li><code>public boolean save(Product product)</code></li>
+                        <li><code>public boolean update(Product product)</code></li>
+                        <li><code>public boolean delete(int productId)</code></li>
+                        <li><code>public boolean updateStock(int productId, int quantityChange)</code> ⚠️ Critical method</li>
+                        <li><code>public Product[] searchByName(String keyword)</code></li>
+                        <li><code>public int getNextProductId()</code></li>
+                    </ul>
+                </div>
+
+                <!-- OrderRepository -->
+                <div class="method-card">
+                    <h3>Class 3: OrderRepository.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Manages order/transaction history</p>
+
+                    <h4>Methods:</h4>
+                    <ul>
+                        <li><code>public boolean save(Order order)</code></li>
+                        <li><code>public Order findById(int orderId)</code></li>
+                        <li><code>public Order[] findAllByUserId(int userId)</code></li>
+                        <li><code>public Order[] findAll()</code></li>
+                        <li><code>public int getNextOrderId()</code></li>
+                    </ul>
+                </div>
+
+                <!-- CartRepository -->
+                <div class="method-card">
+                    <h3>Class 4: CartRepository.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Manages user shopping carts (one cart per user)</p>
+
+                    <h4>Methods:</h4>
+                    <ul>
+                        <li><code>public Cart findByUserId(int userId)</code> - Never returns null, creates if doesn't exist</li>
+                        <li><code>public void save(Cart cart)</code></li>
+                        <li><code>public void clear(int userId)</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- SERVICE LAYER -->
+            <section id="service">
+                <h2>📦 Layer 3: Service Package</h2>
+                <p><strong>Package:</strong> <code>com.university.shopping.service</code></p>
+                <p>The Service layer contains <strong>ALL business logic</strong>. Never prints to console, never reads input, never directly accesses MockDatabase.</p>
+
+                <!-- AuthService -->
+                <div class="method-card">
+                    <h3>Class 1: AuthService.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Handles authentication and session management</p>
+
+                    <h4>Fields:</h4>
+                    <pre><code>private UserRepository userRepository;
+private User currentUser;  // null when not logged in</code></pre>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public AuthService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+    this.currentUser = null;
+}</code></pre>
+
+                    <h4>Methods:</h4>
+                    <ul>
+                        <li><code>public String login(String username, String password)</code> - Returns: "SUCCESS", "WRONG_PASSWORD", "USER_NOT_FOUND"</li>
+                        <li><code>public String register(String username, String password)</code> - Returns: "SUCCESS", "USERNAME_EXISTS", "INVALID_PASSWORD"</li>
+                        <li><code>public void logout()</code></li>
+                        <li><code>public User getCurrentUser()</code></li>
+                        <li><code>public boolean isLoggedIn()</code></li>
+                        <li><code>public boolean isAdmin()</code></li>
+                        <li><code>private boolean validatePassword(String password)</code> - Helper method</li>
+                    </ul>
+
+                    <h4>Password Validation Logic:</h4>
+                    <pre><code>boolean hasLetter = false;
+boolean hasDigit = false;
+for (char c : password.toCharArray()) {
+    if (Character.isLetter(c)) hasLetter = true;
+    if (Character.isDigit(c)) hasDigit = true;
+}
+return password.length() >= 6 && hasLetter && hasDigit;</code></pre>
+                </div>
+
+                <!-- ShopService -->
+                <div class="method-card">
+                    <h3>Class 2: ShopService.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Handles customer shopping operations</p>
+
+                    <h4>Fields:</h4>
+                    <pre><code>private ProductRepository productRepository;
+private OrderRepository orderRepository;
+private CartRepository cartRepository;
+private AuthService authService;</code></pre>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public ShopService(ProductRepository productRepo, OrderRepository orderRepo,
+                   CartRepository cartRepo, AuthService authService)</code></pre>
+
+                    <h4>Methods:</h4>
+                    <ul>
+                        <li><code>public Product[] getAllProducts()</code></li>
+                        <li><code>public Product getProductById(int productId)</code></li>
+                        <li><code>public String addToCart(int productId, int quantity)</code></li>
+                        <li><code>public boolean removeFromCart(int productId)</code></li>
+                        <li><code>public Cart viewCart()</code></li>
+                        <li><code>public String checkout()</code> ⚠️ CRITICAL TRANSACTIONAL METHOD</li>
+                        <li><code>public Order[] getUserOrders()</code></li>
+                    </ul>
+
+                    <h4>Checkout Process Algorithm:</h4>
+                    <div class="algorithm">
+                        <pre><code>1. Check authService.isLoggedIn()
+   If false, return "NOT_LOGGED_IN"
+
+2. Get user's cart via cartRepository.findByUserId()
+
+3. Check cart.getItemCount() > 0
+   If 0, return "EMPTY_CART"
+
+4. VALIDATION PHASE (check all items before modifying anything)
+   For each item in cart.getItems()[0...itemCount-1]:
+     - Fetch fresh Product from productRepository.findById()
+     - Check if product still exists (not deleted)
+     - Check if product.stockQuantity >= item.quantity
+     - If ANY item fails, return "STOCK_ERROR:<productName>"
+
+5. STOCK DEDUCTION PHASE (only if all validations passed)
+   For each item in cart:
+     - productRepository.updateStock(item.productId, -item.quantity)
+
+6. ORDER CREATION PHASE
+   - Generate orderId via orderRepository.getNextOrderId()
+   - Get current timestamp
+   - Calculate totalPrice via cart.getTotalPrice()
+   - Copy cart items to new OrderItem[] array
+   - Create Order object with status="COMPLETED"
+   - orderRepository.save(order)
+
+7. CART CLEARING PHASE
+   - cartRepository.clear(currentUser.getUserId())
+
+8. Return "SUCCESS"</code></pre>
+                    </div>
+                </div>
+
+                <!-- AdminService -->
+                <div class="method-card">
+                    <h3>Class 3: AdminService.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Handles administrative operations</p>
+
+                    <div class="box box-warning">
+                        <p><strong>⚠️ IMPORTANT:</strong> Every method MUST check <code>authService.isAdmin()</code> first</p>
+                    </div>
+
+                    <h4>Fields:</h4>
+                    <pre><code>private ProductRepository productRepository;
+private UserRepository userRepository;
+private OrderRepository orderRepository;
+private AuthService authService;</code></pre>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public AdminService(ProductRepository productRepo, UserRepository userRepo,
+                    OrderRepository orderRepo, AuthService authService)</code></pre>
+
+                    <h4>Product Management Methods:</h4>
+                    <ul>
+                        <li><code>public String addNewProduct(...)</code> - Returns: "SUCCESS", "NOT_ADMIN", "INVALID_DATA"</li>
+                        <li><code>public String addStockToExistingProduct(int productId, int quantityToAdd)</code></li>
+                        <li><code>public String removeStock(int productId, int quantityToRemove)</code></li>
+                        <li><code>public String deleteProduct(int productId)</code></li>
+                        <li><code>public String updateProductPrice(int productId, double newPrice)</code></li>
+                        <li><code>public String updateProductName(int productId, String newName)</code></li>
+                        <li><code>public String setProductDiscount(int productId, boolean isDiscounted, double discountPercentage)</code></li>
+                        <li><code>public Product[] getAllProducts()</code></li>
+                    </ul>
+
+                    <h4>User Management Methods:</h4>
+                    <ul>
+                        <li><code>public String addUser(String username, String password, boolean isAdmin)</code></li>
+                        <li><code>public String updateUser(int userId, String newUsername, String newPassword, boolean isAdmin)</code></li>
+                        <li><code>public String deleteUser(int userId)</code> - Prevents self-deletion</li>
+                        <li><code>public User[] getAllUsers()</code></li>
+                    </ul>
+
+                    <h4>Statistics Method:</h4>
+                    <ul>
+                        <li><code>public String getStatistics()</code> - Returns formatted statistics string</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- VIEW LAYER -->
+            <section id="view">
+                <h2>📦 Layer 4: View Package</h2>
+                <p><strong>Package:</strong> <code>com.university.shopping.view</code></p>
+                <p>The View layer handles <strong>ALL user interaction</strong>. Contains all System.out.println() and Scanner calls.</p>
+
+                <div class="method-card">
+                    <h3>Class 1: ConsoleUI.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Terminal-based UI and application loop</p>
+
+                    <h4>Fields:</h4>
+                    <pre><code>private Scanner scanner;
+private AuthService authService;
+private ShopService shopService;
+private AdminService adminService;
+private int currentPage;
+private static final int ITEMS_PER_PAGE = 10;</code></pre>
+
+                    <h4>Constructor:</h4>
+                    <pre><code>public ConsoleUI(AuthService authService, ShopService shopService, AdminService adminService) {
+    this.scanner = new Scanner(System.in);
+    this.authService = authService;
+    this.shopService = shopService;
+    this.adminService = adminService;
+    this.currentPage = 0;
+}</code></pre>
+
+                    <h4>Public Method (Entry Point):</h4>
+                    <ul>
+                        <li><code>public void start()</code> - MAIN APPLICATION LOOP</li>
+                    </ul>
+
+                    <pre><code>while (true) {
+    mainMenu();  // Display and handle main menu
+    // mainMenu() handles its own input and navigation
+    // Only breaks loop when user explicitly exits (input 0 in main menu)
+}
+// When loop exits:
+scanner.close();</code></pre>
+
+                    <h4>Private Methods (Internal Navigation):</h4>
+                    <ul>
+                        <li><code>private void mainMenu()</code></li>
+                        <li><code>private void showProductList()</code> - Paginated catalog with Z/M navigation</li>
+                        <li><code>private void showProductDetail(int productId)</code></li>
+                        <li><code>private void handleAddToCart(int productId)</code></li>
+                        <li><code>private void forceLogin()</code></li>
+                        <li><code>private void registerFlow()</code></li>
+                        <li><code>private void loginFlow()</code></li>
+                        <li><code>private void handleAuth()</code></li>
+                        <li><code>private void showBasket()</code></li>
+                        <li><code>private void handleRemoveFromBasket(Cart cart)</code></li>
+                        <li><code>private void handleCheckout()</code></li>
+                        <li><code>private void adminMenu()</code></li>
+                        <li><code>private void adminProductMenu()</code></li>
+                        <li><code>private void adminUserMenu()</code></li>
+                        <li><code>private void showStatistics()</code></li>
+                        <li><code>private void clearScreen()</code> - Helper</li>
+                        <li><code>private void waitForEnter()</code> - Helper</li>
+                    </ul>
+
+                    <h4>Main Menu Flow:</h4>
+                    <div class="algorithm">
+                        <pre><code>1. Clear screen (print "\n\n===================\n")
+
+2. Display header and current status:
+   "====== ELECTRONICS SHOP ======"
+   If authService.isLoggedIn():
+     "Logged in as: [username]"
+     If authService.isAdmin():
+       "(Administrator)"
+
+3. Display menu options:
+   "1 - View Products"
+   If authService.isLoggedIn():
+     "2 - Logout"
+   Else:
+     "2 - Login / Register"
+   "3 - View Basket"
+   If authService.isAdmin():
+     "4 - Admin Panel"
+   "0 - Exit Application"
+
+4. Read user input (integer)
+
+5. Switch on input:
+   case 1: showProductList(); break;
+   case 2: handleAuth(); break;
+   case 3: showBasket(); break;
+   case 4:
+     if (authService.isAdmin()) adminMenu();
+     else print "Access denied";
+     break;
+   case 0:
+     print "Thank you for visiting Electronics Shop!";
+     System.exit(0);  // Only place that exits application
+   default: print "Invalid option"
+
+6. After each option completes, loop in start() calls mainMenu() again</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MAIN ENTRY POINT -->
+            <section id="main">
+                <h2>📍 Main Entry Point</h2>
+                <p><strong>Package:</strong> <code>com.university.shopping</code></p>
+
+                <div class="method-card">
+                    <h3>Main.java</h3>
+                    <p><span class="badge badge-public">public class</span></p>
+                    <p><strong>Purpose:</strong> Application bootstrap - initializes all components and starts UI loop</p>
+
+                    <h4>Method: main</h4>
+                    <pre><code>public static void main(String[] args) {
+    // 1. Display initialization messages
+    System.out.println("==========================================");
+    System.out.println("   ELECTRONICS SHOP - INITIALIZING");
+    System.out.println("==========================================");
+    System.out.println();
+    System.out.println("Loading data...");
+    
+    // 2. Initialize Repositories (triggers static blocks)
+    UserRepository userRepo = new UserRepository();
+    ProductRepository productRepo = new ProductRepository();
+    OrderRepository orderRepo = new OrderRepository();
+    CartRepository cartRepo = new CartRepository();
+    
+    System.out.println("✓ Data loaded");
+    System.out.println("Initializing services...");
+    
+    // 3. Initialize Services (dependency injection)
+    AuthService authService = new AuthService(userRepo);
+    ShopService shopService = new ShopService(productRepo, orderRepo, cartRepo, authService);
+    AdminService adminService = new AdminService(productRepo, userRepo, orderRepo, authService);
+    
+    System.out.println("✓ Services initialized");
+    System.out.println("Starting application...");
+    System.out.println();
+    
+    // 4. Wait 1 second
+    try { Thread.sleep(1000); } catch (InterruptedException e) {}
+    
+    // 5. Initialize View
+    ConsoleUI ui = new ConsoleUI(authService, shopService, adminService);
+    
+    // 6. Start application loop (runs until System.exit(0))
+    ui.start();
+    
+    // 7. This line only reached after System.exit()
+    System.out.println("Application terminated.");
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- ACCESS MODIFIER SUMMARY -->
+            <section id="access-summary">
+                <h2>🔐 Access Modifier Summary</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Layer</th>
+                            <th>Component</th>
+                            <th>Fields</th>
+                            <th>Constructor</th>
+                            <th>Public Methods</th>
+                            <th>Private Methods</th>
+                            <th>Static</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Model</strong></td>
+                            <td>User, Product, Order, OrderItem, Cart</td>
+                            <td><code>private</code></td>
+                            <td><code>public</code></td>
+                            <td>Getters/Setters</td>
+                            <td>None</td>
+                            <td>None</td>
+                        </tr>
+                        <tr style="background: #fff3cd;">
+                            <td><strong>Model</strong></td>
+                            <td>MockDatabase</td>
+                            <td><code>public static</code></td>
+                            <td><code>private</code></td>
+                            <td>None</td>
+                            <td>None</td>
+                            <td><strong>ALL</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Repository</strong></td>
+                            <td>All</td>
+                            <td>None</td>
+                            <td><code>public</code></td>
+                            <td>All CRUD</td>
+                            <td>None</td>
+                            <td>Init blocks only</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Service</strong></td>
+                            <td>All</td>
+                            <td><code>private</code></td>
+                            <td><code>public</code></td>
+                            <td>Business logic</td>
+                            <td>Helpers</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td><strong>View</strong></td>
+                            <td>ConsoleUI</td>
+                            <td><code>private</code></td>
+                            <td><code>public</code></td>
+                            <td>start() only</td>
+                            <td>All UI methods</td>
+                            <td>One constant</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Main</strong></td>
+                            <td>Main</td>
+                            <td>None</td>
+                            <td>N/A</td>
+                            <td>main()</td>
+                            <td>None</td>
+                            <td>main() only</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- DATA FLOWS -->
+            <section id="flows">
+                <h2>🔄 Critical Data Flows</h2>
+
+                <div class="method-card">
+                    <h3>Flow 1: User Registers and Makes First Purchase</h3>
+                    <pre><code>1. User starts app → Main.main() initializes everything → ui.start()
+2. ConsoleUI.start() enters while(true) loop → calls mainMenu()
+3. User selects option 1 (View Products)
+4. showProductList() displays paginated catalog
+5. User enters product number → showProductDetail(productId)
+6. User selects "Add to Basket" → handleAddToCart()
+7. handleAddToCart() calls shopService.addToCart()
+8. ShopService checks authService.isLoggedIn() → false
+9. Returns "NOT_LOGGED_IN"
+10. ConsoleUI calls forceLogin()
+11. User selects "Create Account" → registerFlow()
+12. Collects username, password (twice)
+13. Validates passwords match
+14. Calls authService.register()
+15. AuthService validates password rules
+16. Generates userId via userRepository.getNextUserId()
+17. Creates User object (isAdmin=false)
+18. Calls userRepository.save(user)
+19. UserRepository checks duplicates via findByUsername()
+20. Adds to MockDatabase.users[userCount++]
+21. AuthService sets currentUser = user
+22. Returns "SUCCESS"
+23. ConsoleUI retries addToCart (now authenticated)
+24. ShopService validates stock
+25. Gets cart via cartRepository.findByUserId()
+26. CartRepository creates new Cart(userId)
+27. Adds to MockDatabase.carts[]
+28. ShopService calls cart.addItem()
+29. Saves cart
+30. Returns "SUCCESS"
+31. ConsoleUI displays confirmation</code></pre>
+                </div>
+
+                <div class="method-card">
+                    <h3>Flow 2: Checkout Process</h3>
+                    <pre><code>1. User navigates to basket (option 3)
+2. showBasket() displays cart items and total
+3. User selects "Checkout" → handleCheckout()
+4. Calls shopService.checkout()
+
+VALIDATION PHASE:
+5. ShopService gets cart
+6. For each item:
+   - Fetches FRESH product data
+   - Validates stock >= quantity
+7. If any fail, returns "STOCK_ERROR:<name>"
+
+STOCK DEDUCTION PHASE:
+8. For each item:
+   - productRepository.updateStock(id, -qty)
+   - ProductRepository updates stockQuantity
+   - Saves product
+
+ORDER CREATION:
+9. Generate orderId
+10. Calculate totalPrice
+11. Copy cart items to OrderItem[]
+12. Create Order object
+13. orderRepository.save(order)
+
+CART CLEARING:
+14. cartRepository.clear(userId)
+15. Cart sets itemCount = 0
+
+16. Return "SUCCESS"
+17. ConsoleUI displays confirmation
+18. Returns to main menu (loop continues)</code></pre>
+                </div>
+
+                <div class="method-card">
+                    <h3>Flow 3: Admin Changes Product Price</h3>
+                    <pre><code>1. Admin logs in via loginFlow()
+2. Main menu shows admin panel option
+3. Admin selects option 4 → adminMenu()
+4. Checks authService.isAdmin() → true
+5. Admin selects "Manage Products" → adminProductMenu()
+6. Admin selects "Change Price"
+7. Prompts for product ID and new price
+8. Calls adminService.updateProductPrice(id, price)
+9. AdminService checks isAdmin() → true
+10. Validates price > 0 → true
+11. Calls productRepository.findById(id)
+12. ProductRepository searches MockDatabase.products[]
+13. Returns Product object
+14. AdminService calls product.setPrice(newPrice)
+15. Calls productRepository.update(product)
+16. ProductRepository replaces object in array
+17. Returns "SUCCESS"
+18. ConsoleUI displays confirmation
+19. Returns to product menu (loop continues)</code></pre>
+                </div>
+            </section>
+
+            <!-- SUMMARY -->
+            <section id="summary">
+                <h2>📊 Summary</h2>
+
+                <div class="box box-success">
+                    <h3>Architecture Recap</h3>
+                    <p><strong>4-Layer Architecture with Maximum Encapsulation:</strong></p>
+
+                    <h4>1. Model Layer (6 classes)</h4>
+                    <ul>
+                        <li>All fields: <code>private</code></li>
+                        <li>Getters/Setters: <code>public</code></li>
+                        <li>Classes: <code>public</code> (data transfer)</li>
+                        <li><strong>Exception:</strong> MockDatabase uses <code>public static</code> (simulates DB)</li>
+                    </ul>
+
+                    <h4>2. Repository Layer (4 classes)</h4>
+                    <ul>
+                        <li>Classes: <code>public</code> (DI)</li>
+                        <li>All methods: <code>public</code> (API for Service)</li>
+                        <li>No instance fields</li>
+                        <li>Static init blocks for seeding</li>
+                    </ul>
+
+                    <h4>3. Service Layer (3 classes)</h4>
+                    <ul>
+                        <li>Classes: <code>public</code> (DI)</li>
+                        <li>Fields: <code>private</code> (encapsulation)</li>
+                        <li>Business methods: <code>public</code></li>
+                        <li>Helpers: <code>private</code></li>
+                        <li>No static</li>
+                    </ul>
+
+                    <h4>4. View Layer (1 class)</h4>
+                    <ul>
+                        <li>Class: <code>public</code></li>
+                        <li>Fields: <code>private</code></li>
+                        <li>start(): <code>public</code> (Main entry)</li>
+                        <li>All UI methods: <code>private</code></li>
+                        <li>One static constant</li>
+                    </ul>
+                </div>
+
+                <div class="box box-info">
+                    <h3>Key Features</h3>
+
+                    <h4>User Features:</h4>
+                    <ul>
+                        <li>Browse products (pagination, 10/page, Z/M navigation)</li>
+                        <li>View product details</li>
+                        <li>Add to basket (with quantity)</li>
+                        <li>Remove from basket (numbered selection)</li>
+                        <li>Register (password validation: 6+ chars, letters + digits)</li>
+                        <li>Login/Logout</li>
+                        <li>Checkout (stock validation)</li>
+                    </ul>
+
+                    <h4>Admin Features:</h4>
+                    <ul>
+                        <li>Add/update/delete products</li>
+                        <li>Manage stock (add/remove partial quantities)</li>
+                        <li>Change prices/names/discounts</li>
+                        <li>Add/edit/delete users</li>
+                        <li>View statistics (product/user/order counts, revenue)</li>
+                        <li>Role-based access control</li>
+                    </ul>
+
+                    <h4>Technical Features:</h4>
+                    <ul>
+                        <li>Session management (persistent login)</li>
+                        <li>Application loop (doesn't exit on logout)</li>
+                        <li>Cart persistence (per user)</li>
+                        <li>Stock validation (prevents overselling)</li>
+                        <li>Transaction integrity (validates all before any deduction)</li>
+                        <li>Maximum encapsulation</li>
+                        <li>Minimal static usage</li>
+                    </ul>
+                </div>
+
+                <div class="box box-warning">
+                    <h3>Static Usage Justification</h3>
+                    <p><strong>Only MockDatabase uses static:</strong></p>
+                    <ul>
+                        <li>Simulates singleton database instance</li>
+                        <li>Provides shared storage across application</li>
+                        <li>Will be replaced by actual database connection (still singleton)</li>
+                    </ul>
+
+                    <p><strong>Everything else is non-static:</strong></p>
+                    <ul>
+                        <li>Services are instantiated (testable, flexible)</li>
+                        <li>Repositories are instantiated (swappable data sources)</li>
+                        <li>View is instantiated (multiple UI instances possible)</li>
+                    </ul>
+                </div>
+
+                <div class="box">
+                    <h3>Security & Encapsulation Benefits</h3>
+                    <ol>
+                        <li><strong>Data Hiding:</strong> Private fields prevent unauthorized access</li>
+                        <li><strong>Controlled Access:</strong> Public methods are gatekeepers with validation</li>
+                        <li><strong>Minimal Static:</strong> Prevents global state issues</li>
+                        <li><strong>Layer Isolation:</strong> Private methods prevent layer-hopping</li>
+                        <li><strong>Dependency Injection:</strong> Testable, modular, flexible code</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- IMPLEMENTATION CHECKLIST -->
+            <section id="checklist">
+                <h2>🎯 Implementation Checklist</h2>
+
+                <div class="box box-success">
+                    <p>When implementing, follow this order:</p>
+
+                    <h3>Phase 1: Model Layer</h3>
+                    <ul class="checklist">
+                        <li>Create all Model classes with private fields</li>
+                        <li>Add public getters/setters</li>
+                        <li>Create MockDatabase with public static fields</li>
+                        <li>Test: Can create objects and access fields</li>
+                    </ul>
+
+                    <h3>Phase 2: Repository Layer</h3>
+                    <ul class="checklist">
+                        <li>Create Repository classes</li>
+                        <li>Add static initialization blocks with sample data</li>
+                        <li>Implement CRUD methods</li>
+                        <li>Test: Can save/retrieve data from MockDatabase</li>
+                    </ul>
+
+                    <h3>Phase 3: Service Layer</h3>
+                    <ul class="checklist">
+                        <li>Create Service classes with private fields</li>
+                        <li>Implement business logic methods</li>
+                        <li>Add validation and error handling</li>
+                        <li>Test: Methods return correct status codes</li>
+                    </ul>
+
+                    <h3>Phase 4: View Layer</h3>
+                    <ul class="checklist">
+                        <li>Create ConsoleUI with private fields</li>
+                        <li>Implement start() and mainMenu()</li>
+                        <li>Add all menu methods</li>
+                        <li>Test: Navigate through all menus</li>
+                    </ul>
+
+                    <h3>Phase 5: Integration</h3>
+                    <ul class="checklist">
+                        <li>Create Main.java</li>
+                        <li>Wire dependencies in main()</li>
+                        <li>Test complete user flows</li>
+                        <li>Test admin functions</li>
+                    </ul>
+
+                    <h3>Phase 6: Polish</h3>
+                    <ul class="checklist">
+                        <li>Add input validation</li>
+                        <li>Improve error messages</li>
+                        <li>Test edge cases</li>
+                        <li>Add code comments</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p><strong>📱 Electronics Shop Project</strong></p>
+            <p>Layered Architecture with Maximum Encapsulation</p>
+            <p>Java Console Application - January 2026</p>
+            <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.8;">Complete Architecture Documentation</p>
+        </footer>
+    </div>
+
+    <div class="scroll-top" id="scrollTop">↑</div>
+
+    <script>
+        // Scroll to top functionality
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
