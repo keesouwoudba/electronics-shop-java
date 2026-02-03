@@ -37,7 +37,7 @@ public class ProductRepository {
                 "Accessory", "Smartwatch with health tracking", 55, false, 0);
 
         MockDatabase.productCount = 15;
-        MockDatabase.nextProductId = 15;
+        MockDatabase.nextProductId = 16;
     }
 
     public Product findById(int id) {
