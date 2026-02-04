@@ -8,8 +8,9 @@ public class User {
     private boolean isAdmin;
     private final String createdDate;
 
-    public User(int id, String username, String password, boolean isAdmin, String createdDate) {
-        this.id = id;
+    public User(String username, String password, boolean isAdmin, String createdDate) {
+        this.id = MockDatabase.nextUserId;
+        MockDatabase.nextUserId++;
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
