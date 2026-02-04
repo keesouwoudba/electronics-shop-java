@@ -35,6 +35,7 @@ public class Order {
         return items;
     }
     //setters
+
     public void setStatus(String status){
         this.status = status;
     }
