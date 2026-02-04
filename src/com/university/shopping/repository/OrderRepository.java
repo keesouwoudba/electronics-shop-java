@@ -15,12 +15,13 @@ public class OrderRepository {
                 return true;
             }
         }
-        MockDatabase.orders[MockDatabase.nextOrderId] = order;
+        MockDatabase.orders[MockDatabase.orderCount] = order;
         MockDatabase.orderCount++;
         MockDatabase.nextOrderId++;
         result = true;
         return result;
     }
+
     public Order findOrderById(int orderId) {
         if (!(orderId > MockDatabase.orderCount) && !(orderId < 0)){
             for (int i = 0; i < MockDatabase.orderCount; i++){
@@ -34,16 +35,18 @@ public class OrderRepository {
     public Order[] findAllByUserId(int userId) {
         Order[] temp1 = new Order[MockDatabase.orderCount];
         int count = 0;
-        if (!(userId > MockDatabase.userCount) && !(userId < 0)){
+        if (userId >= 0 && userId < MockDatabase.userCount){
             for (int i = 0; i < MockDatabase.orderCount;  i++){
                 if (MockDatabase.orders[i].getUserId() == userId){
                     temp1[count++] = MockDatabase.orders[i];
                 }
             }
             Order[] final1 = new Order[count];
-            MockDatabase.orderCount++;
             for (int i = 0; i < count; i++){
-                final1[i] = temp1[i];
+                if (temp1[i] != null){
+                    final1[i] = temp1[i];
+                }
+
             }
             return final1;
         }
