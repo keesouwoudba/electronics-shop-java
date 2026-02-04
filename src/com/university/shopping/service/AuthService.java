@@ -20,16 +20,20 @@ public class AuthService {
     // Password validation
     private boolean containsNumber(String input) {
         return input.matches(".*\\d.*");
-    }
+    } // need to change it to charlist for
+
     private boolean containsUppercase(String input) {
         return input.matches(".*[A-Z].*");
-    }
+    }// need to change it to charlist for
 
     private boolean validatePassword(String password){
         int len = password.length(); // number of character
         return !(len <= 7 & !containsNumber(password) & !containsUppercase(password));
     }
     //----------------------------------------------------
+
+
+
     // Login & Register
     public String login(String username, String password)
     {
@@ -50,7 +54,7 @@ public class AuthService {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = today.format(formatter);
-        User buffer_u = new User(1,username,password,false,formattedDate);
+        User buffer_u = new User(username,password,false,formattedDate);
         boolean result = this.userRepository.save(buffer_u);
         return "Successfully registered";
     }

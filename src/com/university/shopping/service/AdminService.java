@@ -23,7 +23,7 @@ public class AdminService {
     //----------------------------------------------------
     // Product Management Methods
     //----------------------------------------------------
-/*
+
     public String addNewProduct() { //Returns: "SUCCESS", "NOT_ADMIN", "INVALID_DATA"
         if (!this.authService.isAdmin()) return "Not Admin";
 
@@ -64,5 +64,5 @@ public class AdminService {
 
     }
 
- */
+
 }

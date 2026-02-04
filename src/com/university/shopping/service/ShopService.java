@@ -1,6 +1,7 @@
 package com.university.shopping.service;
 
 import com.university.shopping.model.Cart;
+import com.university.shopping.model.MockDatabase;
 import com.university.shopping.model.Order;
 import com.university.shopping.model.Product;
 import com.university.shopping.repository.CartRepository;
@@ -18,29 +19,31 @@ public class ShopService {
 
     }
 
-/*
-    public Product[] getAllProducts(){
 
-    }
+    public Product[] getAllProducts(){
+        return productRepository.findAll();
+    } // Returns every possible product which is available.
 
     public Product getProductById(int productId){
+        return productRepository.findById(productId);
+    } // Returns Product which has specific ID
 
-    }
-
-    public String addToCart(int productId, int quantity){
-
+    public String addToCart(int productId, int quantity, int user_id){
+        MockDatabase.carts[user_id].addItem();
     }
 
     public boolean removeFromCart(int productId){
 
     }
 
-    public Cart viewCart(){
-
+    public Cart viewCart(int userId){
+        return cartRepository.findCartByUserId(userId);
     }
 
-    public String checkout(){
-
+    public String checkout(int userId){
+        if (!authService.isLoggedIn()) return "Please Log in";
+        Cart checkout = cartRepository.findCartByUserId(userId);
+        checkout.
     }
 
     /*
@@ -80,5 +83,5 @@ public class ShopService {
     public Order[] getUserOrders(){
 
     }
-*/
+
 }
