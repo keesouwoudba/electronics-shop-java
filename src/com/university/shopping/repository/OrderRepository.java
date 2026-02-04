@@ -43,7 +43,10 @@ public class OrderRepository {
             }
             Order[] final1 = new Order[count];
             for (int i = 0; i < count; i++){
-                final1[i] = temp1[i];
+                if (temp1[i] != null){
+                    final1[i] = temp1[i];
+                }
+
             }
             return final1;
         }
