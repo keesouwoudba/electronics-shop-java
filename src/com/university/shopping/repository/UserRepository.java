@@ -6,10 +6,10 @@ import com.university.shopping.model.User;
 public class UserRepository {
     public UserRepository() {}
     static {
-        MockDatabase.users[0] = new User(1, "admin", "admin123", true, "2026-01-01");
-        MockDatabase.users[1] = new User(2, "customer", "pass123", false, "2026-01-15");
-        MockDatabase.userCount = 2;
-        MockDatabase.nextUserId = 3;
+        MockDatabase.users[0] = new User("admin", "admin123", true, "2026-01-01");
+        MockDatabase.userCount++;
+        MockDatabase.users[1] = new User( "customer", "pass123", false, "2026-01-15");
+        MockDatabase.userCount++;
     }
     public User findByUsername(String username) {
         for (User user : MockDatabase.users) {
@@ -35,7 +35,6 @@ public class UserRepository {
         User u = findByUsername(user.getUsername());
         if (u == null) {
             MockDatabase.users[MockDatabase.nextUserId-1] = user;
-            MockDatabase.nextUserId++;
             MockDatabase.userCount++;
             result = true;
             return result;
