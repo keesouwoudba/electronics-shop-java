@@ -72,7 +72,7 @@ public class ProductRepository {
         if (product == null) return result;
         Product p = findById(product.getProductId());
         if (p == null){
-            MockDatabase.products[MockDatabase.nextProductId] = product;
+            MockDatabase.products[MockDatabase.productCount] = product;
             MockDatabase.nextProductId++;
             MockDatabase.productCount++;
             result = true;
@@ -121,19 +121,14 @@ public class ProductRepository {
         return result1;
     }
     public boolean update(Product product) {
-        boolean result = false;
-        if (product == null) return result;
-        Product p = findById(product.getProductId());
-        if (p != null){
-            for(int i = 0; i < MockDatabase.productCount; i++){
-                if (MockDatabase.products[i].getProductId() == product.getProductId()) {
-                    MockDatabase.products[i] = product;
-                }
+        if (product == null) return false;
+        for (int i = 0; i < MockDatabase.productCount; i++) {
+            if (MockDatabase.products[i].getProductId() == product.getProductId()) {
+                MockDatabase.products[i] = product;
+                return true;
             }
-            result = true;
-            return result;
         }
-        return result;
+        return false;
     }
     public boolean updateStock(int productId, int quantity) {
         boolean result = false;

@@ -17,24 +17,23 @@ public class CartRepository {
         return temp;
     }
     public boolean saveCart(Cart cart){
-        boolean result = false;
+        if (cart.getUserId() < 0 || cart.getUserId() >= MockDatabase.userCount) {
+            return false;
+        }
+
         int foundIndex = -1;
         for(int i = 0; i < MockDatabase.cartCount; i++){
             if (MockDatabase.carts[i].getUserId() == cart.getUserId()){
                 foundIndex = i;
             }
         }
-        if (foundIndex != -1){
+
+        if (foundIndex != -1) {
             MockDatabase.carts[foundIndex] = cart;
-            result = true;
-            return  result;
-        }
-        else{
+        } else {
             MockDatabase.carts[MockDatabase.cartCount] = cart;
             MockDatabase.cartCount++;
-            result = true;
-            return result;
         }
-
+        return true;
     }
 }

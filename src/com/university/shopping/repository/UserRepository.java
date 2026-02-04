@@ -34,7 +34,7 @@ public class UserRepository {
         }
         User u = findByUsername(user.getUsername());
         if (u == null) {
-            MockDatabase.users[MockDatabase.nextUserId] = user;
+            MockDatabase.users[MockDatabase.nextUserId-1] = user;
             MockDatabase.nextUserId++;
             MockDatabase.userCount++;
             result = true;
@@ -58,30 +58,18 @@ public class UserRepository {
         return result;
     }
     public boolean delete(User user) {
-        boolean result = false;
-        if (user == null) {
-            return result;
-        }
-        User u = findByUsername(user.getUsername());
-        int foundIndex = -1;
-        if (u != null) {
-            for (int i = 0; i <= MockDatabase.userCount; i++) {
-                if(MockDatabase.users[i].getUserId() == user.getUserId()) {
-                    foundIndex = i;
+        if (user == null) return false;
+        for (int i = 0; i < MockDatabase.userCount; i++) {
+            if (MockDatabase.users[i].getUserId() == user.getUserId()) {
+                for (int j = i; j < MockDatabase.userCount - 1; j++) {
+                    MockDatabase.users[j] = MockDatabase.users[j + 1];
                 }
+                MockDatabase.userCount--;
+                MockDatabase.users[MockDatabase.userCount] = null;
+                return true;
             }
-            if (foundIndex != -1) {
-                for (int i = foundIndex; i < MockDatabase.userCount; i++) {
-                    MockDatabase.users[i] = MockDatabase.users[i + 1];
-                }
-            }
-
-            MockDatabase.userCount--;
-            MockDatabase.users[MockDatabase.userCount] = null;
-            result = true;
-            return result;
         }
-        return result;
+        return false;
     }
     public User[] getAllUsers() {
         return MockDatabase.users;
