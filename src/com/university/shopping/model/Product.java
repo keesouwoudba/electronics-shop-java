@@ -11,8 +11,9 @@ public class Product {
     private boolean isDiscounted;
     private double discountPercentage; //0-100
 
-    public Product(int productId, String name, double price, String category, String description, int stockQuantity, boolean isDiscounted, double discountPercentage) {
-        this.productId = productId;
+    public Product(String name, double price, String category, String description, int stockQuantity, boolean isDiscounted, double discountPercentage) {
+        this.productId = MockDatabase.nextProductId;
+        MockDatabase.nextProductId++;
         this.name = name;
         this.price = price;
         this.category = category;

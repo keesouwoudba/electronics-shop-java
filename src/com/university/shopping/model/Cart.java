@@ -30,7 +30,8 @@ public class Cart {
         }
         else {
             //add verification if item exists in database(i dont know should i add or not)
-            items[itemCount++] = new OrderItem(productId, productName, quantity, price);
+            items[itemCount] = new OrderItem(productId, productName, quantity, price);
+            itemCount++;
         }
     }
     public boolean removeItem(int productId){

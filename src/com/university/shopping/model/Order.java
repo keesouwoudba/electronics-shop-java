@@ -1,15 +1,16 @@
 package com.university.shopping.model;
 
 public class Order {
-    private int orderId;
-    private int userId;
-    private String orderDate;
+    private final int orderId;
+    private final int userId;
+    private final String orderDate;
     private double totalPrice;
     private String status;
     private OrderItem[] items;
 
-    public Order(int orderId, int userId, String orderDate, double totalPrice, String status, OrderItem[] items){
-        this.orderId = orderId;
+    public Order(int userId, String orderDate, double totalPrice, String status, OrderItem[] items){
+        this.orderId = MockDatabase.nextOrderId;
+        MockDatabase.nextOrderId++;
         this.userId = userId;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
@@ -35,6 +36,7 @@ public class Order {
         return items;
     }
     //setters
+
     public void setStatus(String status){
         this.status = status;
     }
