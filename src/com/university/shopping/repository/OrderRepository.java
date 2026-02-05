@@ -17,7 +17,6 @@ public class OrderRepository {
         }
         MockDatabase.orders[MockDatabase.orderCount] = order;
         MockDatabase.orderCount++;
-        MockDatabase.nextOrderId++;
         result = true;
         return result;
     }
