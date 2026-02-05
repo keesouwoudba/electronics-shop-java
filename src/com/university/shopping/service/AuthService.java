@@ -26,7 +26,7 @@ public class AuthService {
         return input.matches(".*[A-Z].*");
     }// need to change it to charlist for
 
-    private boolean validatePassword(String password){
+    public boolean validatePassword(String password){
         int len = password.length(); // number of character
         return !(len <= 7 & !containsNumber(password) & !containsUppercase(password));
     }
