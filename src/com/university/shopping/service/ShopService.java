@@ -55,7 +55,6 @@ public class ShopService {
         if (checkout.getItemCount() < 1){
             return "Please add items to your cart";
         }
-
     }
 
     /*
