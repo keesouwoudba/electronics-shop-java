@@ -22,7 +22,7 @@ public class OrderRepository {
     }
 
     public Order findOrderById(int orderId) {
-        if (!(orderId > MockDatabase.orderCount) && !(orderId < 0)){
+        if (orderId >= 0 && orderId < MockDatabase.orderCount){
             for (int i = 0; i < MockDatabase.orderCount; i++){
                 if (MockDatabase.orders[i].getOrderId() == orderId){
                     return MockDatabase.orders[i];
@@ -53,6 +53,9 @@ public class OrderRepository {
     }
     public Order[] findAll(){
         return MockDatabase.orders;
+    }
+    public int getOrderCount() {
+        return MockDatabase.orderCount;
     }
     public int getNextOrderId() {
         return MockDatabase.nextOrderId;

@@ -46,7 +46,9 @@ public class AdminService {
     public String setProductDiscount(int productId, boolean isDiscounted, double discountPercentage){
 
     }
-    public Product[] getAllProducts()
+    public Product[] getAllProducts(){
+
+    }
 
     //----------------------------------------------------
     // User Management Methods:

@@ -12,16 +12,18 @@ public class UserRepository {
         MockDatabase.userCount++;
     }
     public User findByUsername(String username) {
-        for (User user : MockDatabase.users) {
-            if (user.getUsername().equals(username)) {
+        for (int i = 0; i < MockDatabase.userCount; i++) {
+            User user = MockDatabase.users[i];
+            if (user != null && user.getUsername().equals(username)) {
                 return user;
             }
         }
         return null;
     }
     public User findById(int id) {
-        for (User user : MockDatabase.users) {
-            if (user.getUserId() == id) {
+        for (int i = 0; i < MockDatabase.userCount; i++) {
+            User user = MockDatabase.users[i];
+            if (user != null && user.getUserId() == id) {
                 return user;
             }
         }

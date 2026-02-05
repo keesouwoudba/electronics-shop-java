@@ -33,12 +33,12 @@ public class ShopService {
 
     public boolean addToCart(int productId, int quantity, int userId){
         if (!authService.isLoggedIn()) return false;
-        Cart temp_cart = cartRepository.findCartByUserId(userId);
         Product tmp_prod = productRepository.findById(productId);
+        if (tmp_prod == null) return false;
+        Cart temp_cart = cartRepository.findCartByUserId(userId);
         temp_cart.addItem(productId, tmp_prod.getName(), quantity, tmp_prod.getPrice());
         cartRepository.saveCart(temp_cart);
         return true;
-        //need to add try-catch, and false
     }
 
     public boolean removeFromCart(int productId, int userId){
@@ -59,15 +59,28 @@ public class ShopService {
             return "Please add items to your cart";
         }
         OrderItem[] items = checkout.getItems();
-        for (OrderItem item : items){
-            if (item.getQuantity() > productRepository.findById(item.getProductId()).getStockQuantity()) return "STOCK_ERROR: Stock's quantity is not enough for " + item.getProductName();
+
+        // Validate stock for all items
+        for (int i = 0; i < checkout.getItemCount(); i++){
+            OrderItem item = items[i];
+            if (item != null){
+                Product product = productRepository.findById(item.getProductId());
+                if (product == null) return "PRODUCT_ERROR: Product " + item.getProductName() + " not found";
+                if (item.getQuantity() > product.getStockQuantity()) {
+                    return "STOCK_ERROR: Stock's quantity is not enough for " + item.getProductName();
+                }
+            }
         }
 
-        for (OrderItem item : items){
-            productRepository.findById(item.getProductId()).setStockQuantity(
-                    productRepository.findById(item.getProductId()).getStockQuantity() - item.getQuantity()
-            );
+        // Update stock for all items
+        for (int i = 0; i < checkout.getItemCount(); i++){
+            OrderItem item = items[i];
+            if (item != null){
+                Product product = productRepository.findById(item.getProductId());
+                product.setStockQuantity(product.getStockQuantity() - item.getQuantity());
+            }
         }
+
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = today.format(formatter);

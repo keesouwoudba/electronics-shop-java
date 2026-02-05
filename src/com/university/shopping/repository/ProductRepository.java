@@ -67,57 +67,46 @@ public class ProductRepository {
         return finalResults;
     }
     public boolean save(Product product) {
-        boolean result = false;
-        if (product == null) return result;
+        if (product == null) return false;
         Product p = findById(product.getProductId());
         if (p == null){
             MockDatabase.products[MockDatabase.productCount] = product;
             MockDatabase.nextProductId++;
             MockDatabase.productCount++;
-            result = true;
-            return result;
+            return true;
         }
-        return result;
+        return false;
     }
 
 
     public boolean delete(Product product) {
-        boolean result = false;
-        if (product == null) return result;
-        Product p = findById(product.getProductId());
-        int foundIndex = -1;
-        if (p != null){
-            for(int i = 0; i < MockDatabase.productCount; i++)
-                if (p.getProductId() == product.getProductId()) foundIndex = i;
-            if (foundIndex != -1){
-                for (int i = foundIndex; i < MockDatabase.productCount; i++)
-                    MockDatabase.products[i] = MockDatabase.products[i + 1];
-                MockDatabase.productCount--;
-                MockDatabase.products[MockDatabase.productCount] = null;
-                result = true;
-                return result;
-            }
-            else return false;
-        }
-        return result;
-    }
-    public boolean deleteById(int productId) {
-        boolean result1 = false;
-        int foundIndex1 = -1;
-        if (!(productId > MockDatabase.productCount) && !(productId < 0)) {
-            for (int i = 0; i < MockDatabase.productCount; i++)
-                if (MockDatabase.products[i].getProductId() == productId) foundIndex1 = i;
-            if (foundIndex1 != -1){
-                for (int i = foundIndex1; i < MockDatabase.productCount; i++){
-                    MockDatabase.products[i] = MockDatabase.products[i + 1];
+        if (product == null) return false;
+        for(int i = 0; i < MockDatabase.productCount; i++){
+            if (MockDatabase.products[i].getProductId() == product.getProductId()) {
+                for (int j = i; j < MockDatabase.productCount - 1; j++){
+                    MockDatabase.products[j] = MockDatabase.products[j + 1];
                 }
                 MockDatabase.productCount--;
                 MockDatabase.products[MockDatabase.productCount] = null;
-                result1 = true;
-                return result1;
+                return true;
             }
         }
-        return result1;
+        return false;
+    }
+    public boolean deleteById(int productId) {
+        if (productId >= 0 && productId < MockDatabase.productCount) {
+            for (int i = 0; i < MockDatabase.productCount; i++) {
+                if (MockDatabase.products[i].getProductId() == productId) {
+                    for (int j = i; j < MockDatabase.productCount - 1; j++){
+                        MockDatabase.products[j] = MockDatabase.products[j + 1];
+                    }
+                    MockDatabase.productCount--;
+                    MockDatabase.products[MockDatabase.productCount] = null;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     public boolean update(Product product) {
         if (product == null) return false;
@@ -130,17 +119,15 @@ public class ProductRepository {
         return false;
     }
     public boolean updateStock(int productId, int quantity) {
-        boolean result = false;
-        if (!(productId > MockDatabase.productCount) && !(productId < 0)){
+        if (productId >= 0 && productId < MockDatabase.productCount){
             for (int i = 0; i < MockDatabase.productCount; i++){
                 if (MockDatabase.products[i].getProductId() == productId){
                     MockDatabase.products[i].setStockQuantity(quantity);
+                    return true;
                 }
             }
-            result = true;
-            return result;
         }
-        return result;
+        return false;
     }
     public Product[] searchByName(String name) {
         Product[] temp = new Product[MockDatabase.productCount];
@@ -159,6 +146,8 @@ public class ProductRepository {
     public int getNextProductId() {
         return MockDatabase.nextProductId;
     }
-
-
+    // ...existing code...
+    public int getProductCount() {
+        return MockDatabase.productCount;
+    }
 }
