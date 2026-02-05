@@ -28,22 +28,34 @@ public class ShopService {
         return productRepository.findById(productId);
     } // Returns Product which has specific ID
 
-    public String addToCart(int productId, int quantity, int user_id){
-        MockDatabase.carts[user_id].addItem();
+    public boolean addToCart(int productId, int quantity, int userId){
+        if (!authService.isLoggedIn()) return false;
+        Cart temp_cart = cartRepository.findCartByUserId(userId);
+        Product tmp_prod = productRepository.findById(productId);
+        temp_cart.addItem(productId, tmp_prod.getName(), quantity, tmp_prod.getPrice());
+        cartRepository.saveCart(temp_cart);
+        return true;
+        //need to add try-catch, and false
     }
 
-    public boolean removeFromCart(int productId){
-
+    public boolean removeFromCart(int productId, int userId){
+        if (!authService.isLoggedIn()) return false;
+        cartRepository.findCartByUserId(userId).removeItem(productId);
+        return true;
     }
 
     public Cart viewCart(int userId){
+        if (!authService.isLoggedIn()) return null;
         return cartRepository.findCartByUserId(userId);
     }
 
     public String checkout(int userId){
         if (!authService.isLoggedIn()) return "Please Log in";
         Cart checkout = cartRepository.findCartByUserId(userId);
-        checkout.
+        if (checkout.getItemCount() < 1){
+            return "Please add items to your cart";
+        }
+
     }
 
     /*
