@@ -70,10 +70,11 @@ public class ProductRepository {
         if (product == null) return false;
         Product p = findById(product.getProductId());
         if (p == null){
-            MockDatabase.products[MockDatabase.productCount] = product;
-            MockDatabase.nextProductId++;
-            MockDatabase.productCount++;
-            return true;
+            if (MockDatabase.productCount < MockDatabase.products.length) {
+                MockDatabase.products[MockDatabase.productCount] = product;
+                MockDatabase.productCount++;
+                return true;
+            }
         }
         return false;
     }

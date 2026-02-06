@@ -11,7 +11,6 @@ public class AuthService {
     private User currentUser;  // null when not logged in
 
     //Constructors
-    public AuthService(){}
     public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
         this.currentUser = null;
@@ -20,15 +19,16 @@ public class AuthService {
     // Password validation
     private boolean containsNumber(String input) {
         return input.matches(".*\\d.*");
-    } // need to change it to charlist for
+    }
 
     private boolean containsUppercase(String input) {
         return input.matches(".*[A-Z].*");
-    }// need to change it to charlist for
+    }
 
     public boolean validatePassword(String password){
-        int len = password.length(); // number of character
-        return !(len <= 7 & !containsNumber(password) & !containsUppercase(password));
+        if (password == null) return false;
+        int len = password.length();
+        return len >= 8 && containsNumber(password) && containsUppercase(password);
     }
     //----------------------------------------------------
 
@@ -37,9 +37,10 @@ public class AuthService {
     // Login & Register
     public String login(String username, String password)
     {
-        this.currentUser = this.userRepository.findByUsername(username);
-        if (this.currentUser == null) return "User do not exist!";
-        if (password.equals(this.currentUser.getPassword())) {
+        User user = this.userRepository.findByUsername(username);
+        if (user == null) return "User do not exist!";
+        if (password.equals(user.getPassword())) {
+            this.currentUser = user;
             return "Successfull login";
         }
         else{
@@ -50,12 +51,12 @@ public class AuthService {
 
     public String register(String username, String password){
         if (this.userRepository.findByUsername(username) != null) return "This Username already exist";
-        if (validatePassword(password)) return "Please create a password which is at least 8 characters long has Uppercase letter and has a number";
+        if (!validatePassword(password)) return "Please create a password which is at least 8 characters long has Uppercase letter and has a number";
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = today.format(formatter);
         User buffer_u = new User(username,password,false,formattedDate);
-        boolean result = this.userRepository.save(buffer_u);
+        // The user is already saved by the constructor in the current implementation
         return "Successfully registered";
     }
     //----------------------------------------------------

@@ -15,6 +15,10 @@ public class User {
         this.password = password;
         this.isAdmin = isAdmin;
         this.createdDate = createdDate;
+        if (MockDatabase.userCount < MockDatabase.users.length) {
+            MockDatabase.users[MockDatabase.userCount] = this;
+            MockDatabase.userCount++;
+        }
     }
     //getters
     public int getUserId() {
