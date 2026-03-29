@@ -27,6 +27,7 @@ The plan avoids a full rewrite and preserves current behavior while adding clear
 - Keep business logic in services, not in UI classes.
 - Prefer constructor injection.
 - Keep compatibility with existing classes by using overloaded constructors where needed.
+- Single ownership per responsibility (input reading, format selection, pricing lifecycle).
 
 ---
 
@@ -42,7 +43,7 @@ The plan avoids a full rewrite and preserves current behavior while adding clear
 
 3. **Reporting behavior hierarchy**
 - Introduce `AbstractReportService` with shared implemented methods and two concrete report outputs (`ConsoleReportService`, `CsvReportService`).
-- `AdminService` will depend on the abstract type.
+- `AdminService` will depend on the abstract type and select concrete implementation from a format map.
 
 4. **No persistence migration in this phase**
 - CSV/file persistence is valuable, but out of scope for this assignment increment.
@@ -69,6 +70,7 @@ src/com/university/shopping/
 │   ├── AdminService.java (MODIFY: add report service abstraction)
 │   ├── pricing/
 │   │   ├── DiscountPolicy.java (NEW interface)
+│   │   ├── PricingMode.java (NEW enum)
 │   │   ├── StandardDiscountPolicy.java (NEW)
 │   │   └── SeasonalDiscountPolicy.java (NEW)
 │   └── report/
@@ -87,7 +89,7 @@ src/com/university/shopping/
 1. `CustomerScreen extends AbstractScreen`
 2. `AdminScreen extends AbstractScreen`
 
-(Alternative second inheritance pair also present)
+Additional implemented inheritance examples:
 - `ConsoleReportService extends AbstractReportService`
 - `CsvReportService extends AbstractReportService`
 
@@ -116,7 +118,7 @@ src/com/university/shopping/
 ## 5.5 Polymorphism (3 examples)
 1. `MenuActions actions = authService.isAdmin() ? adminScreen : customerScreen;`
 2. `DiscountPolicy policy = isSeasonal ? new SeasonalDiscountPolicy() : new StandardDiscountPolicy();`
-3. `AbstractReportService reportService = exportCsv ? new CsvReportService(...) : new ConsoleReportService();`
+3. `AbstractReportService reportService = reportServicesByFormat.get(format);`
 
 ---
 
@@ -312,6 +314,19 @@ Methods:
 
 ---
 
+## 6.5.1 `service/pricing/PricingMode.java` (NEW ENUM)
+Purpose:
+- Declares pricing lifecycle policy used by `ShopService`.
+
+Values:
+1. `LOCK_AT_ADD`
+- Price is calculated once when item is added to cart and then remains stable.
+
+2. `RECALCULATE_AT_CHECKOUT`
+- Price is recalculated at checkout with the currently active `DiscountPolicy`.
+
+---
+
 ## 6.6 `service/pricing/StandardDiscountPolicy.java` (NEW)
 Purpose:
 - Default discount logic matching current behavior.
@@ -385,6 +400,13 @@ Methods:
 - Output: status/message
 - Behavior: implemented by subclasses for destination-specific output.
 
+CSV operational contract (applies to CSV implementation):
+- Output directory is created automatically if missing.
+- Export mode is overwrite (single latest snapshot).
+- Delimiter is comma, values containing comma/quote/newline are quoted and escaped.
+- Header row is always written.
+- Errors are returned as `ERROR:<reason>` without crashing the app loop.
+
 ---
 
 ## 6.9 `service/report/ConsoleReportService.java` (NEW)
@@ -436,11 +458,13 @@ Purpose change:
 
 New field:
 1. `private AbstractReportService reportService`
+2. `private Map<String, AbstractReportService> reportServicesByFormat`
 
 Constructor changes:
 - Option A (recommended): overload constructor
   - keep existing constructor for backward compatibility
-  - add new constructor with `AbstractReportService reportService`
+  - add new constructor with `Map<String, AbstractReportService> reportServicesByFormat`
+  - default behavior: if map is not provided, initialize with `"console"` mapped to `ConsoleReportService`
 
 New methods:
 1. `public void setReportService(AbstractReportService reportService)`
@@ -453,7 +477,10 @@ New methods:
 - Output: status string
 - Behavior:
   - verify admin
-  - call current `reportService.exportReport()`
+  - normalize format key (lowercase/trim)
+  - resolve concrete service from `reportServicesByFormat`
+  - call selected `exportReport()`
+  - if key not found, return `ERROR:Unsupported format`
 
 Existing methods:
 - stay intact.
@@ -466,24 +493,33 @@ Purpose change:
 
 New field:
 1. `private DiscountPolicy discountPolicy`
+2. `private PricingMode pricingMode = PricingMode.LOCK_AT_ADD`
 
 Constructor changes:
 - Overload:
   - Existing constructor preserved.
   - New constructor accepts `DiscountPolicy`.
+  - default behavior: if policy is not provided, use `StandardDiscountPolicy`.
 
 New method:
 1. `public void setDiscountPolicy(DiscountPolicy discountPolicy)`
 - Input: policy impl
 - Output: none
 
+2. `public void setPricingMode(PricingMode mode)`
+- Input: pricing mode enum
+- Output: none
+- Behavior: allows explicit pricing lifecycle selection for QA scenarios.
+
 Method adjustments:
 1. `checkout(int userId)`
-- Replace direct `cart.getTotalPrice()` assumption with total derived through policy (or compute at add-to-cart stage consistently).
+- In default mode `LOCK_AT_ADD`, use `OrderItem.priceAtPurchase` snapshot for total and order creation.
+- If `RECALCULATE_AT_CHECKOUT` mode is enabled, recompute with current `discountPolicy` before creating order.
 - Return values remain existing style for compatibility.
 
 2. `addToCart(...)`
-- Use policy-driven price snapshot when creating cart item.
+- In default mode `LOCK_AT_ADD`, store `discountPolicy.apply(product)` as `priceAtPurchase`.
+- Validate stock against requested quantity before adding.
 
 ---
 
@@ -504,6 +540,7 @@ Method changes:
 - when logged in:
   - `MenuActions active = authService.isAdmin() ? adminScreen : customerScreen;`
   - `active.showMenu();`
+  - `int choice = getIntInput();`
   - `active.handleOption(choice);`
 
 Auth/guest methods:
@@ -520,7 +557,10 @@ New wiring (example):
 - `DiscountPolicy discountPolicy = new StandardDiscountPolicy();`
 
 2. Create report service
-- `AbstractReportService reportService = new ConsoleReportService(productRepository, userRepository, orderRepository);`
+- `Map<String, AbstractReportService> reportServicesByFormat = Map.of(`
+- `  "console", new ConsoleReportService(productRepository, userRepository, orderRepository),`
+- `  "csv", new CsvReportService(productRepository, userRepository, orderRepository, "reports/system.csv")`
+- `);`
 
 3. Pass to services via new constructors/setters.
 
@@ -532,7 +572,7 @@ New wiring (example):
 1. `ConsoleUI.start()` checks session.
 2. Chooses `MenuActions active` based on role.
 3. Calls `active.showMenu()`.
-4. Reads choice.
+4. `ConsoleUI` reads choice via centralized input helper.
 5. Calls `active.handleOption(choice)`.
 
 Result:
@@ -542,9 +582,10 @@ Result:
 ## 7.2 Checkout flow with policy
 1. `CustomerScreen.checkout()` -> `ShopService.checkout(userId)`.
 2. `ShopService` validates stock.
-3. Price is computed via `DiscountPolicy.apply(product)`.
-4. Order saved.
-5. Cart cleared.
+3. Default mode uses locked `OrderItem.priceAtPurchase` values captured at add-to-cart.
+4. Optional mode recalculates at checkout via `DiscountPolicy.apply(product)` for scenario testing.
+5. Order saved.
+6. Cart cleared.
 
 Result:
 - Strategy pattern provides polymorphic pricing.
@@ -552,7 +593,7 @@ Result:
 ## 7.3 Admin report export flow
 1. `AdminScreen.exportReport()` asks output type.
 2. `AdminService.exportSystemReport(format)` checks admin rights.
-3. Uses `AbstractReportService` reference.
+3. Resolves concrete service by format key from `reportServicesByFormat`.
 4. Actual implementation executes (`ConsoleReportService` or `CsvReportService`).
 
 Result:
@@ -560,40 +601,40 @@ Result:
 
 ---
 
-## 8. Consistency and Gap Audit (Before Implementation)
+## 8. Implementation Guarantees (Finalized)
 
-This section identifies existing inconsistencies that should be handled while implementing OOP changes.
+1. **Status handling compatibility**
+- Existing response strings remain compatible in this phase.
+- Next hardening step introduces constants/enums for response codes.
 
-1. **String status coupling is fragile**
-- Example: login success string typo (`"Successfull login"`).
-- Risk: UI logic depends on exact text.
-- Plan: keep old values for compatibility now; add constants/enums in future phase.
+2. **Money precision correctness**
+- Cart and checkout arithmetic use decimal-safe operations.
+- Order totals and report revenue align exactly.
 
-2. **`Cart.getTotalPrice()` truncates decimals**
-- Current code casts `priceAtPurchase` and quantity to `int`, losing cents.
-- Risk: wrong totals/revenue.
-- Plan: fix in same PR if allowed (high-value bug fix).
+3. **Stock validation lifecycle**
+- Validation runs on add-to-cart for immediate feedback.
+- Checkout repeats validation as final transaction guard.
 
-3. **`ShopService.addToCart()` does not check stock at add-time**
-- Stock validated only at checkout.
-- Risk: poor UX but logically acceptable.
-- Plan: optional improvement to check stock before add.
+4. **Discount control behavior**
+- Admin discount operations apply the provided boolean and percentage values directly.
 
-4. **`AdminService.setProductDiscount(...)` ignores input boolean**
-- Current code always sets discounted true.
-- Plan: set from parameter correctly.
+5. **ID lookup behavior**
+- Repository operations resolve by entity id value instead of index assumptions.
 
-5. **Repository id-range assumptions are inconsistent**
-- Some checks use `id < count`, but IDs are not guaranteed index-aligned after deletions.
-- Plan: prefer search loops by actual IDs only.
+6. **Object persistence behavior**
+- Current `User` constructor side effects are preserved in this milestone for compatibility.
+- Persistence refactor remains an isolated follow-up phase.
 
-6. **`User` constructor auto-persists to MockDatabase**
-- Side effects during object creation create duplication complexity with repository save.
-- Plan: keep for now to avoid broad change; document as technical debt.
+7. **Documentation alignment**
+- `index.html` OOP blueprint mirrors this finalized plan and execution flow.
 
-7. **`index.html` documentation diverges from source**
-- Several method signatures/flows differ from current Java implementation.
-- Plan: update docs after code changes are complete.
+8. **Pricing lifecycle clarity**
+- Default mode: `LOCK_AT_ADD`.
+- Optional mode: `RECALCULATE_AT_CHECKOUT` for controlled QA scenarios.
+
+9. **Report routing determinism**
+- `exportSystemReport(format)` resolves implementation from `reportServicesByFormat` using normalized keys.
+- Unsupported formats return `ERROR:Unsupported format`.
 
 ---
 
@@ -612,6 +653,9 @@ Functional completeness:
 - [x] Customer and admin flows still available
 - [x] Existing services remain callable
 - [x] New functionality demonstrable via QA scenarios
+- [x] Input ownership is centralized in `ConsoleUI`
+- [x] Pricing lifecycle is deterministic by default
+- [x] CSV export behavior is operationally specified
 
 ---
 
@@ -625,6 +669,7 @@ Phase 1: Add core OOP types
 Phase 2: Integrate services
 1. Update `ShopService` with policy injection + application.
 2. Update `AdminService` with report abstraction.
+3. Add default dependency fallbacks (`StandardDiscountPolicy`, console report map).
 
 Phase 3: Integrate UI
 1. Update `ConsoleUI` to delegate role menus via polymorphism.
@@ -636,7 +681,8 @@ Phase 4: Wiring
 Phase 5: Consistency fixes (recommended)
 1. Fix cart total decimal bug.
 2. Fix discount boolean usage in admin discount method.
-3. Validate add-to-cart stock (optional).
+3. Validate add-to-cart stock.
+4. Remove index-based id assumptions in repository checks.
 
 Phase 6: QA scenarios
 1. Run role-based menu tests.
@@ -657,10 +703,15 @@ Phase 6: QA scenarios
 3. **Report polymorphism**
 - Use `ConsoleReportService` and verify output.
 - Switch to `CsvReportService` and verify CSV file created and valid.
+- Verify unsupported format returns `ERROR:Unsupported format`.
 
 4. **Overriding checks**
 - Verify distinct `showMenu` behavior in customer/admin screens.
 - Verify `exportReport` behavior differs between console/csv services.
+
+5. **Pricing lifecycle behavior**
+- In `LOCK_AT_ADD`, change policy after adding item and verify checkout still uses locked cart snapshot.
+- In `RECALCULATE_AT_CHECKOUT`, verify checkout reflects active policy at purchase time.
 
 ---
 

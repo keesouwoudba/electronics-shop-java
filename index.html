@@ -572,7 +572,7 @@
                 <li><a href="#oop-method-contracts" data-screen="oop">Method Contracts</a></li>
                 <li><a href="#oop-workflows" data-screen="oop">Workflows</a></li>
                 <li><a href="#oop-changes" data-screen="oop">Create/Modify/Rewrite</a></li>
-                <li><a href="#oop-audit" data-screen="oop">Consistency Audit</a></li>
+                <li><a href="#oop-audit" data-screen="oop">Engineering Decisions</a></li>
                 <li><a href="#oop-qa" data-screen="oop">QA Scenarios</a></li>
             </ul>
 
@@ -619,13 +619,14 @@
    |      +--> CustomerScreen extends AbstractScreen
    |      +--> AdminScreen extends AbstractScreen
    |
-   +--> ShopService --uses--> DiscountPolicy (interface)
-   |                        +--> StandardDiscountPolicy
-   |                        +--> SeasonalDiscountPolicy
-   |
-   +--> AdminService --uses--> AbstractReportService
-                            +--> ConsoleReportService
-                            +--> CsvReportService
+    +--> ShopService --uses--> DiscountPolicy (interface)
+    |                        +--> StandardDiscountPolicy
+    |                        +--> SeasonalDiscountPolicy
+    |                        +--> PricingMode (LOCK_AT_ADD default)
+    |
+    +--> AdminService --uses--> reportServicesByFormat map
+                                     +--> "console" -> ConsoleReportService
+                                     +--> "csv" -> CsvReportService
 
 All services continue using repositories and MockDatabase as before.</code></pre>
                     </div>
@@ -649,6 +650,7 @@ All services continue using repositories and MockDatabase as before.</code></pre
 │   ├── AdminService.java (MODIFY)
 │   ├── pricing/
 │   │   ├── DiscountPolicy.java (NEW interface)
+│   │   ├── PricingMode.java (NEW enum)
 │   │   ├── StandardDiscountPolicy.java (NEW)
 │   │   └── SeasonalDiscountPolicy.java (NEW)
 │   └── report/
@@ -692,7 +694,7 @@ All services continue using repositories and MockDatabase as before.</code></pre
                             </tr>
                             <tr>
                                 <td>3 Polymorphism Examples</td>
-                                <td><code>MenuActions active = ...</code><br><code>DiscountPolicy policy = ...</code><br><code>AbstractReportService reportService = ...</code></td>
+                                <td><code>MenuActions active = ...</code><br><code>DiscountPolicy policy = ...</code><br><code>AbstractReportService reportService = reportServicesByFormat.get(format)</code></td>
                                 <td>Runtime role switching, policy switching, report destination switching</td>
                             </tr>
                         </tbody>
@@ -710,6 +712,7 @@ All services continue using repositories and MockDatabase as before.</code></pre
                         <pre><code>// Example polymorphic usage
 MenuActions active = authService.isAdmin() ? adminScreen : customerScreen;
 active.showMenu();
+int choice = getIntInput();
 active.handleOption(choice);</code></pre>
                     </div>
 
@@ -753,6 +756,11 @@ double finalPrice = policy.apply(product);</code></pre>
                             <p>Adds extra campaign percentage on top of standard discount (clamped 0..100).</p>
                             <p><strong>Example:</strong> base 1000, product 10%, seasonal 5% => 850</p>
                         </div>
+                        <div class="blueprint-card">
+                            <h4><code>PricingMode</code> (enum)</h4>
+                            <p><code>LOCK_AT_ADD</code> (default) locks price snapshot in cart.</p>
+                            <p><code>RECALCULATE_AT_CHECKOUT</code> recalculates with active policy when order is placed.</p>
+                        </div>
                     </div>
 
                     <h3>Package: <code>service/report</code></h3>
@@ -786,14 +794,14 @@ double finalPrice = policy.apply(product);</code></pre>
                         <tbody>
                             <tr>
                                 <td><code>ShopService</code></td>
-                                <td><code>DiscountPolicy discountPolicy</code></td>
-                                <td><code>setDiscountPolicy</code>, policy-aware cart/checkout pricing</td>
+                                <td><code>DiscountPolicy discountPolicy</code>, <code>PricingMode pricingMode</code></td>
+                                <td><code>setDiscountPolicy</code>, <code>setPricingMode</code>, pricing-aware cart/checkout flow</td>
                                 <td>Pluggable pricing behavior and polymorphism</td>
                             </tr>
                             <tr>
                                 <td><code>AdminService</code></td>
-                                <td><code>AbstractReportService reportService</code></td>
-                                <td><code>setReportService</code>, <code>exportSystemReport</code></td>
+                                <td><code>Map&lt;String, AbstractReportService&gt; reportServicesByFormat</code></td>
+                                <td><code>setReportService</code>, <code>exportSystemReport(format)</code></td>
                                 <td>Pluggable report destination and runtime strategy switch</td>
                             </tr>
                             <tr>
@@ -868,6 +876,7 @@ Output: "Product added to cart successfully!"</code></pre>
                             <li><code>apply(Product product)</code>: Input product; Output final price.</li>
                             <li><code>StandardDiscountPolicy.apply</code>: uses product's own discount fields.</li>
                             <li><code>SeasonalDiscountPolicy.apply</code>: applies standard then extra seasonal percent.</li>
+                            <li><code>PricingMode</code>: controls when policy is applied (<code>LOCK_AT_ADD</code> or <code>RECALCULATE_AT_CHECKOUT</code>).</li>
                         </ul>
                     </div>
 
@@ -880,15 +889,16 @@ Output: "Product added to cart successfully!"</code></pre>
                             <li><code>exportReport()</code> (abstract): Output status/result string.</li>
                             <li><code>ConsoleReportService.exportReport()</code>: side effect print to console.</li>
                             <li><code>CsvReportService.exportReport()</code>: side effect file write; returns <code>SUCCESS:path</code> or <code>ERROR:reason</code>.</li>
+                            <li>CSV export behavior: auto-create directories, overwrite mode, escaped quoted values, and required header row.</li>
                         </ul>
                     </div>
 
                     <div class="method-card">
                         <h3>Modified Existing Classes: Method-Level Changes</h3>
                         <ul>
-                            <li><code>ShopService</code>: add <code>setDiscountPolicy(DiscountPolicy)</code>; ensure add/checkout pricing uses policy path.</li>
-                            <li><code>AdminService</code>: add <code>setReportService(AbstractReportService)</code>, <code>exportSystemReport(String format)</code>.</li>
-                            <li><code>ConsoleUI.start()</code>: choose active <code>MenuActions</code> implementation and delegate calls.</li>
+                            <li><code>ShopService</code>: add <code>setDiscountPolicy(DiscountPolicy)</code> and <code>setPricingMode(PricingMode)</code>; default to <code>StandardDiscountPolicy + LOCK_AT_ADD</code>.</li>
+                            <li><code>AdminService</code>: route <code>exportSystemReport(String format)</code> through <code>reportServicesByFormat</code> with normalized keys.</li>
+                            <li><code>ConsoleUI.start()</code>: choose active <code>MenuActions</code>, render menu, read choice centrally, and delegate option handling.</li>
                             <li><code>Main.main()</code>: instantiate and inject policy/report concrete implementations.</li>
                         </ul>
                     </div>
@@ -899,11 +909,12 @@ Output: "Product added to cart successfully!"</code></pre>
 
                     <div class="flow">
                         <h3>Workflow A: Role-Based Menu (Polymorphism)</h3>
-                        <pre><code>ConsoleUI.start()
-  -> check authService.isLoggedIn()
-  -> MenuActions active = isAdmin ? adminScreen : customerScreen
-  -> active.showMenu()
-  -> active.handleOption(choice)
+                                                <pre><code>ConsoleUI.start()
+    -> check authService.isLoggedIn()
+    -> MenuActions active = isAdmin ? adminScreen : customerScreen
+    -> active.showMenu()
+    -> choice = getIntInput()
+    -> active.handleOption(choice)
 
 Runtime type decides concrete behavior.
 Same variable type, different implementations.</code></pre>
@@ -914,20 +925,24 @@ Same variable type, different implementations.</code></pre>
                         <pre><code>CustomerScreen.checkout()
   -> ShopService.checkout(userId)
   -> validate items + stock
-  -> for each item: price = discountPolicy.apply(product)
+  -> default: use locked OrderItem.priceAtPurchase
+  -> optional mode: recalculate via discountPolicy.apply(product)
   -> create Order(total)
   -> save order and clear cart</code></pre>
                     </div>
 
                     <div class="flow">
                         <h3>Workflow C: Admin Report Export</h3>
-                        <pre><code>AdminScreen.exportReport()
-  -> AdminService.exportSystemReport(format)
-  -> reportService.exportReport()
+                                                <pre><code>AdminScreen.exportReport()
+    -> AdminService.exportSystemReport(format)
+    -> normalize format key
+    -> reportService = reportServicesByFormat.get(format)
+    -> reportService.exportReport()
 
 reportService runtime concrete class:
-  - ConsoleReportService (prints)
-  - CsvReportService (writes CSV)</code></pre>
+    - ConsoleReportService (prints)
+    - CsvReportService (writes CSV)
+    - unsupported key -> ERROR:Unsupported format</code></pre>
                     </div>
                 </section>
 
@@ -936,7 +951,7 @@ reportService runtime concrete class:
                     <div class="blueprint-grid">
                         <div class="blueprint-card">
                             <h4 class="status-good">Create</h4>
-                            <p><code>MenuActions</code>, <code>AbstractScreen</code>, <code>CustomerScreen</code>, <code>AdminScreen</code>, <code>DiscountPolicy</code>, <code>StandardDiscountPolicy</code>, <code>SeasonalDiscountPolicy</code>, <code>AbstractReportService</code>, <code>ConsoleReportService</code>, <code>CsvReportService</code></p>
+                            <p><code>MenuActions</code>, <code>AbstractScreen</code>, <code>CustomerScreen</code>, <code>AdminScreen</code>, <code>DiscountPolicy</code>, <code>PricingMode</code>, <code>StandardDiscountPolicy</code>, <code>SeasonalDiscountPolicy</code>, <code>AbstractReportService</code>, <code>ConsoleReportService</code>, <code>CsvReportService</code></p>
                         </div>
                         <div class="blueprint-card">
                             <h4 class="status-change">Modify</h4>
@@ -954,35 +969,45 @@ reportService runtime concrete class:
                 </section>
 
                 <section id="oop-audit">
-                    <h2>Consistency Audit Before Finalizing</h2>
+                    <h2>Engineering Decisions (Finalized)</h2>
                     <table>
                         <thead>
                             <tr>
-                                <th>Issue</th>
-                                <th>Current Effect</th>
-                                <th>Recommended Action During OOP Work</th>
+                                <th>Decision Area</th>
+                                <th>Implementation Behavior</th>
+                                <th>Outcome</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>String status coupling (e.g., typo <code>Successfull login</code>)</td>
-                                <td>Fragile UI condition checks</td>
-                                <td>Keep compatibility now; introduce constants/enums in next phase</td>
+                                <td>Status handling</td>
+                                <td>Current responses remain compatible; constants/enums are planned as next hardening step.</td>
+                                <td>Stable rollout with forward path.</td>
                             </tr>
                             <tr>
-                                <td><code>Cart.getTotalPrice()</code> casts values to int</td>
-                                <td>Incorrect money calculations</td>
-                                <td>Fix in same PR (high-value bug fix)</td>
+                                <td>Money precision</td>
+                                <td>Checkout and totals use decimal-safe arithmetic.</td>
+                                <td>Accurate order totals and reports.</td>
                             </tr>
                             <tr>
-                                <td><code>AdminService.setProductDiscount(...)</code> ignores boolean input</td>
-                                <td>Cannot disable discount through method</td>
-                                <td>Use input parameter directly</td>
+                                <td>Discount toggling</td>
+                                <td>Admin discount methods apply provided boolean and percentage values directly.</td>
+                                <td>Predictable discount controls.</td>
                             </tr>
                             <tr>
-                                <td>Some repository id checks assume index alignment</td>
-                                <td>Potential false negatives after deletions</td>
-                                <td>Search by id value in loops, not by index range assumptions</td>
+                                <td>ID lookup</td>
+                                <td>Repository operations resolve entities by id value, not by array index assumptions.</td>
+                                <td>Reliable CRUD behavior after deletions.</td>
+                            </tr>
+                            <tr>
+                                <td>Pricing lifecycle</td>
+                                <td>Default mode is <code>LOCK_AT_ADD</code>; optional mode <code>RECALCULATE_AT_CHECKOUT</code> is explicit and testable.</td>
+                                <td>Deterministic totals with configurable strategy.</td>
+                            </tr>
+                            <tr>
+                                <td>Report format routing</td>
+                                <td><code>exportSystemReport(format)</code> normalizes key and resolves implementation via format map.</td>
+                                <td>Clear runtime polymorphism and predictable format handling.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1010,12 +1035,26 @@ Expected charged price: 850</code></pre>
                     </div>
 
                     <div class="method-card">
-                        <h3>Scenario 3: Report destination polymorphism</h3>
+                        <h3>Scenario 3: Pricing lifecycle mode</h3>
+                        <pre><code>Mode: LOCK_AT_ADD
+1) Add item with Standard policy
+2) Switch to Seasonal policy
+Expected checkout total: uses locked add-time snapshot
+
+Mode: RECALCULATE_AT_CHECKOUT
+Expected checkout total: uses active policy at checkout</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>Scenario 4: Report destination polymorphism</h3>
                         <pre><code>reportService = new ConsoleReportService(...)
 Output: formatted report printed in terminal
 
 reportService = new CsvReportService(..., "reports/system.csv")
-Output: SUCCESS:reports/system.csv</code></pre>
+Output: SUCCESS:reports/system.csv
+
+Input: format = "xml"
+Output: ERROR:Unsupported format</code></pre>
                     </div>
                 </section>
             </div>
