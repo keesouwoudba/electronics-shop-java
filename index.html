@@ -458,6 +458,94 @@
             color: var(--primary);
             font-size: 1.3em;
         }
+
+        .screen-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .screen-btn {
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .screen-btn.active,
+        .screen-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .doc-screen {
+            display: none;
+        }
+
+        .doc-screen.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .blueprint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .blueprint-card {
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 18px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.8em;
+            margin-right: 6px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            background: #eef1ff;
+            color: #2b3f9f;
+        }
+
+        .flow {
+            background: #f7fbff;
+            border-left: 4px solid #1e88e5;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .status-good {
+            color: #1b7f3a;
+            font-weight: 700;
+        }
+
+        .status-change {
+            color: #ad7b00;
+            font-weight: 700;
+        }
+
+        .status-risk {
+            color: #b42318;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -469,22 +557,470 @@
         </header>
 
         <nav>
-            <h3>📚 Quick Navigation</h3>
+            <h3>📚 Documentation Screens</h3>
+            <div class="screen-switcher">
+                <button id="show-oop" class="screen-btn active" type="button">OOP Extension Blueprint (Default)</button>
+                <button id="show-legacy" class="screen-btn" type="button">Legacy Architecture Doc</button>
+            </div>
+
+            <h3>🧭 OOP Blueprint Navigation</h3>
             <ul>
-                <li><a href="#overview">Overview</a></li>
-                <li><a href="#model">Model Layer</a></li>
-                <li><a href="#repository">Repository Layer</a></li>
-                <li><a href="#service">Service Layer</a></li>
-                <li><a href="#view">View Layer</a></li>
-                <li><a href="#main">Main Entry</a></li>
-                <li><a href="#access-summary">Access Summary</a></li>
-                <li><a href="#flows">Data Flows</a></li>
-                <li><a href="#summary">Summary</a></li>
-                <li><a href="#checklist">Checklist</a></li>
+                <li><a href="#oop-overview" data-screen="oop">Overview</a></li>
+                <li><a href="#oop-tree" data-screen="oop">Class Tree</a></li>
+                <li><a href="#oop-matrix" data-screen="oop">Requirement Matrix</a></li>
+                <li><a href="#oop-packages" data-screen="oop">Package and Class Spec</a></li>
+                <li><a href="#oop-method-contracts" data-screen="oop">Method Contracts</a></li>
+                <li><a href="#oop-workflows" data-screen="oop">Workflows</a></li>
+                <li><a href="#oop-changes" data-screen="oop">Create/Modify/Rewrite</a></li>
+                <li><a href="#oop-audit" data-screen="oop">Consistency Audit</a></li>
+                <li><a href="#oop-qa" data-screen="oop">QA Scenarios</a></li>
+            </ul>
+
+            <h3>📜 Legacy Navigation</h3>
+            <ul>
+                <li><a href="#overview" data-screen="legacy">Overview</a></li>
+                <li><a href="#model" data-screen="legacy">Model Layer</a></li>
+                <li><a href="#repository" data-screen="legacy">Repository Layer</a></li>
+                <li><a href="#service" data-screen="legacy">Service Layer</a></li>
+                <li><a href="#view" data-screen="legacy">View Layer</a></li>
+                <li><a href="#main" data-screen="legacy">Main Entry</a></li>
             </ul>
         </nav>
 
         <div class="content">
+            <div id="screen-oop" class="doc-screen active">
+                <section id="oop-overview">
+                    <h2>OOP Extension Blueprint (Default Screen)</h2>
+                    <div class="box box-info">
+                        <h3>Scope</h3>
+                        <p>This screen translates <code>OOP_EXTENSION_IMPLEMENTATION_PLAN.md</code> into implementation-ready architecture visuals and method-level behavior. It is designed for coding, QA execution, and design review.</p>
+                    </div>
+
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <span class="pill">Goal</span>
+                            <p>Add concrete OOP constructs with minimal regression risk and preserve current shop behavior.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <span class="pill">Out of Scope (Now)</span>
+                            <p>Replacing <code>MockDatabase</code> with CSV/file persistence in this milestone.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <span class="pill">Strategy</span>
+                            <p>Introduce role-based screens, pricing strategy interface, and report hierarchy while keeping existing data layer intact.</p>
+                        </div>
+                    </div>
+
+                    <div class="flow">
+                        <h3>Architecture Graph</h3>
+                        <pre><code>ConsoleUI (Coordinator)
+   |
+   +--> MenuActions (polymorphic)
+   |      +--> CustomerScreen extends AbstractScreen
+   |      +--> AdminScreen extends AbstractScreen
+   |
+   +--> ShopService --uses--> DiscountPolicy (interface)
+   |                        +--> StandardDiscountPolicy
+   |                        +--> SeasonalDiscountPolicy
+   |
+   +--> AdminService --uses--> AbstractReportService
+                            +--> ConsoleReportService
+                            +--> CsvReportService
+
+All services continue using repositories and MockDatabase as before.</code></pre>
+                    </div>
+                </section>
+
+                <section id="oop-tree">
+                    <h2>Class Tree (Exact Target)</h2>
+                    <pre><code>src/com/university/shopping/
+├── Main.java (MODIFY wiring)
+├── view/
+│   ├── ConsoleUI.java (MODIFY, delegate role menus)
+│   ├── contracts/
+│   │   └── MenuActions.java (NEW interface)
+│   └── screens/
+│       ├── AbstractScreen.java (NEW abstract)
+│       ├── CustomerScreen.java (NEW)
+│       └── AdminScreen.java (NEW)
+├── service/
+│   ├── AuthService.java (UNCHANGED)
+│   ├── ShopService.java (MODIFY)
+│   ├── AdminService.java (MODIFY)
+│   ├── pricing/
+│   │   ├── DiscountPolicy.java (NEW interface)
+│   │   ├── StandardDiscountPolicy.java (NEW)
+│   │   └── SeasonalDiscountPolicy.java (NEW)
+│   └── report/
+│       ├── AbstractReportService.java (NEW abstract)
+│       ├── ConsoleReportService.java (NEW)
+│       └── CsvReportService.java (NEW)
+└── repository/
+    └── (NO mandatory changes)</code></pre>
+                </section>
+
+                <section id="oop-matrix">
+                    <h2>Requirement Matrix</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Requirement</th>
+                                <th>Concrete Implementation</th>
+                                <th>Where Demonstrated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2 Inheritance Examples</td>
+                                <td><code>CustomerScreen/AdminScreen extends AbstractScreen</code><br><code>ConsoleReportService/CsvReportService extends AbstractReportService</code></td>
+                                <td>UI role menus and report export flows</td>
+                            </tr>
+                            <tr>
+                                <td>2 Abstract Classes</td>
+                                <td><code>AbstractScreen</code>, <code>AbstractReportService</code></td>
+                                <td>Shared methods + abstract contracts</td>
+                            </tr>
+                            <tr>
+                                <td>2 Interfaces</td>
+                                <td><code>MenuActions</code>, <code>DiscountPolicy</code></td>
+                                <td>Role menu behavior + pricing strategy</td>
+                            </tr>
+                            <tr>
+                                <td>3 Overriding Examples</td>
+                                <td><code>CustomerScreen.showMenu()</code><br><code>AdminScreen.showMenu()</code><br><code>CsvReportService.exportReport()</code></td>
+                                <td>Menu rendering and report output</td>
+                            </tr>
+                            <tr>
+                                <td>3 Polymorphism Examples</td>
+                                <td><code>MenuActions active = ...</code><br><code>DiscountPolicy policy = ...</code><br><code>AbstractReportService reportService = ...</code></td>
+                                <td>Runtime role switching, policy switching, report destination switching</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="oop-packages">
+                    <h2>Package and Class Specifications</h2>
+
+                    <h3>Package: <code>view/contracts</code></h3>
+                    <div class="method-card">
+                        <h4><code>MenuActions</code> (interface)</h4>
+                        <p><strong>Methods:</strong> <code>void showMenu()</code>, <code>void handleOption(int option)</code></p>
+                        <p><strong>Input/Output:</strong> accepts menu option; no return; triggers behavior through services.</p>
+                        <pre><code>// Example polymorphic usage
+MenuActions active = authService.isAdmin() ? adminScreen : customerScreen;
+active.showMenu();
+active.handleOption(choice);</code></pre>
+                    </div>
+
+                    <h3>Package: <code>view/screens</code></h3>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>AbstractScreen</code> (abstract)</h4>
+                            <p><strong>Fields:</strong> <code>scanner</code>, <code>authService</code>, <code>shopService</code>, <code>adminService</code></p>
+                            <p><strong>Implemented methods:</strong> <code>printTitle</code>, <code>pause</code>, <code>readIntSafe</code>, <code>truncate</code></p>
+                            <p><strong>Abstract methods:</strong> <code>showMenu</code>, <code>handleOption</code></p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>CustomerScreen</code></h4>
+                            <p><strong>Methods:</strong> browse products, details, add/remove cart, checkout.</p>
+                            <p><strong>Example input:</strong> product id <code>7</code>, qty <code>2</code></p>
+                            <p><strong>Example output:</strong> <code>Product added to cart successfully!</code></p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>AdminScreen</code></h4>
+                            <p><strong>Methods:</strong> manage products/users and export reports.</p>
+                            <p><strong>Example input:</strong> select <code>Export Report -> csv</code></p>
+                            <p><strong>Example output:</strong> <code>SUCCESS:/reports/system-report.csv</code></p>
+                        </div>
+                    </div>
+
+                    <h3>Package: <code>service/pricing</code></h3>
+                    <div class="method-card">
+                        <h4><code>DiscountPolicy</code> (interface)</h4>
+                        <p><strong>Method:</strong> <code>double apply(Product product)</code></p>
+                        <p>Given product price and discount metadata, returns final charged price.</p>
+                        <pre><code>DiscountPolicy policy = new SeasonalDiscountPolicy(5.0);
+double finalPrice = policy.apply(product);</code></pre>
+                    </div>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>StandardDiscountPolicy</code></h4>
+                            <p>Mirrors current <code>Product.getFinalPrice()</code> behavior.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>SeasonalDiscountPolicy</code></h4>
+                            <p>Adds extra campaign percentage on top of standard discount (clamped 0..100).</p>
+                            <p><strong>Example:</strong> base 1000, product 10%, seasonal 5% => 850</p>
+                        </div>
+                    </div>
+
+                    <h3>Package: <code>service/report</code></h3>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>AbstractReportService</code> (abstract)</h4>
+                            <p><strong>Fields:</strong> product/user/order repositories</p>
+                            <p><strong>Implemented methods:</strong> <code>buildTimestamp</code>, <code>formatCurrency</code>, <code>buildHeader</code></p>
+                            <p><strong>Abstract:</strong> <code>exportReport()</code></p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>ConsoleReportService</code></h4>
+                            <p>Computes system totals and prints report to terminal.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>CsvReportService</code></h4>
+                            <p>Computes same metrics and writes CSV to configured path.</p>
+                        </div>
+                    </div>
+
+                    <h3>Modified Existing Classes</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>New Fields</th>
+                                <th>New/Updated Methods</th>
+                                <th>Why</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>ShopService</code></td>
+                                <td><code>DiscountPolicy discountPolicy</code></td>
+                                <td><code>setDiscountPolicy</code>, policy-aware cart/checkout pricing</td>
+                                <td>Pluggable pricing behavior and polymorphism</td>
+                            </tr>
+                            <tr>
+                                <td><code>AdminService</code></td>
+                                <td><code>AbstractReportService reportService</code></td>
+                                <td><code>setReportService</code>, <code>exportSystemReport</code></td>
+                                <td>Pluggable report destination and runtime strategy switch</td>
+                            </tr>
+                            <tr>
+                                <td><code>ConsoleUI</code></td>
+                                <td><code>MenuActions customerScreen/adminScreen</code></td>
+                                <td>role delegation in <code>start()</code></td>
+                                <td>Cleaner UI separation and role polymorphism</td>
+                            </tr>
+                            <tr>
+                                <td><code>Main</code></td>
+                                <td>none</td>
+                                <td>new wiring for policies/report service</td>
+                                <td>Dependency injection for new abstractions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="oop-method-contracts">
+                    <h2>Method Contracts (Deep Dive)</h2>
+                    <div class="method-card">
+                        <h3><code>MenuActions</code></h3>
+                        <ul>
+                            <li><code>showMenu()</code>: Input none; Output none; displays options for current role.</li>
+                            <li><code>handleOption(int option)</code>: Input option number; Output none; calls role-specific business action.</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>AbstractScreen</code></h3>
+                        <ul>
+                            <li><code>AbstractScreen(Scanner, AuthService, ShopService, AdminService)</code>: injects shared dependencies.</li>
+                            <li><code>printTitle(String title)</code>: Input title string; Output none; prints visual section header.</li>
+                            <li><code>pause()</code>: Input none; Output none; waits for Enter.</li>
+                            <li><code>readIntSafe()</code>: Input none; Output valid integer; loops until numeric input is provided.</li>
+                            <li><code>truncate(String value, int maxLength)</code>: Input string + max; Output formatted string.</li>
+                            <li><code>showMenu()</code> and <code>handleOption(int)</code>: abstract role hooks.</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>CustomerScreen</code></h3>
+                        <ul>
+                            <li><code>showMenu()</code> override: renders customer command set.</li>
+                            <li><code>handleOption(int option)</code> override: routes option to customer methods.</li>
+                            <li><code>browseAllProducts()</code>: Input none; Output none; uses <code>shopService.getAllProducts()</code>.</li>
+                            <li><code>viewProductDetails()</code>: Input product id; Output none; prints product details.</li>
+                            <li><code>addProductToCart()</code>: Input product id and quantity; Output status message via UI print.</li>
+                            <li><code>viewCart()</code>: Input none; Output none; renders current cart table and totals.</li>
+                            <li><code>removeFromCart()</code>: Input product id; Output status message.</li>
+                            <li><code>checkout()</code>: Input user confirm yes/no; Output success/failure printout.</li>
+                        </ul>
+                        <pre><code>Example interaction
+Input: productId=7, qty=2
+Output: "Product added to cart successfully!"</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>AdminScreen</code></h3>
+                        <ul>
+                            <li><code>showMenu()</code> override: renders admin panel options.</li>
+                            <li><code>handleOption(int option)</code> override: dispatches to admin management actions.</li>
+                            <li>Product methods: <code>addNewProduct</code>, <code>updateProductPrice</code>, <code>updateProductName</code>, <code>setProductDiscount</code>, <code>addStock</code>, <code>removeStock</code>, <code>deleteProduct</code>.</li>
+                            <li>User methods: <code>addNewUser</code>, <code>updateUser</code>, <code>deleteUser</code>, <code>viewAllUsers</code>.</li>
+                            <li><code>exportReport()</code>: Input format (console/csv); Output status print from admin service.</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>DiscountPolicy</code> + Implementations</h3>
+                        <ul>
+                            <li><code>apply(Product product)</code>: Input product; Output final price.</li>
+                            <li><code>StandardDiscountPolicy.apply</code>: uses product's own discount fields.</li>
+                            <li><code>SeasonalDiscountPolicy.apply</code>: applies standard then extra seasonal percent.</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>AbstractReportService</code> + Implementations</h3>
+                        <ul>
+                            <li><code>buildTimestamp()</code>: Output current timestamp string.</li>
+                            <li><code>formatCurrency(double amount)</code>: Output formatted money string.</li>
+                            <li><code>buildHeader(String title)</code>: Output decorative report header.</li>
+                            <li><code>exportReport()</code> (abstract): Output status/result string.</li>
+                            <li><code>ConsoleReportService.exportReport()</code>: side effect print to console.</li>
+                            <li><code>CsvReportService.exportReport()</code>: side effect file write; returns <code>SUCCESS:path</code> or <code>ERROR:reason</code>.</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>Modified Existing Classes: Method-Level Changes</h3>
+                        <ul>
+                            <li><code>ShopService</code>: add <code>setDiscountPolicy(DiscountPolicy)</code>; ensure add/checkout pricing uses policy path.</li>
+                            <li><code>AdminService</code>: add <code>setReportService(AbstractReportService)</code>, <code>exportSystemReport(String format)</code>.</li>
+                            <li><code>ConsoleUI.start()</code>: choose active <code>MenuActions</code> implementation and delegate calls.</li>
+                            <li><code>Main.main()</code>: instantiate and inject policy/report concrete implementations.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="oop-workflows">
+                    <h2>Workflows (Visual)</h2>
+
+                    <div class="flow">
+                        <h3>Workflow A: Role-Based Menu (Polymorphism)</h3>
+                        <pre><code>ConsoleUI.start()
+  -> check authService.isLoggedIn()
+  -> MenuActions active = isAdmin ? adminScreen : customerScreen
+  -> active.showMenu()
+  -> active.handleOption(choice)
+
+Runtime type decides concrete behavior.
+Same variable type, different implementations.</code></pre>
+                    </div>
+
+                    <div class="flow">
+                        <h3>Workflow B: Checkout with Pricing Policy</h3>
+                        <pre><code>CustomerScreen.checkout()
+  -> ShopService.checkout(userId)
+  -> validate items + stock
+  -> for each item: price = discountPolicy.apply(product)
+  -> create Order(total)
+  -> save order and clear cart</code></pre>
+                    </div>
+
+                    <div class="flow">
+                        <h3>Workflow C: Admin Report Export</h3>
+                        <pre><code>AdminScreen.exportReport()
+  -> AdminService.exportSystemReport(format)
+  -> reportService.exportReport()
+
+reportService runtime concrete class:
+  - ConsoleReportService (prints)
+  - CsvReportService (writes CSV)</code></pre>
+                    </div>
+                </section>
+
+                <section id="oop-changes">
+                    <h2>Create, Modify, Rewrite, Improve</h2>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4 class="status-good">Create</h4>
+                            <p><code>MenuActions</code>, <code>AbstractScreen</code>, <code>CustomerScreen</code>, <code>AdminScreen</code>, <code>DiscountPolicy</code>, <code>StandardDiscountPolicy</code>, <code>SeasonalDiscountPolicy</code>, <code>AbstractReportService</code>, <code>ConsoleReportService</code>, <code>CsvReportService</code></p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4 class="status-change">Modify</h4>
+                            <p><code>ConsoleUI</code>, <code>ShopService</code>, <code>AdminService</code>, <code>Main</code></p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Remove</h4>
+                            <p>None required in this milestone. Keep current repository/model persistence untouched to minimize risk.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4 class="status-change">Rewrite (Targeted)</h4>
+                            <p>Only role-menu handling in <code>ConsoleUI</code> should be rewritten into delegating screens. Keep login/register and guest browse flow stable.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="oop-audit">
+                    <h2>Consistency Audit Before Finalizing</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Issue</th>
+                                <th>Current Effect</th>
+                                <th>Recommended Action During OOP Work</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>String status coupling (e.g., typo <code>Successfull login</code>)</td>
+                                <td>Fragile UI condition checks</td>
+                                <td>Keep compatibility now; introduce constants/enums in next phase</td>
+                            </tr>
+                            <tr>
+                                <td><code>Cart.getTotalPrice()</code> casts values to int</td>
+                                <td>Incorrect money calculations</td>
+                                <td>Fix in same PR (high-value bug fix)</td>
+                            </tr>
+                            <tr>
+                                <td><code>AdminService.setProductDiscount(...)</code> ignores boolean input</td>
+                                <td>Cannot disable discount through method</td>
+                                <td>Use input parameter directly</td>
+                            </tr>
+                            <tr>
+                                <td>Some repository id checks assume index alignment</td>
+                                <td>Potential false negatives after deletions</td>
+                                <td>Search by id value in loops, not by index range assumptions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="oop-qa">
+                    <h2>QA Scenarios and Example Output</h2>
+                    <div class="method-card">
+                        <h3>Scenario 1: Menu polymorphism</h3>
+                        <pre><code>Input: login as admin
+Expected menu output includes: "Product Management", "User Management"
+
+Input: login as customer
+Expected menu output includes: "Add Product to Cart", "Checkout"</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>Scenario 2: Pricing strategy switch</h3>
+                        <pre><code>Policy: StandardDiscountPolicy
+Product: base 1000, discount 10%
+Expected charged price: 900
+
+Policy: SeasonalDiscountPolicy(5)
+Expected charged price: 850</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>Scenario 3: Report destination polymorphism</h3>
+                        <pre><code>reportService = new ConsoleReportService(...)
+Output: formatted report printed in terminal
+
+reportService = new CsvReportService(..., "reports/system.csv")
+Output: SUCCESS:reports/system.csv</code></pre>
+                    </div>
+                </section>
+            </div>
+
+            <div id="screen-legacy" class="doc-screen">
             <!-- ARCHITECTURE OVERVIEW -->
             <section id="overview">
                 <h2>📐 Architecture Overview</h2>
@@ -1572,6 +2108,7 @@ CART CLEARING:
                     </ul>
                 </div>
             </section>
+            </div>
         </div>
 
         <footer>
@@ -1585,6 +2122,25 @@ CART CLEARING:
     <div class="scroll-top" id="scrollTop">↑</div>
 
     <script>
+        const oopScreen = document.getElementById('screen-oop');
+        const legacyScreen = document.getElementById('screen-legacy');
+        const showOopBtn = document.getElementById('show-oop');
+        const showLegacyBtn = document.getElementById('show-legacy');
+
+        function activateScreen(screenName) {
+            const isOop = screenName === 'oop';
+            oopScreen.classList.toggle('active', isOop);
+            legacyScreen.classList.toggle('active', !isOop);
+            showOopBtn.classList.toggle('active', isOop);
+            showLegacyBtn.classList.toggle('active', !isOop);
+        }
+
+        // Default view: OOP extension blueprint screen.
+        activateScreen('oop');
+
+        showOopBtn.addEventListener('click', () => activateScreen('oop'));
+        showLegacyBtn.addEventListener('click', () => activateScreen('legacy'));
+
         // Scroll to top functionality
         const scrollTopBtn = document.getElementById('scrollTop');
         
@@ -1607,6 +2163,10 @@ CART CLEARING:
         document.querySelectorAll('nav a').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
+                const screen = this.getAttribute('data-screen');
+                if (screen === 'oop' || screen === 'legacy') {
+                    activateScreen(screen);
+                }
                 const targetId = this.getAttribute('href');
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
