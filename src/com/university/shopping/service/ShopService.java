@@ -145,8 +145,7 @@ public class ShopService {
             return;
         }
         String normalized = pricingMode.trim().toUpperCase();
-        if (PricingModeConstants.LOCK_AT_ADD.equals(normalized)
-            || PricingModeConstants.RECALCULATE_AT_CHECKOUT.equals(normalized)) {
+        if (PricingModeConstants.LOCK_AT_ADD.equals(normalized) || PricingModeConstants.RECALCULATE_AT_CHECKOUT.equals(normalized)) {
             this.pricingMode = normalized;
         }
     }

@@ -56,7 +56,8 @@ public class AuthService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = today.format(formatter);
         User buffer_u = new User(username,password,false,formattedDate);
-        // The user is already saved by the constructor in the current implementation
+        // Successful registration should also authenticate the user for this session.
+        this.currentUser = buffer_u;
         return "Successfully registered";
     }
     //----------------------------------------------------

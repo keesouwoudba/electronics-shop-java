@@ -87,7 +87,11 @@ public class AuthScreen {
         String result = authService.register(username, password);
         if (result.equals("Successfully registered")) {
             System.out.println("\n✅ Registration successful!");
-            System.out.println("You are now logged in as: " + authService.getCurrentUser().getUsername());
+            if (authService.getCurrentUser() != null) {
+                System.out.println("You are now logged in as: " + authService.getCurrentUser().getUsername());
+            } else {
+                System.out.println("Registration succeeded, but auto-login did not complete.");
+            }
         } else {
             System.out.println("\n❌ Registration failed: " + result);
         }
