@@ -50,7 +50,7 @@ public class CsvReportService extends AbstractReportService {
 			writer.write(csvText);
 			writer.close();
 
-			return "SUCCESS:" + file.getPath();
+			return "SUCCESS:" + file.getAbsolutePath();
 		} catch (IOException e) {
 			return "ERROR:" + e.getMessage();
 		}

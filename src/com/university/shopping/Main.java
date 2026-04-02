@@ -24,7 +24,8 @@ public class Main {
         String[] reportFormats = new String[] {"console", "csv"};
         AbstractReportService[] reportServices = new AbstractReportService[] {
             new ConsoleReportService(productRepository, userRepository, orderRepository),
-            new CsvReportService(productRepository, userRepository, orderRepository, "reports/system.csv")
+            new CsvReportService(productRepository, userRepository, orderRepository,
+                "src/com/university/shopping/service/report/system.csv")
         };
         AdminService adminService = new AdminService(productRepository, userRepository, orderRepository, authService,
             reportFormats, reportServices);

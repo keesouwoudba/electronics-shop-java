@@ -3,7 +3,8 @@ package com.university.shopping.repository;
 import com.university.shopping.model.MockDatabase;
 import com.university.shopping.model.User;
 
-public class UserRepository {
+public class
+UserRepository {
     public UserRepository() {}
     static {
         if (MockDatabase.userCount == 0) {
