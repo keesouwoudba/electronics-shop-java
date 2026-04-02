@@ -5,6 +5,8 @@ import com.university.shopping.model.User;
 import com.university.shopping.repository.OrderRepository;
 import com.university.shopping.repository.ProductRepository;
 import com.university.shopping.repository.UserRepository;
+import com.university.shopping.service.report.AbstractReportService;
+import com.university.shopping.service.report.ConsoleReportService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,13 +16,37 @@ public class AdminService {
     private UserRepository userRepository;
     private OrderRepository orderRepository;
     private AuthService authService;
+    private AbstractReportService reportService;
+    private String[] reportFormats;
+    private AbstractReportService[] reportServices;
 
     // Constructor
     public AdminService(ProductRepository productRepo, UserRepository userRepo, OrderRepository orderRepo, AuthService authService){
+        this(productRepo, userRepo, orderRepo, authService, null, null);
+    }
+
+    public AdminService(ProductRepository productRepo, UserRepository userRepo, OrderRepository orderRepo, AuthService authService,
+                        String[] reportFormats, AbstractReportService[] reportServices){
         this.productRepository = productRepo;
         this.userRepository = userRepo;
         this.orderRepository = orderRepo;
         this.authService = authService;
+
+        if (reportFormats == null || reportServices == null || reportFormats.length == 0 || reportServices.length == 0
+                || reportFormats.length != reportServices.length) {
+            this.reportFormats = new String[] {"console"};
+            this.reportServices = new AbstractReportService[] {
+                    new ConsoleReportService(productRepo, userRepo, orderRepo)
+            };
+        } else {
+            this.reportFormats = reportFormats;
+            this.reportServices = reportServices;
+        }
+
+        this.reportService = findReportServiceByFormat("console");
+        if (this.reportService == null && this.reportServices.length > 0) {
+            this.reportService = this.reportServices[0];
+        }
     }
 
     //----------------------------------------------------
@@ -88,7 +114,7 @@ public class AdminService {
         if (productRepository.findById(productId) == null) return "Product not exists";
 
         Product tmp_prod = productRepository.findById(productId);
-        tmp_prod.setIsDiscounted(true);
+        tmp_prod.setIsDiscounted(isDiscounted);
         tmp_prod.setDiscountPercentage(discountPercentage);
         productRepository.update(tmp_prod);
         return "SUCCESS";
@@ -138,6 +164,38 @@ public class AdminService {
     public User[] getAllUsers(){
         if (!this.authService.isAdmin()) return null;
         return userRepository.getAllUsers();
+    }
+
+    public void setReportService(AbstractReportService reportService) {
+        if (reportService != null) {
+            this.reportService = reportService;
+        }
+    }
+
+    public String exportSystemReport(String format) {
+        if (!this.authService.isAdmin()) return "Not Admin";
+
+        String key = format == null ? "" : format.trim().toLowerCase();
+        AbstractReportService resolved = findReportServiceByFormat(key);
+        if (resolved == null) {
+            return "ERROR:Unsupported format";
+        }
+
+        setReportService(resolved);
+        return this.reportService.exportReport();
+    }
+
+    private AbstractReportService findReportServiceByFormat(String format) {
+        if (format == null) {
+            return null;
+        }
+        for (int i = 0; i < reportFormats.length; i++) {
+            String candidate = reportFormats[i];
+            if (candidate != null && candidate.trim().equalsIgnoreCase(format.trim())) {
+                return reportServices[i];
+            }
+        }
+        return null;
     }
 
 
