@@ -18,17 +18,28 @@ public class AuthService {
 
     // Password validation
     private boolean containsNumber(String input) {
-        return input.matches(".*\\d.*");
+        for (int i = 0; i < input.length(); i++) {
+            if (Character.isDigit(input.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean containsUppercase(String input) {
-        return input.matches(".*[A-Z].*");
+        for (int i = 0; i < input.length(); i++) {
+            if (Character.isUpperCase(input.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean validatePassword(String password){
         if (password == null) return false;
-        int len = password.length();
-        return len >= 8 && containsNumber(password) && containsUppercase(password);
+        return password.length() >= 8
+                && containsNumber(password)
+                && containsUppercase(password);
     }
     //----------------------------------------------------
 
