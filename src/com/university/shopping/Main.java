@@ -11,13 +11,13 @@ import com.university.shopping.view.ConsoleUI;
 
 public class Main {
     public static void main(String[] args) {
-        // Initialize repositories
+        // dependency injection is halal ;)
         UserRepository userRepository = new UserRepository();
         ProductRepository productRepository = new ProductRepository();
         OrderRepository orderRepository = new OrderRepository();
         CartRepository cartRepository = new CartRepository();
 
-        // Initialize services with dependency injection
+        // Initialize services with dependency  ;)
         AuthService authService = new AuthService(userRepository);
         DiscountPolicy discountPolicy = new StandardDiscountPolicy();
         ShopService shopService = new ShopService(productRepository, orderRepository, cartRepository, authService, discountPolicy);
@@ -30,7 +30,7 @@ public class Main {
         AdminService adminService = new AdminService(productRepository, userRepository, orderRepository, authService,
             reportFormats, reportServices);
 
-        // Initialize and start the UI
+        // Initialize and start the UI ;)
         ConsoleUI ui = new ConsoleUI(authService, shopService, adminService);
         ui.start();
     }

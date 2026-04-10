@@ -50,11 +50,11 @@ public class ConsoleUI {
         while (true) {
             try {
                 int value = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
+                scanner.nextLine(); 
                 return value;
             } catch (Exception e) {
-                System.out.print("❌ Invalid input. Please enter a number: ");
-                scanner.nextLine(); // Clear invalid input
+                System.out.print("Invalid input. Please enter a number: ");
+                scanner.nextLine(); 
             }
         }
     }
