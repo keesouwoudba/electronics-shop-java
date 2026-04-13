@@ -559,38 +559,318 @@
         <nav>
             <h3>📚 Documentation Screens</h3>
             <div class="screen-switcher">
-                <button id="show-oop" class="screen-btn active" type="button">OOP Extension Blueprint (Default)</button>
-                <button id="show-legacy" class="screen-btn" type="button">Legacy Architecture Doc</button>
+                <button id="show-v3" class="screen-btn active" type="button">v3 - Step 3 CSV Persistence (Default)</button>
+                <button id="show-v2" class="screen-btn" type="button">v2 - OOP Extension Blueprint</button>
+                <button id="show-v1" class="screen-btn" type="button">v1 - Legacy Architecture Doc</button>
             </div>
 
-            <h3>🧭 OOP Blueprint Navigation</h3>
+            <h3>🆕 v3 Step 3 Navigation</h3>
             <ul>
-                <li><a href="#oop-overview" data-screen="oop">Overview</a></li>
-                <li><a href="#oop-tree" data-screen="oop">Class Tree</a></li>
-                <li><a href="#oop-matrix" data-screen="oop">Requirement Matrix</a></li>
-                <li><a href="#oop-packages" data-screen="oop">Package and Class Spec</a></li>
-                <li><a href="#oop-method-contracts" data-screen="oop">Method Contracts</a></li>
-                <li><a href="#oop-workflows" data-screen="oop">Workflows</a></li>
-                <li><a href="#oop-changes" data-screen="oop">Create/Modify/Rewrite</a></li>
-                <li><a href="#oop-audit" data-screen="oop">Engineering Decisions</a></li>
-                <li><a href="#oop-qa" data-screen="oop">QA Scenarios</a></li>
+                <li><a href="#v3-goal" data-screen="v3">Goal and Mapping</a></li>
+                <li><a href="#v3-tree" data-screen="v3">New Files Tree</a></li>
+                <li><a href="#v3-workflows" data-screen="v3">Workflow and Data Flow</a></li>
+                <li><a href="#v3-schemas" data-screen="v3">CSV Schemas</a></li>
+                <li><a href="#v3-errors" data-screen="v3">Error Handling Plan</a></li>
+                <li><a href="#v3-implementation" data-screen="v3">File-by-File Specs</a></li>
+                <li><a href="#v3-checklist" data-screen="v3">Checklist and Non-Goals</a></li>
             </ul>
 
-            <h3>📜 Legacy Navigation</h3>
+            <h3>🧭 v2 OOP Blueprint Navigation</h3>
             <ul>
-                <li><a href="#overview" data-screen="legacy">Overview</a></li>
-                <li><a href="#model" data-screen="legacy">Model Layer</a></li>
-                <li><a href="#repository" data-screen="legacy">Repository Layer</a></li>
-                <li><a href="#service" data-screen="legacy">Service Layer</a></li>
-                <li><a href="#view" data-screen="legacy">View Layer</a></li>
-                <li><a href="#main" data-screen="legacy">Main Entry</a></li>
+                <li><a href="#oop-overview" data-screen="v2">Overview</a></li>
+                <li><a href="#oop-tree" data-screen="v2">Class Tree</a></li>
+                <li><a href="#oop-matrix" data-screen="v2">Requirement Matrix</a></li>
+                <li><a href="#oop-packages" data-screen="v2">Package and Class Spec</a></li>
+                <li><a href="#oop-method-contracts" data-screen="v2">Method Contracts</a></li>
+                <li><a href="#oop-workflows" data-screen="v2">Workflows</a></li>
+                <li><a href="#oop-changes" data-screen="v2">Create/Modify/Rewrite</a></li>
+                <li><a href="#oop-audit" data-screen="v2">Engineering Decisions</a></li>
+                <li><a href="#oop-qa" data-screen="v2">QA Scenarios</a></li>
+            </ul>
+
+            <h3>📜 v1 Legacy Navigation</h3>
+            <ul>
+                <li><a href="#overview" data-screen="v1">Overview</a></li>
+                <li><a href="#model" data-screen="v1">Model Layer</a></li>
+                <li><a href="#repository" data-screen="v1">Repository Layer</a></li>
+                <li><a href="#service" data-screen="v1">Service Layer</a></li>
+                <li><a href="#view" data-screen="v1">View Layer</a></li>
+                <li><a href="#main" data-screen="v1">Main Entry</a></li>
             </ul>
         </nav>
 
         <div class="content">
-            <div id="screen-oop" class="doc-screen active">
+            <div id="screen-v3" class="doc-screen active">
+                <section id="v3-goal">
+                    <h2>v3: Step 3 Implementation (CSV Persistence + Error Handling)</h2>
+                    <div class="box box-info">
+                        <h3>0) Goal and Requirement Mapping</h3>
+                        <p>This page is based on <code>STEP3_CSV_PERSISTENCE_IMPLEMENTATION.md</code> and is now the default documentation screen.</p>
+                        <ol>
+                            <li>Create 3 different files containing entity data.</li>
+                            <li>Use 4 different try-catch patterns for different error types.</li>
+                            <li>Use one try-catch with multiple <code>catch</code> blocks and a <code>finally</code> block.</li>
+                        </ol>
+                        <p><strong>Planned fulfillment:</strong> entity CSV files (<code>products.csv</code>, <code>users.csv</code>, <code>orders.csv</code>, optional <code>order_items.csv</code>), startup bootstrap from CSV to <code>MockDatabase</code>, and immediate repository-triggered persistence on every mutation.</p>
+                    </div>
+                </section>
+
+                <section id="v3-tree">
+                    <h2>1) New Files Tree</h2>
+                    <pre><code>.
+|-- STEP3_CSV_PERSISTENCE_IMPLEMENTATION.md **
+|-- data **
+|   |-- products.csv **
+|   |-- users.csv **
+|   |-- orders.csv **
+|   |-- order_items.csv **
+|   `-- errors.log **
+`-- src
+    `-- com/university/shopping
+        |-- Main.java *
+        |-- model
+        |   |-- MockDatabase.java *
+        |   |-- User.java *
+        |   |-- Product.java *
+        |   `-- Order.java *
+        |-- repository
+        |   |-- UserRepository.java *
+        |   |-- ProductRepository.java *
+        |   |-- OrderRepository.java *
+        |   `-- CartRepository.java *
+        |-- persistence **
+        |   |-- CsvPaths.java **
+        |   |-- CsvErrorLogger.java **
+        |   |-- CsvEscaper.java **
+        |   |-- CsvBootstrapInitializer.java **
+        |   |-- UserCsvStore.java **
+        |   |-- ProductCsvStore.java **
+        |   |-- OrderCsvStore.java **
+        |   `-- OrderItemCsvStore.java **
+        `-- service/report
+            `-- CsvReportService.java *</code></pre>
+                    <div class="box box-warning">
+                        <p><strong>Notes:</strong> <code>order_items.csv</code> is recommended for normalized order-item persistence. <code>errors.log</code> stores non-fatal parse/IO issues.</p>
+                    </div>
+                </section>
+
+                <section id="v3-workflows">
+                    <h2>2) New Workflow and Data Flow</h2>
+                    <div class="method-card">
+                        <h3>2.1 Startup Flow</h3>
+                        <ol>
+                            <li><code>Main.main</code> creates repositories.</li>
+                            <li>Repository static init delegates to <code>CsvBootstrapInitializer.initializeIfNeeded()</code>.</li>
+                            <li>Initializer ensures directory/files/headers.</li>
+                            <li>Initializer safely resets in-memory arrays/counts.</li>
+                            <li>Initializer loads users/products/orders/order_items CSV files.</li>
+                            <li>Initializer recalculates next IDs from loaded data.</li>
+                            <li>Application continues with normal service/UI startup.</li>
+                        </ol>
+                    </div>
+                    <div class="method-card">
+                        <h3>2.2 Runtime Read Flow</h3>
+                        <p>Services call repositories, repositories read from <code>MockDatabase</code> arrays, and no per-request disk reads are done.</p>
+                    </div>
+                    <div class="method-card">
+                        <h3>2.3 Runtime Write Flow (Triggered Persistence)</h3>
+                        <ol>
+                            <li>Service requests a mutation in repository.</li>
+                            <li>Repository mutates in-memory array/count.</li>
+                            <li>Repository immediately calls CSV store <code>writeAll(...)</code>.</li>
+                            <li>Store writes temp file and atomically replaces real file.</li>
+                            <li>On failure, repository returns failure and logs error.</li>
+                        </ol>
+                    </div>
+                    <div class="method-card">
+                        <h3>2.4 Report Export Flow</h3>
+                        <p><code>AdminService.exportSystemReport("csv")</code> delegates to <code>CsvReportService.exportReport()</code>, which returns <code>SUCCESS:&lt;path&gt;</code> or <code>ERROR:&lt;message&gt;</code>.</p>
+                    </div>
+                </section>
+
+                <section id="v3-schemas">
+                    <h2>3) CSV Schemas</h2>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>data/products.csv</code></h4>
+                            <pre><code>id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage</code></pre>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>data/users.csv</code></h4>
+                            <pre><code>id,username,password,isAdmin,createdDate</code></pre>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>data/orders.csv</code></h4>
+                            <pre><code>id,userId,orderDate,totalPrice,status</code></pre>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>data/order_items.csv</code></h4>
+                            <pre><code>orderId,productId,productName,quantity,priceAtPurchase</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="v3-errors">
+                    <h2>4) Error Handling Plan</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Exception</th>
+                                <th>Where</th>
+                                <th>Behavior</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Type A</td>
+                                <td><code>IOException</code></td>
+                                <td>CSV stores and <code>CsvReportService</code></td>
+                                <td>Return <code>false</code> or <code>ERROR:&lt;message&gt;</code>, log details.</td>
+                            </tr>
+                            <tr>
+                                <td>Type B</td>
+                                <td><code>NumberFormatException</code></td>
+                                <td>Numeric CSV fields</td>
+                                <td>Skip malformed row, log row/file, continue parsing.</td>
+                            </tr>
+                            <tr>
+                                <td>Type C</td>
+                                <td><code>DateTimeParseException</code></td>
+                                <td><code>createdDate</code>, <code>orderDate</code></td>
+                                <td>Skip malformed row, log parse error, continue initialization.</td>
+                            </tr>
+                            <tr>
+                                <td>Type D</td>
+                                <td><code>IllegalArgumentException</code></td>
+                                <td>Schema mismatch/invalid booleans/empty required fields</td>
+                                <td>Throw or map to parse error; log and continue per fail policy.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="method-card">
+                        <h3>4.5 Required Multi-Catch + Finally Block</h3>
+                        <pre><code>BufferedReader reader = null;
+try {
+    reader = new BufferedReader(new FileReader(path));
+    // parse rows
+} catch (NumberFormatException e) {
+    // row numeric issues
+} catch (DateTimeParseException e) {
+    // date issues
+} catch (IOException e) {
+    // file IO issues
+} finally {
+    if (reader != null) {
+        try {
+            reader.close();
+        } catch (IOException closeError) {
+            // log close error
+        }
+    }
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="v3-implementation">
+                    <h2>5) File-by-File Implementation Order and Specs</h2>
+                    <div class="method-card">
+                        <h3>Persistence Helpers</h3>
+                        <ul>
+                            <li><code>CsvPaths.java</code>: centralize paths for data files and error log.</li>
+                            <li><code>CsvEscaper.java</code>: CSV escaping and robust line splitting.</li>
+                            <li><code>CsvErrorLogger.java</code>: append structured non-fatal logs to <code>errors.log</code>.</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>Model Adjustments</h3>
+                        <ul>
+                            <li><code>User.java</code>: add overload/factory for persisted ID restore with optional auto-register control.</li>
+                            <li><code>Product.java</code>: add overload/factory for explicit persisted ID.</li>
+                            <li><code>Order.java</code>: add overload/factory for explicit persisted ID.</li>
+                            <li><code>MockDatabase.java</code>: add deterministic reset and next-ID recalculation helper(s).</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>CSV Stores</h3>
+                        <ul>
+                            <li><code>UserCsvStore</code>: <code>ensureFileWithHeader</code>, <code>loadAll</code>, <code>writeAll</code>.</li>
+                            <li><code>ProductCsvStore</code>: <code>ensureFileWithHeader</code>, <code>loadAll</code>, <code>writeAll</code>.</li>
+                            <li><code>OrderCsvStore</code>: <code>ensureFileWithHeader</code>, <code>loadAllWithoutItems</code>, <code>writeAll</code>.</li>
+                            <li><code>OrderItemCsvStore</code>: grouped loading by <code>orderId</code> and full write support.</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>Bootstrap + Repository Wiring</h3>
+                        <ul>
+                            <li><code>CsvBootstrapInitializer.java</code>: one-time idempotent CSV bootstrap with file ensuring, loading, and counter finalization.</li>
+                            <li><code>UserRepository.java</code>: call bootstrap; persist on <code>save</code>, <code>update</code>, <code>delete</code>.</li>
+                            <li><code>ProductRepository.java</code>: call bootstrap; persist on <code>save</code>, <code>update</code>, <code>delete</code>, <code>updateStock</code>.</li>
+                            <li><code>OrderRepository.java</code>: persist both <code>orders.csv</code> and <code>order_items.csv</code> on save/update path.</li>
+                            <li><code>CartRepository.java</code>: keep in-memory for this step (cart CSV is non-goal now).</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>Service and Main Wiring</h3>
+                        <ul>
+                            <li><code>CsvReportService.java</code>: robust file write with defensive try/catch/finally and logging.</li>
+                            <li><code>Main.java</code>: preferred explicit bootstrap call for transparency/testability.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="v3-checklist">
+                    <h2>6-10) Integrity, Compatibility, Acceptance, Build Order, Non-Goals</h2>
+                    <div class="box box-success">
+                        <h3>Data Integrity and Safety</h3>
+                        <ul class="checklist">
+                            <li>Always write to temp file then replace target.</li>
+                            <li>Never partially rewrite target in-place.</li>
+                            <li>Keep headers in all CSV files.</li>
+                            <li>Validate column count before parsing.</li>
+                        </ul>
+                    </div>
+                    <div class="box box-info">
+                        <h3>Minimal Acceptance Checklist</h3>
+                        <ol>
+                            <li>Auto-create CSV files with headers in empty <code>data/</code>.</li>
+                            <li>Restore users/products/orders from existing CSV files.</li>
+                            <li>Persist product mutations immediately to <code>products.csv</code>.</li>
+                            <li>Persist user mutations immediately to <code>users.csv</code>.</li>
+                            <li>Persist checkout results immediately to <code>orders.csv</code> and <code>order_items.csv</code>.</li>
+                            <li>Return graceful error from CSV report export on IO failure.</li>
+                            <li>Use at least 4 distinct try-catch error types.</li>
+                            <li>Implement at least one multi-catch + finally code path.</li>
+                        </ol>
+                    </div>
+                    <div class="box box-warning">
+                        <h3>Suggested Practical Build Sequence</h3>
+                        <ol>
+                            <li>Add helpers: <code>CsvPaths</code>, <code>CsvEscaper</code>, <code>CsvErrorLogger</code>.</li>
+                            <li>Add model constructor/factory support for persisted IDs.</li>
+                            <li>Add CSV stores for users/products/orders/items.</li>
+                            <li>Add bootstrap initializer and wire startup.</li>
+                            <li>Modify repositories to persist on mutation.</li>
+                            <li>Harden <code>CsvReportService</code> with try/catch/finally.</li>
+                            <li>Run manual admin/customer/report scenarios.</li>
+                        </ol>
+                    </div>
+                    <div class="box">
+                        <h3>Non-Goals for This Step</h3>
+                        <ul>
+                            <li>Full relational DB migration.</li>
+                            <li>Full ACID transactions.</li>
+                            <li>Concurrent multi-process file locking strategy.</li>
+                        </ul>
+                        <p>This Step 3 plan keeps current architecture intact while adding durable CSV persistence with explicit error handling and low disruption risk.</p>
+                    </div>
+                </section>
+            </div>
+
+            <div id="screen-v2" class="doc-screen">
                 <section id="oop-overview">
-                    <h2>OOP Extension Blueprint (Default Screen)</h2>
+                    <h2>OOP Extension Blueprint (v2)</h2>
                     <div class="box box-info">
                         <h3>Scope</h3>
                         <p>This screen translates <code>OOP_EXTENSION_IMPLEMENTATION_PLAN.md</code> into implementation-ready architecture visuals and method-level behavior. It is designed for coding, QA execution, and design review.</p>
@@ -1059,7 +1339,7 @@ Output: ERROR:Unsupported format</code></pre>
                 </section>
             </div>
 
-            <div id="screen-legacy" class="doc-screen">
+            <div id="screen-v1" class="doc-screen">
             <!-- ARCHITECTURE OVERVIEW -->
             <section id="overview">
                 <h2>📐 Architecture Overview</h2>
@@ -2161,24 +2441,32 @@ CART CLEARING:
     <div class="scroll-top" id="scrollTop">↑</div>
 
     <script>
-        const oopScreen = document.getElementById('screen-oop');
-        const legacyScreen = document.getElementById('screen-legacy');
-        const showOopBtn = document.getElementById('show-oop');
-        const showLegacyBtn = document.getElementById('show-legacy');
+        const screens = {
+            v1: document.getElementById('screen-v1'),
+            v2: document.getElementById('screen-v2'),
+            v3: document.getElementById('screen-v3')
+        };
+
+        const screenButtons = {
+            v1: document.getElementById('show-v1'),
+            v2: document.getElementById('show-v2'),
+            v3: document.getElementById('show-v3')
+        };
 
         function activateScreen(screenName) {
-            const isOop = screenName === 'oop';
-            oopScreen.classList.toggle('active', isOop);
-            legacyScreen.classList.toggle('active', !isOop);
-            showOopBtn.classList.toggle('active', isOop);
-            showLegacyBtn.classList.toggle('active', !isOop);
+            Object.keys(screens).forEach((key) => {
+                const isActive = key === screenName;
+                screens[key].classList.toggle('active', isActive);
+                screenButtons[key].classList.toggle('active', isActive);
+            });
         }
 
-        // Default view: OOP extension blueprint screen.
-        activateScreen('oop');
+        // Default view: Step 3 CSV persistence screen.
+        activateScreen('v3');
 
-        showOopBtn.addEventListener('click', () => activateScreen('oop'));
-        showLegacyBtn.addEventListener('click', () => activateScreen('legacy'));
+        screenButtons.v3.addEventListener('click', () => activateScreen('v3'));
+        screenButtons.v2.addEventListener('click', () => activateScreen('v2'));
+        screenButtons.v1.addEventListener('click', () => activateScreen('v1'));
 
         // Scroll to top functionality
         const scrollTopBtn = document.getElementById('scrollTop');
@@ -2203,7 +2491,7 @@ CART CLEARING:
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const screen = this.getAttribute('data-screen');
-                if (screen === 'oop' || screen === 'legacy') {
+                if (screen === 'v1' || screen === 'v2' || screen === 'v3') {
                     activateScreen(screen);
                 }
                 const targetId = this.getAttribute('href');

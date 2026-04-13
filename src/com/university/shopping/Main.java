@@ -10,6 +10,7 @@ import com.university.shopping.service.report.CsvReportService;
 import com.university.shopping.view.ConsoleUI;
 
 public class Main {
+
     public static void main(String[] args) {
         // dependency injection is halal ;)
         UserRepository userRepository = new UserRepository();
