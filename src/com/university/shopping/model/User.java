@@ -20,6 +20,17 @@ public class User {
             MockDatabase.userCount++;
         }
     }
+    public User(int id, String username, String password, boolean isAdmin, String createdDate) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.isAdmin = isAdmin;
+        this.createdDate = createdDate;
+        if (MockDatabase.userCount < MockDatabase.users.length) {
+            MockDatabase.users[MockDatabase.userCount] = this;
+            MockDatabase.userCount++;
+        }
+    }
     //getters
     public int getUserId() {
         return id;
