@@ -1,6 +1,5 @@
 package com.university.shopping.model;
 
-
 public class User {
     private final int id;
     private String username;
@@ -15,51 +14,59 @@ public class User {
         this.password = password;
         this.isAdmin = isAdmin;
         this.createdDate = createdDate;
-        if (MockDatabase.userCount < MockDatabase.users.length) {
-            MockDatabase.users[MockDatabase.userCount] = this;
-            MockDatabase.userCount++;
-        }
     }
+
     public User(int id, String username, String password, boolean isAdmin, String createdDate) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
         this.createdDate = createdDate;
-        if (MockDatabase.userCount < MockDatabase.users.length) {
-            MockDatabase.users[MockDatabase.userCount] = this;
-            MockDatabase.userCount++;
+        if (id >= MockDatabase.nextUserId) {
+            MockDatabase.nextUserId = id + 1;
         }
     }
-    //getters
+
+    // getters
     public int getUserId() {
         return id;
     }
+
     public String getUsername() {
         return username;
     }
+
     public String getPassword() {
         return password;
     }
+
     public boolean isAdmin() {
         return isAdmin;
     }
+
     public String getCreatedDate() {
         return createdDate;
     }
-    //setters
 
+    // setters
     public void setUsername(String username) {
         this.username = username;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "User{id=" + id +
+                ", username='" + username + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", createdDate='" + createdDate + '\'' +
+                '}';
+    }
 }

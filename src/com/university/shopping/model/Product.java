@@ -21,7 +21,20 @@ public class Product {
         this.stockQuantity = stockQuantity;
         this.isDiscounted = isDiscounted;
         this.discountPercentage = discountPercentage;
+    }
 
+    public Product(int productId, String name, double price, String category, String description, int stockQuantity, boolean isDiscounted, double discountPercentage) {
+        this.productId = productId;
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.description = description;
+        this.stockQuantity = stockQuantity;
+        this.isDiscounted = isDiscounted;
+        this.discountPercentage = discountPercentage;
+        if (productId >= MockDatabase.nextProductId) {
+            MockDatabase.nextProductId = productId + 1;
+        }
     }
 
     //getters

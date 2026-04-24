@@ -17,6 +17,19 @@ public class Order {
         this.status = status;
         this.items = items;
     }
+
+    public Order(int orderId, int userId, String orderDate, double totalPrice, String status, OrderItem[] items){
+        this.orderId = orderId;
+        this.userId = userId;
+        this.orderDate = orderDate;
+        this.totalPrice = totalPrice;
+        this.status = status;
+        this.items = items;
+        if (orderId >= MockDatabase.nextOrderId) {
+            MockDatabase.nextOrderId = orderId + 1;
+        }
+    }
+
     public int getOrderId(){
         return orderId;
     }
@@ -39,5 +52,9 @@ public class Order {
 
     public void setStatus(String status){
         this.status = status;
+    }
+
+    public void setItems(OrderItem[] items) {
+        this.items = items;
     }
 }

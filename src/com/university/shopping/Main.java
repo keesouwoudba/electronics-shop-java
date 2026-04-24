@@ -14,6 +14,7 @@ public class Main {
     public static void main(String[] args) {
         // dependency injection is halal ;)
         CsvBootstrapInitializer csvBootstrapInitializer = new CsvBootstrapInitializer();
+        csvBootstrapInitializer.initialize();
         UserRepository userRepository = new UserRepository();
         ProductRepository productRepository = new ProductRepository();
         OrderRepository orderRepository = new OrderRepository();
