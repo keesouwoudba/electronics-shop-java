@@ -1,35 +1,75 @@
-# Step 5 Implementation Specification (JavaFX SPA Router + Product Images)
+# Step 5 Implementation Guide
+# JavaFX SPA Router + Product Image Refactor
 
-## 0) Goal and Requirement Mapping
-This document defines the Step 5 target architecture for migrating the current console view into a JavaFX single-window, route-driven UI with componentized pages and persistent product images.
+Last updated: 2026-04-27
+Status: Planning and implementation guide
 
-Step 5 requirement coverage from discussion:
-1. Keep screen-level architecture and move to a state-driven router (console loop equivalent).
-2. Keep header navigation always visible at the top.
-3. Add a footer component that is always part of the page output but not sticky: users scroll to reach it on long pages.
-4. Add component-per-file organization with local event listeners and UI rules.
-5. Add image metadata across model, repository, services, and admin workflows.
-6. Provide one complete implementation plan and class contract map in a single file.
+## 1) Why this file exists
+This document explains the full Step 5 migration in plain language so a new team member can read it and understand:
+- what we are building,
+- why we are building it this way,
+- where code should go,
+- what classes need to exist,
+- and in what order we should implement everything.
 
-Core architectural decision:
-- The old `while` loop in console becomes an event-driven route loop:
-  - intent -> router decision -> renderer swap -> page lifecycle hooks
+This is both:
+- architecture documentation,
+- and execution checklist.
 
-Footer behavior decision (critical):
-- Header is fixed at top.
-- Footer is rendered as the last element of scrollable page content.
-- Footer is not fixed to viewport bottom.
+## 2) Executive summary
+We are moving from a console UI loop to a JavaFX desktop frontend with SPA-style behavior.
 
-## 1) Exact Target Project Structure and Files
+The new UI model is:
+1. one window (`Stage`),
+2. one shell layout,
+3. fixed header at top,
+4. dynamic page content in center,
+5. footer always present at the bottom of page content (not sticky),
+6. route decision made by a custom router based on app state.
+
+The old `while` loop behavior from console is preserved conceptually as:
+`intent -> router decision -> renderer swaps page`.
+
+## 3) Current vs target architecture
+
+Current:
+- Console interaction in menu loops.
+- Navigation is done through numeric options.
+- Rendering is text output in terminal.
+
+Target:
+- JavaFX event-driven navigation.
+- Navigation based on route/state, not scanner input loops.
+- Rendering through JavaFX Nodes.
+- Same service and repository business logic reused underneath.
+
+## 4) Core UI rules (non-negotiable)
+1. Header is fixed in the top region and is always visible.
+2. Main page content is route-driven and replaced by renderer.
+3. Footer is always rendered as part of page flow at the bottom.
+4. Footer is not fixed to viewport bottom.
+5. On long pages, users scroll to reach footer.
+
+## 5) Runtime baseline
+- JDK 17+.
+- Maven wrapper in repository root.
+- JavaFX dependencies managed by Maven.
+- IntelliJ can open this repository directly as a Maven project.
+
+## 6) Exact target structure and files
 Legend:
 - `*` modified existing file
 - `**` new file
 
 ```text
 .
-|-- STEP3_CSV_PERSISTENCE_IMPLEMENTATION.md
-|-- STEP5_JAVAFX_SPA_ROUTER_AND_IMAGE_REFACTOR_SPEC.md **
 |-- README.md *
+|-- STEP3_CSV_PERSISTENCE_IMPLEMENTATION.md
+|-- STEP5_JAVAFX_SPA_ROUTER_AND_IMAGE_REFACTOR_SPEC.md *
+|-- pom.xml *
+|-- mvnw *
+|-- mvnw.cmd *
+|-- .mvn/wrapper/*
 |-- data
 |   |-- users.csv
 |   |-- products.csv *
@@ -39,8 +79,9 @@ Legend:
 |       `-- .gitkeep **
 `-- src
     `-- com/university/shopping
-        |-- Main.java *
-        |-- MainFx.java **
+        |-- Main.java
+        |-- Launcher.java *
+        |-- MainFx.java *
         |-- app **
         |   |-- AppState.java **
         |   |-- Route.java **
@@ -71,31 +112,24 @@ Legend:
         |   |-- AdminService.java *
         |   |-- media **
         |   |   `-- ProductImageService.java **
-        |   |-- pricing
-        |   |   |-- DiscountPolicy.java
-        |   |   |-- StandardDiscountPolicy.java
-        |   |   |-- SeasonalDiscountPolicy.java
-        |   |   `-- PricingModeConstants.java
-        |   `-- report
-        |       |-- AbstractReportService.java
-        |       |-- ConsoleReportService.java
-        |       `-- CsvReportService.java
+        |   |-- pricing/*
+        |   `-- report/*
         `-- view
             |-- ConsoleUI.java *
             |-- contracts
             |   |-- MenuActions.java *
             |   |-- ScreenComponent.java **
             |   `-- ScreenContext.java **
-            |-- renderer **
+            |-- renderer
             |   `-- UiRenderer.java **
-            |-- layout **
+            |-- layout
             |   `-- AppShell.java **
-            |-- components **
+            |-- components
             |   |-- HeaderNavComponent.java **
             |   |-- FooterComponent.java **
             |   |-- NotificationBarComponent.java **
             |   `-- ProductCardComponent.java **
-            |-- pages **
+            |-- pages
             |   |-- LoginPage.java **
             |   |-- RegisterPage.java **
             |   |-- GuestProductsPage.java **
@@ -112,42 +146,40 @@ Legend:
             |   |-- AuthScreen.java *
             |   |-- CustomerScreen.java *
             |   `-- AdminScreen.java *
-            `-- styles **
+            `-- styles
                 |-- app.css **
                 `-- theme.css **
 ```
 
-## 2) Router and Rendering Model
+## 7) Router + renderer model
 
-## 2.1 Why this model fits JavaFX
-- JavaFX is event-driven, not command-loop driven.
-- Router plus AppState reproduces console loop behavior safely:
-  - current state and intent determine the next page.
-- UiRenderer swaps only the content area, not the whole window.
-
-## 2.2 App shell composition
-- Root layout: `BorderPane`
-- `top`: fixed header nav component
+## 7.1 Layout model
+Root is `BorderPane`:
+- `top`: header nav component (fixed)
 - `center`: `ScrollPane`
-  - content: `VBox`
-  - first child: current page content
-  - last child: footer component
+  - content is `VBox pageFlow`
+  - `pageFlow` always has two main parts in order:
+    1) active page node
+    2) footer node
 
-Result:
-- Header always visible.
-- Footer always present at bottom of page content.
-- Footer is naturally reached by scrolling when content is long.
+## 7.2 Route loop model
+JavaFX is event-driven, so this replaces console while-loop:
 
-## 2.3 Route lifecycle
-1. UI event emits `NavIntent`.
-2. `Router.dispatch(intent)` evaluates state and permissions.
+1. User action creates `NavIntent`.
+2. Router evaluates user state and permissions.
 3. Router returns `RouteDecision`.
-4. `UiRenderer.render(decision.route)` swaps page node.
-5. Optional hooks run: `onBeforeLeave` for old page, `onAfterEnter` for new page.
+4. Renderer swaps page content.
+5. Optional lifecycle hooks run (`onBeforeLeave`, `onAfterEnter`).
 
-## 3) Page Map for Design and Routing
+## 7.3 Access guards
+- Guest routes only when not logged in.
+- Customer routes require logged-in non-admin user.
+- Admin routes require admin user.
+- Invalid route request is redirected with user-visible reason.
 
-## 3.1 Route enum map
+## 8) Route map and page map
+
+## 8.1 Route IDs
 - `AUTH_LOGIN`
 - `AUTH_REGISTER`
 - `GUEST_PRODUCTS`
@@ -160,72 +192,65 @@ Result:
 - `ADMIN_USERS`
 - `ADMIN_REPORTS`
 
-## 3.2 Route to screen ownership map
-- `AuthScreen`: login, register, guest products
-- `CustomerScreen`: customer products, product details, cart, checkout
-- `AdminScreen`: admin products, editor, users, reports
+## 8.2 Route ownership map
+- `AuthScreen` owns: login, register, guest products
+- `CustomerScreen` owns: products, details, cart, checkout
+- `AdminScreen` owns: admin products, editor, users, reports
 
-## 3.3 Google Stitch prompt (copy-paste ready)
+## 8.3 Google Stitch prompt (copy and paste)
 ```text
-Design a desktop e-commerce UI system for JavaFX (single window, single-page-app behavior).
+Design a desktop e-commerce UI for JavaFX with SPA behavior.
 
-Global layout:
-- Fixed top header navigation, always visible.
-- Main content area changes by route/state.
-- Footer is always rendered as the last block of page content, not sticky; on long pages user scrolls to reach footer.
-- Visual style: clean modern electronics store, high information density, table + card hybrid.
+Layout:
+- Fixed top header navigation that is always visible.
+- Route-driven main content area.
+- Footer always present at the bottom of page content (not sticky).
+- On long pages users scroll down to reach footer.
 
-Routes/pages:
-1) Login page
-2) Register page
+Pages:
+1) Login
+2) Register
 3) Guest product catalog (read-only)
 4) Customer product catalog
-5) Product details page
-6) Cart page
-7) Checkout confirmation page
-8) Admin products page (table with actions)
-9) Admin product editor page (create/edit product)
-10) Admin users page
-11) Admin reports page
+5) Product details
+6) Cart
+7) Checkout confirmation
+8) Admin products table with actions
+9) Admin product editor (create/edit)
+10) Admin users management
+11) Admin reports
 
-Header behavior:
-- Left: brand/logo.
-- Center: route tabs based on role and auth state.
-- Right: current user badge and logout button.
+Header:
+- Left: brand.
+- Center: route tabs based on auth role.
+- Right: user badge + logout.
 
-Footer behavior:
-- Show support links, copyright, version, and report export quick action.
-- Footer appears after page content inside the scroll flow.
+Footer:
+- Support links, version, copyright.
+- Appears after content in scroll flow.
 
-Admin product image workflow UI:
-- Product editor includes image picker/upload area.
-- Show image preview, image filename, and saved relative path.
-- Buttons: Upload/Replace Image, Remove Image.
-- Validate file type: png, jpg, jpeg, webp.
+Product image requirements:
+- Product cards and details show thumbnails.
+- Fallback placeholder when image missing.
+- Admin product editor supports upload/replace/remove image.
+- Show image name and saved path.
+- Validate file extensions: png, jpg, jpeg, webp.
 
-Product cards and details:
-- Show product image thumbnail (fallback placeholder if absent).
-- Show name, category, price, discount badge, and stock.
-
-Interaction style:
-- Route transitions should feel instant and structured.
-- Use visible success/error banners for operations.
-- Keep controls compact and productivity-focused for admin pages.
+Visual direction:
+- Modern electronics store.
+- Clear hierarchy for product and admin data.
+- Strong feedback banners for success/error actions.
 ```
 
-## 4) Data and Persistence Refactor for Product Images
+## 9) Product image refactor across layers
 
-## 4.1 Product model changes
-Add fields to `Product`:
-- `private String imageName;`
-- `private String imagePath;`
+## 9.1 Product model fields
+Add to `Product`:
+- `imageName` (string shown in UI)
+- `imagePath` (relative path persisted in CSV)
 
-Notes:
-- `imagePath` is a relative runtime path, example: `data/images/product_7_phone-front.jpg`.
-- `imageName` is human-friendly name shown in UI.
-
-## 4.2 CSV schema update
-Current header:
+## 9.2 CSV schema change
+Old `products.csv` header:
 ```csv
 id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage
 ```
@@ -235,457 +260,431 @@ New header:
 id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath
 ```
 
-Backward compatibility rule:
-- If row has only 8 columns, default `imageName=""`, `imagePath=""`.
+Backward compatibility:
+- If row has 8 columns, default image fields to empty strings.
 
-## 4.3 Runtime image storage policy
-- Images copied into `data/images/`.
-- Persist relative path in CSV.
-- Never persist absolute machine-specific paths.
-- Deleting product image should remove stored file (best effort).
+## 9.3 File storage policy
+- Store image files under `data/images/`.
+- Persist only relative path, never machine-specific absolute path.
+- Remove file on delete/replace as best effort.
 
-## 5) Class-by-Class Contracts (New Classes)
+## 10) Class reference (new classes)
 
-Each class below includes purpose, fields, and method contracts.
+All signatures below are target contracts.
 
-## 5.1 `MainFx`
+## 10.1 `MainFx`
+Package: `com.university.shopping`
+
 Purpose:
-- JavaFX entry point and UI bootstrap.
-
-Key fields:
-- `private Router router;`
-- `private UiRenderer renderer;`
-- `private AppState appState;`
-
-Methods:
-- `public void start(Stage stage)`
-  - Params: `Stage stage`
-  - Returns: `void`
-  - Behavior: creates DI graph, app shell, router wiring, initial route render.
-- `public static void main(String[] args)`
-  - Params: `String[] args`
-  - Returns: `void`
-  - Behavior: launches JavaFX runtime.
-
-## 5.2 `AppState`
-Purpose:
-- Central mutable state for auth, role, and active route context.
+- JavaFX entry application.
+- Builds dependency graph and root shell.
 
 Fields:
-- `private User currentUser;`
-- `private Route currentRoute;`
-- `private Integer selectedProductId;`
-- `private String flashMessage;`
-- `private boolean loading;`
+- `AuthService authService`
+- `ShopService shopService`
+- `AdminService adminService`
+- `AppState appState`
+- `Router router`
+- `UiRenderer renderer`
 
 Methods:
-- `public User getCurrentUser()` -> `User`
-- `public void setCurrentUser(User user)` -> `void`
-- `public Route getCurrentRoute()` -> `Route`
-- `public void setCurrentRoute(Route route)` -> `void`
-- `public Integer getSelectedProductId()` -> `Integer`
-- `public void setSelectedProductId(Integer productId)` -> `void`
-- `public String consumeFlashMessage()` -> `String`
-  - Returns and clears one-time message.
+- `void start(Stage stage)`
+  - Params: `Stage stage`
+  - Returns: `void`
+  - Does: initialize app, create scene, render initial route.
+- `static void main(String[] args)`
+  - Params: `String[] args`
+  - Returns: `void`
+  - Does: launch JavaFX app.
 
-## 5.3 `Route`
+## 10.2 `AppState`
+Package: `com.university.shopping.app`
+
 Purpose:
-- Canonical route ids.
+- Single source of UI state.
 
-Type:
-- `public enum Route`
+Fields:
+- `User currentUser`
+- `Route currentRoute`
+- `Integer selectedProductId`
+- `String flashMessage`
+- `boolean loading`
 
-Members:
-- all page route constants listed in section 3.1.
+Methods:
+- `User getCurrentUser()`
+- `void setCurrentUser(User user)`
+- `Route getCurrentRoute()`
+- `void setCurrentRoute(Route route)`
+- `Integer getSelectedProductId()`
+- `void setSelectedProductId(Integer id)`
+- `String consumeFlashMessage()`
+  - Returns current flash message and clears it.
 
-## 5.4 `NavIntentType`
+## 10.3 `Route`
+Package: `com.university.shopping.app`
+
 Purpose:
-- User/system action categories that drive route loop.
+- Canonical route enum.
 
-Type:
-- `public enum NavIntentType`
+Fields:
+- Enum constants from section 8.1.
 
-Members:
+Methods:
+- Enum default methods only.
+
+## 10.4 `NavIntentType`
+Package: `com.university.shopping.app`
+
+Purpose:
+- Classifies navigation intent.
+
+Fields:
 - `APP_START`
-- `LOGIN_SUCCESS`
-- `REGISTER_SUCCESS`
 - `OPEN_ROUTE`
 - `OPEN_PRODUCT_DETAILS`
+- `LOGIN_SUCCESS`
+- `REGISTER_SUCCESS`
 - `CHECKOUT_SUCCESS`
 - `LOGOUT`
 - `FORBIDDEN`
 
-## 5.5 `NavIntent`
+Methods:
+- Enum default methods only.
+
+## 10.5 `NavIntent`
+Package: `com.university.shopping.app`
+
 Purpose:
-- Typed input to router for state transitions.
+- Immutable navigation input to router.
 
 Fields:
-- `private final NavIntentType type;`
-- `private final Route requestedRoute;`
-- `private final Integer productId;`
-- `private final String message;`
+- `NavIntentType type`
+- `Route requestedRoute`
+- `Integer productId`
+- `String message`
 
 Methods:
-- `public static NavIntent appStart()` -> `NavIntent`
-- `public static NavIntent open(Route route)` -> `NavIntent`
-- `public static NavIntent openProduct(int productId)` -> `NavIntent`
-- `public static NavIntent loginSuccess()` -> `NavIntent`
-- getters for all fields.
+- `static NavIntent appStart()`
+- `static NavIntent open(Route route)`
+- `static NavIntent openProduct(int productId)`
+- `static NavIntent loginSuccess()`
+- Getters for all fields
 
-## 5.6 `RouteDecision`
+Method returns:
+- all factory methods return `NavIntent`.
+
+## 10.6 `RouteDecision`
+Package: `com.university.shopping.app`
+
 Purpose:
-- Router output describing final route and optional feedback.
+- Output of route evaluation.
 
 Fields:
-- `private final Route route;`
-- `private final String reason;`
-- `private final boolean allowed;`
+- `Route route`
+- `String reason`
+- `boolean allowed`
 
 Methods:
-- `public Route getRoute()` -> `Route`
-- `public String getReason()` -> `String`
-- `public boolean isAllowed()` -> `boolean`
+- `Route getRoute()`
+- `String getReason()`
+- `boolean isAllowed()`
 
-## 5.7 `Router`
+## 10.7 `Router`
+Package: `com.university.shopping.app`
+
 Purpose:
-- Encapsulate state-based navigation and permission guards.
+- State-aware and role-aware route decision engine.
 
 Fields:
-- `private final AppState appState;`
-- `private final AuthService authService;`
+- `AppState appState`
+- `AuthService authService`
 
 Methods:
-- `public RouteDecision dispatch(NavIntent intent)`
+- `RouteDecision dispatch(NavIntent intent)`
   - Params: `NavIntent intent`
   - Returns: `RouteDecision`
-  - Behavior: route resolution based on user state and intent.
-- `public RouteDecision evaluateCurrentState()`
+  - Does: resolve final target route.
+- `RouteDecision evaluateCurrentState()`
+  - Params: none
   - Returns: `RouteDecision`
-  - Behavior: console-loop equivalent route check.
-- `private boolean canAccess(Route route)`
+  - Does: route check equivalent to old loop.
+- `boolean canAccess(Route route)`
+  - Params: `Route route`
   - Returns: `boolean`
-  - Behavior: guards for guest/customer/admin routes.
+  - Does: role and auth guard.
 
-## 5.8 `ScreenComponent`
+## 10.8 `ScreenComponent`
+Package: `com.university.shopping.view.contracts`
+
 Purpose:
-- Standard contract for screen wrappers.
+- Common contract for screen wrappers.
 
 Methods:
 - `Node render(ScreenContext context)`
   - Params: `ScreenContext context`
-  - Returns: JavaFX `Node`
-  - Behavior: builds current view for this screen wrapper.
-- `default void onAfterEnter(ScreenContext context)` -> `void`
-- `default void onBeforeLeave(ScreenContext context)` -> `void`
+  - Returns: `Node`
+  - Does: build and return root node.
+- `default void onAfterEnter(ScreenContext context)`
+- `default void onBeforeLeave(ScreenContext context)`
 
-## 5.9 `ScreenContext`
+## 10.9 `ScreenContext`
+Package: `com.university.shopping.view.contracts`
+
 Purpose:
-- Shared dependencies injected into pages/components without static coupling.
+- Shared dependency container for screens/pages.
 
 Fields:
-- `private final AppState appState;`
-- `private final Router router;`
-- `private final UiRenderer renderer;`
-- `private final AuthService authService;`
-- `private final ShopService shopService;`
-- `private final AdminService adminService;`
-- `private final ProductImageService productImageService;`
+- `AppState appState`
+- `Router router`
+- `UiRenderer renderer`
+- `AuthService authService`
+- `ShopService shopService`
+- `AdminService adminService`
+- `ProductImageService productImageService`
 
 Methods:
-- getters for all fields.
+- Getter for each field.
 
-## 5.10 `UiRenderer`
+## 10.10 `UiRenderer`
+Package: `com.university.shopping.view.renderer`
+
 Purpose:
-- Centralized node swapping and shell orchestration.
+- Route-to-screen resolution and center content swap.
 
 Fields:
-- `private final AppShell appShell;`
-- `private ScreenComponent activeScreen;`
+- `AppShell appShell`
+- `ScreenComponent activeScreen`
 
 Methods:
-- `public void render(Route route, ScreenContext context)`
+- `void render(Route route, ScreenContext context)`
   - Params: `Route route`, `ScreenContext context`
   - Returns: `void`
-  - Behavior: resolves screen by route and swaps center content.
-- `public void setNotification(String message, boolean error)` -> `void`
-- `private ScreenComponent resolveScreen(Route route)` -> `ScreenComponent`
+  - Does: swap active page and run lifecycle hooks.
+- `void setNotification(String message, boolean error)`
+  - Params: message and error flag
+  - Returns: `void`
+- `ScreenComponent resolveScreen(Route route)`
+  - Params: `Route route`
+  - Returns: `ScreenComponent`
 
-## 5.11 `AppShell`
+## 10.11 `AppShell`
+Package: `com.university.shopping.view.layout`
+
 Purpose:
-- Own and expose stable layout regions.
+- Own stable regions and enforce header/footer behavior.
 
 Fields:
-- `private final BorderPane root;`
-- `private final HeaderNavComponent header;`
-- `private final ScrollPane scrollRoot;`
-- `private final VBox pageFlow;`
-- `private final FooterComponent footer;`
+- `BorderPane root`
+- `HeaderNavComponent header`
+- `ScrollPane scrollRoot`
+- `VBox pageFlow`
+- `FooterComponent footer`
 
 Methods:
-- `public Parent buildRoot(ScreenContext context)` -> `Parent`
-- `public void setPageContent(Node pageNode)` -> `void`
-  - Behavior: clears old page node, inserts new node before footer.
-- `public BorderPane getRoot()` -> `BorderPane`
+- `Parent buildRoot(ScreenContext context)`
+  - Params: `ScreenContext context`
+  - Returns: `Parent`
+  - Does: create full shell.
+- `void setPageContent(Node pageNode)`
+  - Params: `Node pageNode`
+  - Returns: `void`
+  - Does: keep child order `[pageNode, footer]`.
+- `BorderPane getRoot()`
+  - Returns: shell root.
 
-Footer rule in `setPageContent`:
-- pageFlow children always become: `[pageNode, footerNode]`.
+## 10.12 `HeaderNavComponent`
+Package: `com.university.shopping.view.components`
 
-## 5.12 `HeaderNavComponent`
 Purpose:
-- Fixed top navigation with role-aware actions.
+- Top navigation with role-aware links.
 
 Fields:
-- `private final HBox root;`
-- `private final Label userBadge;`
+- `HBox root`
+- `Label userBadge`
 
 Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-- `public void refresh(ScreenContext context)` -> `void`
-  - Behavior: show tabs based on auth/admin state.
+- `Node render(ScreenContext context)`
+- `void refresh(ScreenContext context)`
 
-## 5.13 `FooterComponent`
+## 10.13 `FooterComponent`
+Package: `com.university.shopping.view.components`
+
 Purpose:
-- Non-sticky footer rendered at end of scroll content.
+- Footer content rendered at bottom of page flow.
 
 Fields:
-- `private final VBox root;`
+- `VBox root`
 
 Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-  - Behavior: support links, build info, report shortcut.
+- `Node render(ScreenContext context)`
 
-## 5.14 `NotificationBarComponent`
+## 10.14 `NotificationBarComponent`
+Package: `com.university.shopping.view.components`
+
 Purpose:
-- Reusable success/error banner.
+- Success/error banner component.
 
 Fields:
-- `private final HBox root;`
-- `private final Label messageLabel;`
+- `HBox root`
+- `Label messageLabel`
 
 Methods:
-- `public Node getNode()` -> `Node`
-- `public void showSuccess(String message)` -> `void`
-- `public void showError(String message)` -> `void`
-- `public void clear()` -> `void`
+- `Node getNode()`
+- `void showSuccess(String message)`
+- `void showError(String message)`
+- `void clear()`
 
-## 5.15 `ProductCardComponent`
+## 10.15 `ProductCardComponent`
+Package: `com.university.shopping.view.components`
+
 Purpose:
-- Compact product card for grid/list pages.
+- Reusable catalog card.
 
 Fields:
-- `private final Product product;`
+- `Product product`
 
 Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-  - Behavior: image, price, discount, stock, open-details button.
+- `Node render(ScreenContext context)`
 
-## 5.16 `LoginPage`
+## 10.16 Page classes
+Package: `com.university.shopping.view.pages`
+
+All page classes use the same main contract:
+- `Node render(ScreenContext context)`
+  - Params: `ScreenContext context`
+  - Returns: `Node`
+  - Does: build page node and bind all events.
+
+Classes:
+- `LoginPage`
+- `RegisterPage`
+- `GuestProductsPage`
+- `CustomerProductsPage`
+- `ProductDetailsPage`
+- `CartPage`
+- `CheckoutPage`
+- `AdminProductsPage`
+- `AdminProductEditorPage`
+- `AdminUsersPage`
+- `AdminReportsPage`
+
+Page responsibilities:
+- own controls and event listeners,
+- call service methods,
+- emit router intents on transitions,
+- show notification messages.
+
+## 10.17 `ProductImageUpdateRequest`
+Package: `com.university.shopping.dto`
+
 Purpose:
-- Login form and submit behavior.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-  - Behavior: calls `authService.login`, emits router intent.
-
-## 5.17 `RegisterPage`
-Purpose:
-- Registration form and validation display.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-  - Behavior: calls `authService.register`, route on success.
-
-## 5.18 `GuestProductsPage`
-Purpose:
-- Public read-only catalog.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-
-## 5.19 `CustomerProductsPage`
-Purpose:
-- Authenticated catalog with add-to-cart actions.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-
-## 5.20 `ProductDetailsPage`
-Purpose:
-- Detailed product page and quantity actions.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-
-## 5.21 `CartPage`
-Purpose:
-- Cart table, remove item, and checkout route actions.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-
-## 5.22 `CheckoutPage`
-Purpose:
-- Final order confirmation and status.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-
-## 5.23 `AdminProductsPage`
-Purpose:
-- Admin product list with edit/delete/image actions.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-
-## 5.24 `AdminProductEditorPage`
-Purpose:
-- Create/update product data and image metadata.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-
-## 5.25 `AdminUsersPage`
-Purpose:
-- User management page (add/update/delete).
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-
-## 5.26 `AdminReportsPage`
-Purpose:
-- Trigger report export and show result logs.
-
-Methods:
-- `public Node render(ScreenContext context)` -> `Node`
-
-## 5.27 `ProductImageUpdateRequest`
-Purpose:
-- DTO passed from admin UI to service for image operations.
+- DTO for admin image operations.
 
 Fields:
-- `private final int productId;`
-- `private final String sourceFilePath;`
-- `private final String imageName;`
+- `int productId`
+- `String sourceFilePath`
+- `String imageName`
 
 Methods:
-- constructor and getters only.
+- constructor
+- getters
 
-## 5.28 `ProductImageService`
+## 10.18 `ProductImageService`
+Package: `com.university.shopping.service.media`
+
 Purpose:
-- File-system image copy/remove and safe naming policy.
+- Validates, copies, removes product image files.
 
 Fields:
-- `private final String imageRootDir;`
-- `private static final Set<String> ALLOWED_EXTENSIONS;`
+- `String imageRootDir`
+- `Set<String> allowedExtensions`
 
 Methods:
-- `public String storeProductImage(ProductImageUpdateRequest request)`
-  - Params: request with product id, source path, display name.
-  - Returns: stored relative path.
-  - Behavior: validate, copy, and return path.
-- `public boolean removeProductImage(String relativePath)`
-  - Returns: true if deleted or not present.
-- `public boolean isSupportedImage(String filename)`
-  - Returns: extension check result.
+- `String storeProductImage(ProductImageUpdateRequest request)`
+  - Params: DTO request
+  - Returns: stored relative path
+  - Does: validate extension and copy file.
+- `boolean removeProductImage(String relativePath)`
+  - Returns: delete status
+- `boolean isSupportedImage(String fileName)`
+  - Returns: extension validity
 
-## 6) Class-by-Class Contract Changes (Modified Existing)
+## 11) Existing classes to modify (summary)
 
-## 6.1 `Product` (model)
-New fields:
-- `private String imageName;`
-- `private String imagePath;`
+## 11.1 `Product`
+Add fields and accessors:
+- `imageName`
+- `imagePath`
 
-New methods:
-- `public String getImageName()` -> `String`
-- `public void setImageName(String imageName)` -> `void`
-- `public String getImagePath()` -> `String`
-- `public void setImagePath(String imagePath)` -> `void`
+## 11.2 `CsvPersistenceUtil`
+Update write logic for new product columns.
 
-Constructor updates:
-- Existing constructors keep compatibility.
-- New constructor overload with image metadata.
+## 11.3 `CsvBootstrapInitializer`
+Parse 10-column product rows with fallback for 8-column legacy rows.
 
-## 6.2 `CsvPersistenceUtil`
-Changes:
-- write/read support for products CSV 10 columns.
-- keep compatibility for old 8-column rows in bootstrap parser.
+## 11.4 `ProductRepository`
+Add image metadata mutation methods and persist CSV.
 
-## 6.3 `CsvBootstrapInitializer`
-Changes:
-- parse `imageName` and `imagePath` from products rows when present.
-- default empty strings for legacy rows.
+## 11.5 `AdminService`
+Add methods:
+- `setProductImage(...)`
+- `removeProductImage(...)`
 
-## 6.4 `ProductRepository`
-New methods:
-- `public boolean updateImageMetadata(int productId, String imageName, String imagePath)`
-- `public boolean clearImageMetadata(int productId)`
+## 11.6 `ShopService`
+No major behavior change required.
+Existing product retrieval will expose image fields.
 
-Behavior:
-- each update triggers products CSV persistence.
+## 11.7 `ConsoleUI`
+Keep temporarily for fallback console run mode during migration.
 
-## 6.5 `AdminService`
-New methods:
-- `public String setProductImage(ProductImageUpdateRequest request)`
-  - Returns: `SUCCESS` or `ERROR:<reason>`.
-- `public String removeProductImage(int productId)`
-  - Returns: `SUCCESS` or `ERROR:<reason>`.
+## 11.8 `AuthScreen`, `CustomerScreen`, `AdminScreen`, `AbstractScreen`
+Refactor from console rendering to JavaFX screen wrappers.
 
-## 6.6 `ShopService`
-Changes:
-- no business rule changes required.
-- product retrieval naturally exposes image fields for UI.
+## 12) Phased implementation plan
 
-## 6.7 `ConsoleUI`
-Changes:
-- becomes JavaFX wiring facade.
-- keeps dependency injection style.
-- no scanner loop.
+Phase 1: Foundation
+- Add app state, routes, intents, router, route decision.
+- Add shell and renderer.
+- Confirm header/footer behavior.
 
-## 7) Screen Layer Refactor (Keep Existing Files)
+Phase 2: Auth and guest catalog
+- Implement login, register, guest products pages.
+- Add route guards and redirects.
 
-## 7.1 `AbstractScreen`
-New role:
-- shared JavaFX helpers for form fields, validation labels, table builders.
+Phase 3: Customer flow
+- Add customer products, details, cart, checkout pages.
 
-## 7.2 `AuthScreen`
-Owns pages:
-- `LoginPage`, `RegisterPage`, `GuestProductsPage`.
+Phase 4: Admin flow
+- Add admin products, product editor, users, reports pages.
 
-Public method pattern:
-- `Node render(Route route, ScreenContext context)`.
+Phase 5: Product image refactor
+- Add model fields, CSV schema changes, service/repo logic, admin upload/remove.
 
-## 7.3 `CustomerScreen`
-Owns pages:
-- `CustomerProductsPage`, `ProductDetailsPage`, `CartPage`, `CheckoutPage`.
+Phase 6: Stabilization
+- Regression tests, manual UX checks, route guard checks, CSV compatibility checks.
 
-## 7.4 `AdminScreen`
-Owns pages:
-- `AdminProductsPage`, `AdminProductEditorPage`, `AdminUsersPage`, `AdminReportsPage`.
+## 13) Test checklist
+1. Launch JavaFX app and see shell render.
+2. Header always visible during route changes.
+3. Footer appears at end of content and is scroll-reachable on long pages.
+4. Guest cannot access customer/admin routes.
+5. Customer cannot access admin routes.
+6. Admin routes open after admin login.
+7. Product image upload writes file and updates CSV.
+8. Product image remove updates CSV and deletes file best effort.
+9. Old `products.csv` rows without image columns still load.
 
-## 8) Route and Guard Rules
-
-Access policy:
-- Guests: `AUTH_LOGIN`, `AUTH_REGISTER`, `GUEST_PRODUCTS`
-- Customers: customer routes only
-- Admins: admin routes plus customer read routes if desired by policy
-
-Examples:
-- Guest attempts `ADMIN_PRODUCTS` -> redirect `AUTH_LOGIN` with error reason.
-- Logged-in customer attempts admin route -> redirect `CUSTOMER_PRODUCTS` with forbidden message.
-- Logout from any route -> redirect `AUTH_LOGIN`.
-
-## 9) High-Order Flowchart
-
+## 14) High-order flowchart
 ```mermaid
 flowchart TD
     A[App Launch] --> B[MainFx builds services and state]
     B --> C[Router evaluateCurrentState]
     C --> D[UiRenderer render route]
-    D --> E[AppShell shows fixed Header + Scrollable PageFlow]
-    E --> F[Page Node]
-    F --> G[Footer Node at end of PageFlow]
+    D --> E[AppShell: Header fixed + center ScrollPane]
+    E --> F[Page node rendered]
+    F --> G[Footer node rendered after page node]
 
-    H[User Action Click/Submit] --> I[Create NavIntent]
+    H[User click/submit] --> I[Create NavIntent]
     I --> J[Router dispatch]
     J --> K{Allowed by role/state?}
     K -->|Yes| L[RouteDecision target route]
@@ -693,61 +692,27 @@ flowchart TD
     L --> D
     M --> D
 
-    N[Admin Uploads Product Image] --> O[ProductImageService validates and copies file]
-    O --> P[AdminService updates repository image metadata]
-    P --> Q[CsvPersistenceUtil writes products.csv]
-    Q --> R[Renderer refreshes product page]
+    N[Admin image upload] --> O[ProductImageService validate + copy]
+    O --> P[AdminService update image metadata]
+    P --> Q[ProductRepository persist products.csv]
+    Q --> R[Renderer refresh page]
 ```
 
-## 10) Implementation TODO List (Execution Order)
+## 15) TODO list (implementation order)
+1. Create app core classes (`AppState`, `Route`, `NavIntent`, `Router`, `RouteDecision`).
+2. Create shell and renderer (`AppShell`, `UiRenderer`).
+3. Implement auth and guest pages.
+4. Implement customer pages.
+5. Implement admin pages.
+6. Add product image data fields and CSV support.
+7. Add image file service and admin image workflows.
+8. Add route guard messages and notification bars.
+9. Run manual and persistence regression checks.
 
-1. Foundation and JavaFX bootstrap
-- Create `MainFx`, `AppState`, `Route`, `NavIntent`, `Router`, `RouteDecision`.
-- Build `AppShell` and `UiRenderer`.
-- Keep header fixed and footer in scroll-flow bottom.
-
-2. Screen contract migration
-- Add `ScreenComponent` and `ScreenContext`.
-- Refactor `AbstractScreen`, `AuthScreen`, `CustomerScreen`, `AdminScreen` to JavaFX render contracts.
-
-3. Page extraction
-- Add all page classes under `view/pages`.
-- Move page-specific event handlers into their page classes.
-
-4. Product image data model
-- Update `Product` with `imageName` and `imagePath`.
-- Update constructors/getters/setters.
-
-5. Persistence update
-- Update products CSV header and parsing for 10 columns.
-- Add legacy 8-column fallback in bootstrap parser.
-
-6. Service and repository image workflow
-- Add `ProductImageService` and `ProductImageUpdateRequest`.
-- Add repository methods for image metadata updates.
-- Add admin service methods for upload/remove image operations.
-
-7. Admin UI image management
-- Add image controls to `AdminProductEditorPage`.
-- Add preview and remove actions.
-
-8. Customer image display
-- Add thumbnails and placeholders to product list/details pages.
-
-9. Routing guard hardening
-- Finalize guest/customer/admin access matrix.
-- Add route fallback messages.
-
-10. Regression and manual QA
-- Test login/register/logout transitions.
-- Test add/update/delete product and image persistence.
-- Test checkout flow and report exports.
-- Test footer behavior on short and long pages.
-
-## 11) Definition of Done for Step 5
-- App runs as JavaFX single-window shell.
-- Header remains visible while navigating all routes.
-- Footer is always included at bottom of page content and reachable by scroll on long pages.
-- Route loop behavior works from state + intent, not scanner loop.
-- Product image metadata persists in CSV and is manageable via admin pages.
-- Existing business flows remain functionally consistent with current services.
+## 16) Definition of done
+- JavaFX app runs from repository as Maven project.
+- Router-driven navigation works for guest/customer/admin.
+- Header fixed at top in all routes.
+- Footer always rendered at content bottom and scroll-reachable.
+- Product images can be uploaded/removed by admin and are persisted.
+- Existing core business behavior remains correct.
