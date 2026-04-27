@@ -53,8 +53,15 @@ public class ProductRepository {
 
         if (MockDatabase.productCount >= MockDatabase.products.length) return false;
 
-        MockDatabase.products[MockDatabase.productCount++] = product;
-        CsvPersistenceUtil.writeProductsToCsv();
+        MockDatabase.products[MockDatabase.productCount] = product;
+        MockDatabase.productCount++;
+
+        if (!CsvPersistenceUtil.writeProductsToCsv()) {
+            MockDatabase.productCount--;
+            MockDatabase.products[MockDatabase.productCount] = null;
+            return false;
+        }
+
         return true;
     }
 
@@ -64,8 +71,14 @@ public class ProductRepository {
         for (int i = 0; i < MockDatabase.productCount; i++) {
             if (MockDatabase.products[i] != null &&
                     MockDatabase.products[i].getProductId() == product.getProductId()) {
+                Product previous = MockDatabase.products[i];
                 MockDatabase.products[i] = product;
-                CsvPersistenceUtil.writeProductsToCsv();
+
+                if (!CsvPersistenceUtil.writeProductsToCsv()) {
+                    MockDatabase.products[i] = previous;
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -78,12 +91,22 @@ public class ProductRepository {
         for (int i = 0; i < MockDatabase.productCount; i++) {
             if (MockDatabase.products[i] != null &&
                     MockDatabase.products[i].getProductId() == product.getProductId()) {
+                Product removed = MockDatabase.products[i];
                 for (int j = i; j < MockDatabase.productCount - 1; j++) {
                     MockDatabase.products[j] = MockDatabase.products[j + 1];
                 }
                 MockDatabase.productCount--;
                 MockDatabase.products[MockDatabase.productCount] = null;
-                CsvPersistenceUtil.writeProductsToCsv();
+
+                if (!CsvPersistenceUtil.writeProductsToCsv()) {
+                    for (int j = MockDatabase.productCount; j > i; j--) {
+                        MockDatabase.products[j] = MockDatabase.products[j - 1];
+                    }
+                    MockDatabase.products[i] = removed;
+                    MockDatabase.productCount++;
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -94,12 +117,22 @@ public class ProductRepository {
         for (int i = 0; i < MockDatabase.productCount; i++) {
             if (MockDatabase.products[i] != null &&
                     MockDatabase.products[i].getProductId() == productId) {
+                Product removed = MockDatabase.products[i];
                 for (int j = i; j < MockDatabase.productCount - 1; j++) {
                     MockDatabase.products[j] = MockDatabase.products[j + 1];
                 }
                 MockDatabase.productCount--;
                 MockDatabase.products[MockDatabase.productCount] = null;
-                CsvPersistenceUtil.writeProductsToCsv();
+
+                if (!CsvPersistenceUtil.writeProductsToCsv()) {
+                    for (int j = MockDatabase.productCount; j > i; j--) {
+                        MockDatabase.products[j] = MockDatabase.products[j - 1];
+                    }
+                    MockDatabase.products[i] = removed;
+                    MockDatabase.productCount++;
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -110,8 +143,14 @@ public class ProductRepository {
         for (int i = 0; i < MockDatabase.productCount; i++) {
             if (MockDatabase.products[i] != null &&
                     MockDatabase.products[i].getProductId() == productId) {
+                int oldQuantity = MockDatabase.products[i].getStockQuantity();
                 MockDatabase.products[i].setStockQuantity(quantity);
-                CsvPersistenceUtil.writeProductsToCsv();
+
+                if (!CsvPersistenceUtil.writeProductsToCsv()) {
+                    MockDatabase.products[i].setStockQuantity(oldQuantity);
+                    return false;
+                }
+
                 return true;
             }
         }

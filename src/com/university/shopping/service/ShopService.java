@@ -117,11 +117,29 @@ public class ShopService {
         }
 
         // Update stock for all items
+        int[] updatedProductIds = new int[checkout.getItemCount()];
+        int[] previousStocks = new int[checkout.getItemCount()];
+        int updatedCount = 0;
+
         for (int i = 0; i < checkout.getItemCount(); i++){
             OrderItem item = items[i];
             if (item != null){
                 Product product = productRepository.findById(item.getProductId());
-                product.setStockQuantity(product.getStockQuantity() - item.getQuantity());
+                if (product == null) {
+                    rollbackStockUpdates(updatedProductIds, previousStocks, updatedCount);
+                    return "PRODUCT_ERROR: Product " + item.getProductName() + " not found";
+                }
+
+                int previousStock = product.getStockQuantity();
+                int newStock = previousStock - item.getQuantity();
+                if (!productRepository.updateStock(product.getProductId(), newStock)) {
+                    rollbackStockUpdates(updatedProductIds, previousStocks, updatedCount);
+                    return "PERSISTENCE_ERROR: Failed to persist stock update for " + item.getProductName();
+                }
+
+                updatedProductIds[updatedCount] = product.getProductId();
+                previousStocks[updatedCount] = previousStock;
+                updatedCount++;
             }
         }
 
@@ -129,9 +147,20 @@ public class ShopService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = today.format(formatter);
         Order complete = new Order(userId, formattedDate, total, "COMPLETED", purchasedItems);
-        orderRepository.save(complete);
+
+        if (!orderRepository.save(complete)) {
+            rollbackStockUpdates(updatedProductIds, previousStocks, updatedCount);
+            return "PERSISTENCE_ERROR: Failed to persist order";
+        }
+
         cartRepository.findCartByUserId(userId).clear();
         return "Success";
+    }
+
+    private void rollbackStockUpdates(int[] productIds, int[] previousStocks, int updatedCount) {
+        for (int i = updatedCount - 1; i >= 0; i--) {
+            productRepository.updateStock(productIds[i], previousStocks[i]);
+        }
     }
 
     public void setDiscountPolicy(DiscountPolicy discountPolicy) {

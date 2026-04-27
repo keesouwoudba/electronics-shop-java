@@ -67,6 +67,11 @@ public class AuthService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = today.format(formatter);
         User buffer_u = new User(username,password,false,formattedDate);
+
+        if (!this.userRepository.save(buffer_u)) {
+            return "Failed to persist user data";
+        }
+
         // Successful registration should also authenticate the user for this session.
         this.currentUser = buffer_u;
         return "Successfully registered";

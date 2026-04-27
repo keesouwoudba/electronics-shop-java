@@ -9,12 +9,19 @@ public class OrderRepository {
     public boolean save(Order order) {
         if (order == null) return false;
 
+        Order[] snapshot = snapshotOrders();
+        int snapshotCount = MockDatabase.orderCount;
+
         for (int i = 0; i < MockDatabase.orderCount; i++) {
             if (MockDatabase.orders[i] != null &&
                     MockDatabase.orders[i].getOrderId() == order.getOrderId()) {
                 MockDatabase.orders[i] = order;
-                CsvPersistenceUtil.writeOrdersToCsv();
-                CsvPersistenceUtil.writeOrderItemsToCsv();
+
+                if (!persistOrdersAndItems()) {
+                    restoreSnapshot(snapshot, snapshotCount);
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -22,20 +29,31 @@ public class OrderRepository {
         if (MockDatabase.orderCount >= MockDatabase.orders.length) return false;
 
         MockDatabase.orders[MockDatabase.orderCount++] = order;
-        CsvPersistenceUtil.writeOrdersToCsv();
-        CsvPersistenceUtil.writeOrderItemsToCsv();
+
+        if (!persistOrdersAndItems()) {
+            restoreSnapshot(snapshot, snapshotCount);
+            return false;
+        }
+
         return true;
     }
 
     public boolean update(Order order) {
         if (order == null) return false;
 
+        Order[] snapshot = snapshotOrders();
+        int snapshotCount = MockDatabase.orderCount;
+
         for (int i = 0; i < MockDatabase.orderCount; i++) {
             if (MockDatabase.orders[i] != null &&
                     MockDatabase.orders[i].getOrderId() == order.getOrderId()) {
                 MockDatabase.orders[i] = order;
-                CsvPersistenceUtil.writeOrdersToCsv();
-                CsvPersistenceUtil.writeOrderItemsToCsv();
+
+                if (!persistOrdersAndItems()) {
+                    restoreSnapshot(snapshot, snapshotCount);
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -43,6 +61,9 @@ public class OrderRepository {
     }
 
     public boolean deleteById(int orderId) {
+        Order[] snapshot = snapshotOrders();
+        int snapshotCount = MockDatabase.orderCount;
+
         for (int i = 0; i < MockDatabase.orderCount; i++) {
             if (MockDatabase.orders[i] != null &&
                     MockDatabase.orders[i].getOrderId() == orderId) {
@@ -52,8 +73,11 @@ public class OrderRepository {
                 MockDatabase.orderCount--;
                 MockDatabase.orders[MockDatabase.orderCount] = null;
 
-                CsvPersistenceUtil.writeOrdersToCsv();
-                CsvPersistenceUtil.writeOrderItemsToCsv();
+                if (!persistOrdersAndItems()) {
+                    restoreSnapshot(snapshot, snapshotCount);
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -110,5 +134,22 @@ public class OrderRepository {
 
     public int getProductCount() {
         return MockDatabase.productCount;
+    }
+
+    private boolean persistOrdersAndItems() {
+        boolean ordersSaved = CsvPersistenceUtil.writeOrdersToCsv();
+        boolean itemsSaved = ordersSaved && CsvPersistenceUtil.writeOrderItemsToCsv();
+        return ordersSaved && itemsSaved;
+    }
+
+    private Order[] snapshotOrders() {
+        Order[] snapshot = new Order[MockDatabase.orders.length];
+        System.arraycopy(MockDatabase.orders, 0, snapshot, 0, MockDatabase.orders.length);
+        return snapshot;
+    }
+
+    private void restoreSnapshot(Order[] snapshot, int snapshotCount) {
+        System.arraycopy(snapshot, 0, MockDatabase.orders, 0, MockDatabase.orders.length);
+        MockDatabase.orderCount = snapshotCount;
     }
 }

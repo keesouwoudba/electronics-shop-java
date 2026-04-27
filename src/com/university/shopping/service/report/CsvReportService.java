@@ -1,6 +1,7 @@
 package com.university.shopping.service.report;
 
 import com.university.shopping.model.Order;
+import com.university.shopping.repository.ErrorLogger;
 import com.university.shopping.repository.OrderRepository;
 import com.university.shopping.repository.ProductRepository;
 import com.university.shopping.repository.UserRepository;
@@ -39,20 +40,29 @@ public class CsvReportService extends AbstractReportService {
 				+ orderCount + ","
 				+ escapeCsv(formatCurrency(revenue)) + "\n";
 
+		FileWriter writer = null;
 		try {
 			File file = new File(outputPath);
 			File parent = file.getParentFile();
-			if (parent != null && !parent.exists()) {
-				parent.mkdirs();
+			if (parent != null && !parent.exists() && !parent.mkdirs()) {
+				return "ERROR:Failed to create report directory";
 			}
 
-			FileWriter writer = new FileWriter(file);
+			writer = new FileWriter(file);
 			writer.write(csvText);
-			writer.close();
 
 			return "SUCCESS:" + file.getAbsolutePath();
 		} catch (IOException e) {
+			ErrorLogger.logError("Failed to export CSV report to " + outputPath, e);
 			return "ERROR:" + e.getMessage();
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException closeError) {
+					ErrorLogger.logError("Failed to close CSV report writer", closeError);
+				}
+			}
 		}
 	}
 

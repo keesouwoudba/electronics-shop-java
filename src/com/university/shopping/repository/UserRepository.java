@@ -32,8 +32,15 @@ public class UserRepository {
 
         if (MockDatabase.userCount >= MockDatabase.users.length) return false;
 
-        MockDatabase.users[MockDatabase.userCount++] = user;
-        CsvPersistenceUtil.writeUsersToCsv();
+        MockDatabase.users[MockDatabase.userCount] = user;
+        MockDatabase.userCount++;
+
+        if (!CsvPersistenceUtil.writeUsersToCsv()) {
+            MockDatabase.userCount--;
+            MockDatabase.users[MockDatabase.userCount] = null;
+            return false;
+        }
+
         return true;
     }
 
@@ -43,10 +50,21 @@ public class UserRepository {
         for (int i = 0; i < MockDatabase.userCount; i++) {
             User current = MockDatabase.users[i];
             if (current != null && current.getUserId() == user.getUserId()) {
+                String oldUsername = current.getUsername();
+                String oldPassword = current.getPassword();
+                boolean oldIsAdmin = current.isAdmin();
+
                 current.setUsername(user.getUsername());
                 current.setPassword(user.getPassword());
                 current.setIsAdmin(user.isAdmin());
-                CsvPersistenceUtil.writeUsersToCsv();
+
+                if (!CsvPersistenceUtil.writeUsersToCsv()) {
+                    current.setUsername(oldUsername);
+                    current.setPassword(oldPassword);
+                    current.setIsAdmin(oldIsAdmin);
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -59,12 +77,22 @@ public class UserRepository {
         for (int i = 0; i < MockDatabase.userCount; i++) {
             if (MockDatabase.users[i] != null &&
                     MockDatabase.users[i].getUserId() == user.getUserId()) {
+                User removed = MockDatabase.users[i];
                 for (int j = i; j < MockDatabase.userCount - 1; j++) {
                     MockDatabase.users[j] = MockDatabase.users[j + 1];
                 }
                 MockDatabase.userCount--;
                 MockDatabase.users[MockDatabase.userCount] = null;
-                CsvPersistenceUtil.writeUsersToCsv();
+
+                if (!CsvPersistenceUtil.writeUsersToCsv()) {
+                    for (int j = MockDatabase.userCount; j > i; j--) {
+                        MockDatabase.users[j] = MockDatabase.users[j - 1];
+                    }
+                    MockDatabase.users[i] = removed;
+                    MockDatabase.userCount++;
+                    return false;
+                }
+
                 return true;
             }
         }

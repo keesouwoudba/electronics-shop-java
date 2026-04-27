@@ -55,16 +55,17 @@ public class AdminService {
 
     public String addNewProduct(Product product) { //Returns: "SUCCESS", "NOT_ADMIN", "INVALID_DATA"
         if (!this.authService.isAdmin()) return "NOT_ADMIN";
-        productRepository.save(product);
+        if (!productRepository.save(product)) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     }
     public String addStockToExistingProduct(int productId, int quantityToAdd){
         if (!this.authService.isAdmin()) return "Not Admin";
         if (productRepository.findById(productId) == null) return "Product not exists";
 
-        productRepository.updateStock(productId,
-                productRepository.findById(productId).getStockQuantity() + quantityToAdd
+        boolean updated = productRepository.updateStock(productId,
+            productRepository.findById(productId).getStockQuantity() + quantityToAdd
         );
+        if (!updated) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     }
     public String removeStock(int productId, int quantityToRemove){
@@ -72,12 +73,12 @@ public class AdminService {
         if (productRepository.findById(productId) == null) return "Product not exists";
 
         if (productRepository.findById(productId).getStockQuantity() < quantityToRemove){
-            productRepository.updateStock(productId, 0);
+            if (!productRepository.updateStock(productId, 0)) return "PERSISTENCE_ERROR";
         }
         else {
-            productRepository.updateStock(productId,
+            if (!productRepository.updateStock(productId,
                     productRepository.findById(productId).getStockQuantity() - quantityToRemove
-            );
+            )) return "PERSISTENCE_ERROR";
         }
         return "SUCCESS";
     }
@@ -85,7 +86,7 @@ public class AdminService {
         if (!this.authService.isAdmin()) return "Not Admin";
         if (productRepository.findById(productId) == null) return "Product not exists";
 
-        productRepository.deleteById(productId);
+        if (!productRepository.deleteById(productId)) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     }
 
@@ -95,7 +96,7 @@ public class AdminService {
 
         Product tmp_prod = productRepository.findById(productId);
         tmp_prod.setPrice(newPrice);
-        productRepository.update(tmp_prod);
+        if (!productRepository.update(tmp_prod)) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     }
 
@@ -105,7 +106,7 @@ public class AdminService {
 
         Product tmp_prod = productRepository.findById(productId);
         tmp_prod.setName(newName);
-        productRepository.update(tmp_prod);
+        if (!productRepository.update(tmp_prod)) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     }
 
@@ -116,7 +117,7 @@ public class AdminService {
         Product tmp_prod = productRepository.findById(productId);
         tmp_prod.setIsDiscounted(isDiscounted);
         tmp_prod.setDiscountPercentage(discountPercentage);
-        productRepository.update(tmp_prod);
+        if (!productRepository.update(tmp_prod)) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     }
     public Product[] getAllProducts(){
@@ -136,7 +137,7 @@ public class AdminService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = today.format(formatter);
         User tmp_user = new User(username, password, isAdmin, formattedDate);
-        userRepository.save(tmp_user);
+        if (!userRepository.save(tmp_user)) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     }
     public String updateUser(int userId, String newUsername, String newPassword, boolean isAdmin){
@@ -145,10 +146,11 @@ public class AdminService {
         if (userRepository.findByUsername(newUsername)!=null) return "This Username already exists!";
 
         User tmp_user = userRepository.findById(userId);
+        if (tmp_user == null) return "This User doesn't exist!";
         tmp_user.setUsername(newUsername);
         tmp_user.setPassword(newPassword);
         tmp_user.setIsAdmin(isAdmin);
-        userRepository.update(tmp_user);
+        if (!userRepository.update(tmp_user)) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     }
     public String deleteUser(int userId){
@@ -156,7 +158,7 @@ public class AdminService {
         if (userRepository.findById(userId)==null) return "This User doesn't exist!";
         if (userRepository.findById(userId).getUsername().equals(authService.getCurrentUser().getUsername()))
             return "Unable to delete yourself";
-        userRepository.delete(userRepository.findById(userId));
+        if (!userRepository.delete(userRepository.findById(userId))) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     } //Prevents self-deletion
 
