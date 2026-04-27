@@ -559,10 +559,26 @@
         <nav>
             <h3>📚 Documentation Screens</h3>
             <div class="screen-switcher">
-                <button id="show-v3" class="screen-btn active" type="button">v3 - Step 3 CSV Persistence (Default)</button>
+                <button id="show-v4" class="screen-btn active" type="button">v4 - Step 5 JavaFX SPA Router (Default)</button>
+                <button id="show-v3" class="screen-btn" type="button">v3 - Step 3 CSV Persistence</button>
                 <button id="show-v2" class="screen-btn" type="button">v2 - OOP Extension Blueprint</button>
                 <button id="show-v1" class="screen-btn" type="button">v1 - Legacy Architecture Doc</button>
             </div>
+
+            <h3>🆕 v4 Step 5 Navigation</h3>
+            <ul>
+                <li><a href="#v4-summary" data-screen="v4">Summary</a></li>
+                <li><a href="#v4-arch" data-screen="v4">Architecture</a></li>
+                <li><a href="#v4-rules" data-screen="v4">UI Rules</a></li>
+                <li><a href="#v4-tree" data-screen="v4">File Structure</a></li>
+                <li><a href="#v4-router" data-screen="v4">Router + Renderer</a></li>
+                <li><a href="#v4-routes" data-screen="v4">Route Map</a></li>
+                <li><a href="#v4-image" data-screen="v4">Image Refactor</a></li>
+                <li><a href="#v4-classes" data-screen="v4">New Classes</a></li>
+                <li><a href="#v4-existing" data-screen="v4">Modified Classes</a></li>
+                <li><a href="#v4-phases" data-screen="v4">Phases</a></li>
+                <li><a href="#v4-checklist" data-screen="v4">Test Checklist</a></li>
+            </ul>
 
             <h3>🆕 v3 Step 3 Navigation</h3>
             <ul>
@@ -600,12 +616,480 @@
         </nav>
 
         <div class="content">
-            <div id="screen-v3" class="doc-screen active">
+
+            <!-- ==================== V4 SCREEN ==================== -->
+            <div id="screen-v4" class="doc-screen active">
+
+                <section id="v4-summary">
+                    <h2>v4: Step 5 &mdash; JavaFX SPA Router + Product Image Refactor</h2>
+                    <div class="box box-info">
+                        <h3>Executive Summary</h3>
+                        <p>We are moving from a console UI loop to a JavaFX desktop frontend with SPA-style behavior.</p>
+                        <p>The new UI model: one window (<code>Stage</code>), one shell layout, fixed header at top, dynamic page content in center, footer always present at the bottom of page content (not sticky), route decision made by a custom router based on app state.</p>
+                        <p>The old <code>while</code> loop behavior from console is preserved conceptually as: <code>intent &rarr; router decision &rarr; renderer swaps page</code>.</p>
+                    </div>
+                </section>
+
+                <section id="v4-arch">
+                    <h2>1) Current vs Target Architecture</h2>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4>Current (Console)</h4>
+                            <ul>
+                                <li>Console interaction in menu loops</li>
+                                <li>Navigation through numeric options</li>
+                                <li>Rendering is text output in terminal</li>
+                            </ul>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Target (JavaFX)</h4>
+                            <ul>
+                                <li>JavaFX event-driven navigation</li>
+                                <li>Navigation based on route/state, not scanner input loops</li>
+                                <li>Rendering through JavaFX Nodes</li>
+                                <li>Same service and repository business logic reused underneath</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="v4-rules">
+                    <h2>2) Core UI Rules (Non-Negotiable)</h2>
+                    <div class="box box-danger">
+                        <ol>
+                            <li>Header is fixed in the top region and is always visible.</li>
+                            <li>Main page content is route-driven and replaced by renderer.</li>
+                            <li>Footer is always rendered as part of page flow at the bottom.</li>
+                            <li>Footer is <strong>not</strong> fixed to viewport bottom.</li>
+                            <li>On long pages, users scroll to reach footer.</li>
+                        </ol>
+                    </div>
+                    <div class="box box-info">
+                        <h3>Runtime Baseline</h3>
+                        <ul>
+                            <li>JDK 17+</li>
+                            <li>Maven wrapper in repository root</li>
+                            <li>JavaFX dependencies managed by Maven</li>
+                            <li>IntelliJ can open this repository directly as a Maven project</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="v4-tree">
+                    <h2>3) Target File Structure</h2>
+                    <div class="box box-warning">
+                        <p><code>*</code> modified existing file &nbsp;|&nbsp; <code>**</code> new file</p>
+                    </div>
+                    <pre><code>.
+|-- README.md *
+|-- pom.xml *  /  mvnw *  /  mvnw.cmd *
+|-- data
+|   |-- users.csv  /  orders.csv  /  order_items.csv
+|   |-- products.csv *
+|   `-- images **
+|       `-- .gitkeep **
+`-- src/com/university/shopping
+    |-- Main.java
+    |-- Launcher.java *
+    |-- MainFx.java *
+    |-- app **
+    |   |-- AppState.java **
+    |   |-- Route.java **
+    |   |-- NavIntentType.java **
+    |   |-- NavIntent.java **
+    |   |-- RouteDecision.java **
+    |   `-- Router.java **
+    |-- dto **
+    |   `-- ProductImageUpdateRequest.java **
+    |-- model
+    |   |-- MockDatabase.java *
+    |   |-- Product.java *    (+ imageName, imagePath)
+    |   `-- (User, Order, OrderItem, Cart - unchanged)
+    |-- repository
+    |   |-- CsvBootstrapInitializer.java *
+    |   |-- CsvPersistenceUtil.java *
+    |   |-- ProductRepository.java *
+    |   `-- (UserRepository, OrderRepository, CartRepository, ErrorLogger)
+    |-- service
+    |   |-- AuthService.java *
+    |   |-- ShopService.java *
+    |   |-- AdminService.java *
+    |   |-- media **
+    |   |   `-- ProductImageService.java **
+    |   |-- pricing/*
+    |   `-- report/*
+    `-- view
+        |-- ConsoleUI.java *
+        |-- contracts
+        |   |-- MenuActions.java *
+        |   |-- ScreenComponent.java **
+        |   `-- ScreenContext.java **
+        |-- renderer
+        |   `-- UiRenderer.java **
+        |-- layout
+        |   `-- AppShell.java **
+        |-- components
+        |   |-- HeaderNavComponent.java **
+        |   |-- FooterComponent.java **
+        |   |-- NotificationBarComponent.java **
+        |   `-- ProductCardComponent.java **
+        |-- pages
+        |   |-- LoginPage.java **
+        |   |-- RegisterPage.java **
+        |   |-- GuestProductsPage.java **
+        |   |-- CustomerProductsPage.java **
+        |   |-- ProductDetailsPage.java **
+        |   |-- CartPage.java **
+        |   |-- CheckoutPage.java **
+        |   |-- AdminProductsPage.java **
+        |   |-- AdminProductEditorPage.java **
+        |   |-- AdminUsersPage.java **
+        |   `-- AdminReportsPage.java **
+        |-- screens
+        |   |-- AbstractScreen.java *
+        |   |-- AuthScreen.java *
+        |   |-- CustomerScreen.java *
+        |   `-- AdminScreen.java *
+        `-- styles
+            |-- app.css **
+            `-- theme.css **</code></pre>
+                </section>
+
+                <section id="v4-router">
+                    <h2>4) Router + Renderer Model</h2>
+                    <div class="method-card">
+                        <h3>4.1 Layout Model</h3>
+                        <p>Root is <code>BorderPane</code>:</p>
+                        <ul>
+                            <li><code>top</code>: header nav component (fixed)</li>
+                            <li><code>center</code>: <code>ScrollPane</code> containing <code>VBox pageFlow</code></li>
+                            <li><code>pageFlow</code> children always in order: (1) active page node, (2) footer node</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>4.2 Route Loop Model (replaces console while-loop)</h3>
+                        <ol>
+                            <li>User action creates <code>NavIntent</code>.</li>
+                            <li>Router evaluates user state and permissions.</li>
+                            <li>Router returns <code>RouteDecision</code>.</li>
+                            <li>Renderer swaps page content.</li>
+                            <li>Optional lifecycle hooks run (<code>onBeforeLeave</code>, <code>onAfterEnter</code>).</li>
+                        </ol>
+                    </div>
+                    <div class="method-card">
+                        <h3>4.3 Access Guards</h3>
+                        <ul>
+                            <li><strong>Guest routes:</strong> only when not logged in.</li>
+                            <li><strong>Customer routes:</strong> require logged-in non-admin user.</li>
+                            <li><strong>Admin routes:</strong> require admin user.</li>
+                            <li><strong>Invalid request:</strong> redirected with user-visible reason.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="v4-routes">
+                    <h2>5) Route Map</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Route ID</th><th>Owner Screen</th><th>Auth Required</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>AUTH_LOGIN</code></td><td>AuthScreen</td><td>Guest only</td></tr>
+                            <tr><td><code>AUTH_REGISTER</code></td><td>AuthScreen</td><td>Guest only</td></tr>
+                            <tr><td><code>GUEST_PRODUCTS</code></td><td>AuthScreen</td><td>Guest only</td></tr>
+                            <tr><td><code>CUSTOMER_PRODUCTS</code></td><td>CustomerScreen</td><td>Logged-in user</td></tr>
+                            <tr><td><code>CUSTOMER_PRODUCT_DETAILS</code></td><td>CustomerScreen</td><td>Logged-in user</td></tr>
+                            <tr><td><code>CUSTOMER_CART</code></td><td>CustomerScreen</td><td>Logged-in user</td></tr>
+                            <tr><td><code>CUSTOMER_CHECKOUT</code></td><td>CustomerScreen</td><td>Logged-in user</td></tr>
+                            <tr><td><code>ADMIN_PRODUCTS</code></td><td>AdminScreen</td><td>Admin only</td></tr>
+                            <tr><td><code>ADMIN_PRODUCT_EDITOR</code></td><td>AdminScreen</td><td>Admin only</td></tr>
+                            <tr><td><code>ADMIN_USERS</code></td><td>AdminScreen</td><td>Admin only</td></tr>
+                            <tr><td><code>ADMIN_REPORTS</code></td><td>AdminScreen</td><td>Admin only</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="v4-image">
+                    <h2>6) Product Image Refactor</h2>
+                    <div class="method-card">
+                        <h3>6.1 New Product Model Fields</h3>
+                        <pre><code>private String imageName;   // shown in UI
+private String imagePath;   // relative path persisted in CSV</code></pre>
+                    </div>
+                    <div class="method-card">
+                        <h3>6.2 CSV Schema Change</h3>
+                        <p><strong>Old header:</strong></p>
+                        <pre><code>id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage</code></pre>
+                        <p><strong>New header:</strong></p>
+                        <pre><code>id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath</code></pre>
+                        <div class="box box-success">
+                            <p><strong>Backward compatibility:</strong> If row has 8 columns, default image fields to empty strings.</p>
+                        </div>
+                    </div>
+                    <div class="method-card">
+                        <h3>6.3 File Storage Policy</h3>
+                        <ul>
+                            <li>Store image files under <code>data/images/</code>.</li>
+                            <li>Persist only relative path, never machine-specific absolute path.</li>
+                            <li>Remove file on delete/replace as best effort.</li>
+                            <li>Allowed extensions: <code>png</code>, <code>jpg</code>, <code>jpeg</code>, <code>webp</code>.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="v4-classes">
+                    <h2>7) New Class Reference</h2>
+
+                    <div class="method-card">
+                        <h3><code>MainFx</code> &mdash; <span style="font-size:0.8em;color:#888">com.university.shopping</span></h3>
+                        <p>JavaFX entry application. Builds dependency graph and root shell.</p>
+                        <pre><code>Fields:
+  AuthService authService
+  ShopService shopService
+  AdminService adminService
+  AppState appState
+  Router router
+  UiRenderer renderer
+
+Methods:
+  void start(Stage stage)         // initialize app, create scene, render initial route
+  static void main(String[] args) // launch JavaFX app</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>AppState</code> &mdash; <span style="font-size:0.8em;color:#888">app</span></h3>
+                        <p>Single source of UI state.</p>
+                        <pre><code>Fields:
+  User currentUser
+  Route currentRoute
+  Integer selectedProductId
+  String flashMessage
+  boolean loading
+
+Key method:
+  String consumeFlashMessage()  // returns flash message and clears it</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>NavIntent</code> &mdash; <span style="font-size:0.8em;color:#888">app</span></h3>
+                        <p>Immutable navigation input to router. Factory methods:</p>
+                        <pre><code>static NavIntent appStart()
+static NavIntent open(Route route)
+static NavIntent openProduct(int productId)
+static NavIntent loginSuccess()
+static NavIntent registerSuccess()
+static NavIntent checkoutSuccess()
+static NavIntent logout()</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>Router</code> &mdash; <span style="font-size:0.8em;color:#888">app</span></h3>
+                        <p>State-aware and role-aware route decision engine.</p>
+                        <pre><code>RouteDecision dispatch(NavIntent intent)
+RouteDecision evaluateCurrentState()
+boolean canAccess(Route route)</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>ScreenContext</code> &mdash; <span style="font-size:0.8em;color:#888">view.contracts</span></h3>
+                        <p>Shared dependency container for all screens and pages.</p>
+                        <pre><code>AppState appState
+Router router
+UiRenderer renderer
+AuthService authService
+ShopService shopService
+AdminService adminService
+ProductImageService productImageService</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>UiRenderer</code> &mdash; <span style="font-size:0.8em;color:#888">view.renderer</span></h3>
+                        <p>Route-to-screen resolution and center content swap.</p>
+                        <pre><code>void render(Route route, ScreenContext context)
+void setNotification(String message, boolean error)
+ScreenComponent resolveScreen(Route route)</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>AppShell</code> &mdash; <span style="font-size:0.8em;color:#888">view.layout</span></h3>
+                        <p>Owns stable regions and enforces header/footer layout behavior.</p>
+                        <pre><code>Fields:
+  BorderPane root
+  HeaderNavComponent header
+  ScrollPane scrollRoot
+  VBox pageFlow
+  FooterComponent footer
+
+Methods:
+  Parent buildRoot(ScreenContext context)
+  void setPageContent(Node pageNode)  // keeps order: [pageNode, footer]
+  BorderPane getRoot()</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>ProductImageService</code> &mdash; <span style="font-size:0.8em;color:#888">service.media</span></h3>
+                        <p>Validates, copies, and removes product image files.</p>
+                        <pre><code>String storeProductImage(ProductImageUpdateRequest request)
+  // validate extension + copy file -> returns stored relative path
+
+boolean removeProductImage(String relativePath)
+  // delete file -> returns delete status
+
+boolean isSupportedImage(String fileName)
+  // checks extension validity (png, jpg, jpeg, webp)</code></pre>
+                    </div>
+
+                    <h3>View Components</h3>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>HeaderNavComponent</code></h4>
+                            <p>Role-aware top navigation with user badge. Methods: <code>render(context)</code>, <code>refresh(context)</code>.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>FooterComponent</code></h4>
+                            <p>Footer at bottom of page flow (scroll to reach). Method: <code>render(context)</code>.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>NotificationBarComponent</code></h4>
+                            <p>Success/error banner. Methods: <code>showSuccess()</code>, <code>showError()</code>, <code>clear()</code>.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>ProductCardComponent</code></h4>
+                            <p>Reusable catalog card with image thumbnail and fallback placeholder.</p>
+                        </div>
+                    </div>
+
+                    <h3>Page Classes &mdash; <code>view.pages</code></h3>
+                    <p>All pages implement <code>Node render(ScreenContext context)</code>. Each page owns its controls and event listeners, calls service methods, emits router intents on transitions, and shows notification messages.</p>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card"><code>LoginPage</code></div>
+                        <div class="blueprint-card"><code>RegisterPage</code></div>
+                        <div class="blueprint-card"><code>GuestProductsPage</code></div>
+                        <div class="blueprint-card"><code>CustomerProductsPage</code></div>
+                        <div class="blueprint-card"><code>ProductDetailsPage</code></div>
+                        <div class="blueprint-card"><code>CartPage</code></div>
+                        <div class="blueprint-card"><code>CheckoutPage</code></div>
+                        <div class="blueprint-card"><code>AdminProductsPage</code></div>
+                        <div class="blueprint-card"><code>AdminProductEditorPage</code></div>
+                        <div class="blueprint-card"><code>AdminUsersPage</code></div>
+                        <div class="blueprint-card"><code>AdminReportsPage</code></div>
+                    </div>
+                </section>
+
+                <section id="v4-existing">
+                    <h2>8) Existing Classes to Modify</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Class</th><th>Change Required</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>Product</code></td><td>Add <code>imageName</code>, <code>imagePath</code> fields, constructor overload, and accessors</td></tr>
+                            <tr><td><code>CsvPersistenceUtil</code></td><td>Update write logic for 10-column product rows</td></tr>
+                            <tr><td><code>CsvBootstrapInitializer</code></td><td>Parse 10-column rows; fallback for 8-column legacy rows (empty image fields)</td></tr>
+                            <tr><td><code>ProductRepository</code></td><td>Add image metadata mutation methods and persist CSV after mutation</td></tr>
+                            <tr><td><code>AdminService</code></td><td>Add <code>setProductImage()</code> and <code>removeProductImage()</code> methods</td></tr>
+                            <tr><td><code>AuthService / ShopService</code></td><td>Minor wiring updates; no major behavior change required</td></tr>
+                            <tr><td><code>ConsoleUI</code></td><td>Keep temporarily for fallback console mode during JavaFX migration</td></tr>
+                            <tr><td><code>AbstractScreen / AuthScreen / CustomerScreen / AdminScreen</code></td><td>Refactor from console rendering to JavaFX <code>ScreenComponent</code> wrappers</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="v4-phases">
+                    <h2>9) Phased Implementation Plan</h2>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4>Phase 1 &mdash; Foundation</h4>
+                            <p>Create <code>AppState</code>, <code>Route</code>, <code>NavIntent</code>, <code>Router</code>, <code>RouteDecision</code>. Build <code>AppShell</code> and <code>UiRenderer</code>. Confirm header/footer layout behavior.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 2 &mdash; Auth + Guest Catalog</h4>
+                            <p>Implement <code>LoginPage</code>, <code>RegisterPage</code>, <code>GuestProductsPage</code>. Add route guards and redirects.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 3 &mdash; Customer Flow</h4>
+                            <p>Implement customer products, details, cart, and checkout pages. Wire into router.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 4 &mdash; Admin Flow</h4>
+                            <p>Implement admin products table, product editor, users management, and reports pages.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 5 &mdash; Product Image Refactor</h4>
+                            <p>Add model fields, update CSV schema, implement <code>ProductImageService</code>, wire admin upload/remove workflows.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 6 &mdash; Stabilization</h4>
+                            <p>Regression tests, manual UX checks, route guard verification, CSV backward-compatibility checks.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="v4-flow">
+                    <h2>10) High-Order Flowchart</h2>
+                    <div class="flow">
+                        <pre><code>App Launch
+  &rarr; MainFx: build services, state, router, renderer
+        &rarr; Router.evaluateCurrentState()
+              &rarr; UiRenderer.render(route, context)
+                    &rarr; AppShell: Header (fixed top) + ScrollPane (center)
+                          &rarr; pageFlow VBox:
+                                [1] active page Node
+                                [2] footer Node
+
+User action (click / submit)
+  &rarr; Create NavIntent (factory method)
+        &rarr; Router.dispatch(intent)
+              &rarr; Allowed?  &rarr; RouteDecision(target)          &rarr; UiRenderer.render()
+              &rarr; Denied?   &rarr; RouteDecision(fallback+reason) &rarr; UiRenderer.render()
+
+Admin image upload
+  &rarr; ProductImageService.storeProductImage(request)   [validate + copy]
+        &rarr; AdminService.setProductImage(productId, path, name)
+              &rarr; ProductRepository: update metadata + persist products.csv
+                    &rarr; Renderer: refresh current admin page</code></pre>
+                    </div>
+                </section>
+
+                <section id="v4-checklist">
+                    <h2>11) Definition of Done + Test Checklist</h2>
+                    <div class="box box-success">
+                        <h3>Definition of Done</h3>
+                        <ul>
+                            <li>JavaFX app runs from repository as Maven project.</li>
+                            <li>Router-driven navigation works for guest / customer / admin.</li>
+                            <li>Header is fixed at top across all route changes.</li>
+                            <li>Footer is always rendered at content bottom and scroll-reachable.</li>
+                            <li>Product images can be uploaded/removed by admin and are persisted to CSV.</li>
+                            <li>Existing core business behavior (auth, cart, checkout, reports) remains correct.</li>
+                        </ul>
+                    </div>
+                    <div class="box box-info">
+                        <h3>Manual Test Checklist</h3>
+                        <ol>
+                            <li>Launch JavaFX app &rarr; shell renders with header and footer visible.</li>
+                            <li>Header remains visible during all route changes.</li>
+                            <li>Footer appears after content; scrolling reveals it on long pages.</li>
+                            <li>Guest cannot navigate to customer or admin routes.</li>
+                            <li>Customer cannot access admin routes.</li>
+                            <li>Admin routes open correctly after admin login.</li>
+                            <li>Product image upload writes file to <code>data/images/</code> and updates <code>products.csv</code>.</li>
+                            <li>Product image remove updates CSV and deletes file (best effort).</li>
+                            <li>Old 8-column <code>products.csv</code> rows load without errors (image fields default to empty).</li>
+                        </ol>
+                    </div>
+                </section>
+
+            </div>
+            <!-- ==================== END V4 SCREEN ==================== -->
+
+            <!-- ==================== V3 SCREEN ==================== -->
+            <div id="screen-v3" class="doc-screen">
                 <section id="v3-goal">
                     <h2>v3: Step 3 Implementation (CSV Persistence + Error Handling)</h2>
                     <div class="box box-info">
                         <h3>0) Goal and Requirement Mapping</h3>
-                        <p>This page is based on <code>STEP3_CSV_PERSISTENCE_IMPLEMENTATION.md</code> and is now the default documentation screen.</p>
+                        <p>This page is based on <code>STEP3_CSV_PERSISTENCE_IMPLEMENTATION.md</code>.</p>
                         <ol>
                             <li>Create 3 different files containing entity data.</li>
                             <li>Use 4 different try-catch patterns for different error types.</li>
@@ -867,7 +1351,9 @@ try {
                     </div>
                 </section>
             </div>
+            <!-- ==================== END V3 SCREEN ==================== -->
 
+            <!-- ==================== V2 SCREEN ==================== -->
             <div id="screen-v2" class="doc-screen">
                 <section id="oop-overview">
                     <h2>OOP Extension Blueprint (v2)</h2>
@@ -988,7 +1474,6 @@ All services continue using repositories and MockDatabase as before.</code></pre
                     <div class="method-card">
                         <h4><code>MenuActions</code> (interface)</h4>
                         <p><strong>Methods:</strong> <code>void showMenu()</code>, <code>void handleOption(int option)</code></p>
-                        <p><strong>Input/Output:</strong> accepts menu option; no return; triggers behavior through services.</p>
                         <pre><code>// Example polymorphic usage
 MenuActions active = authService.isAdmin() ? adminScreen : customerScreen;
 active.showMenu();
@@ -1001,28 +1486,22 @@ active.handleOption(choice);</code></pre>
                         <div class="blueprint-card">
                             <h4><code>AbstractScreen</code> (abstract)</h4>
                             <p><strong>Fields:</strong> <code>scanner</code>, <code>authService</code>, <code>shopService</code>, <code>adminService</code></p>
-                            <p><strong>Implemented methods:</strong> <code>printTitle</code>, <code>pause</code>, <code>readIntSafe</code>, <code>truncate</code></p>
-                            <p><strong>Abstract methods:</strong> <code>showMenu</code>, <code>handleOption</code></p>
+                            <p><strong>Implemented:</strong> <code>printTitle</code>, <code>pause</code>, <code>readIntSafe</code>, <code>truncate</code></p>
+                            <p><strong>Abstract:</strong> <code>showMenu</code>, <code>handleOption</code></p>
                         </div>
                         <div class="blueprint-card">
                             <h4><code>CustomerScreen</code></h4>
-                            <p><strong>Methods:</strong> browse products, details, add/remove cart, checkout.</p>
-                            <p><strong>Example input:</strong> product id <code>7</code>, qty <code>2</code></p>
-                            <p><strong>Example output:</strong> <code>Product added to cart successfully!</code></p>
+                            <p>Browse products, details, add/remove cart, checkout.</p>
                         </div>
                         <div class="blueprint-card">
                             <h4><code>AdminScreen</code></h4>
-                            <p><strong>Methods:</strong> manage products/users and export reports.</p>
-                            <p><strong>Example input:</strong> select <code>Export Report -> csv</code></p>
-                            <p><strong>Example output:</strong> <code>SUCCESS:/reports/system-report.csv</code></p>
+                            <p>Manage products/users and export reports.</p>
                         </div>
                     </div>
 
                     <h3>Package: <code>service/pricing</code></h3>
                     <div class="method-card">
                         <h4><code>DiscountPolicy</code> (interface)</h4>
-                        <p><strong>Method:</strong> <code>double apply(Product product)</code></p>
-                        <p>Given product price and discount metadata, returns final charged price.</p>
                         <pre><code>DiscountPolicy policy = new SeasonalDiscountPolicy(5.0);
 double finalPrice = policy.apply(product);</code></pre>
                     </div>
@@ -1033,13 +1512,11 @@ double finalPrice = policy.apply(product);</code></pre>
                         </div>
                         <div class="blueprint-card">
                             <h4><code>SeasonalDiscountPolicy</code></h4>
-                            <p>Adds extra campaign percentage on top of standard discount (clamped 0..100).</p>
-                            <p><strong>Example:</strong> base 1000, product 10%, seasonal 5% => 850</p>
+                            <p>Adds extra campaign percentage on top of standard discount.<br>Example: base 1000, product 10%, seasonal 5% =&gt; 850</p>
                         </div>
                         <div class="blueprint-card">
                             <h4><code>PricingMode</code> (enum)</h4>
-                            <p><code>LOCK_AT_ADD</code> (default) locks price snapshot in cart.</p>
-                            <p><code>RECALCULATE_AT_CHECKOUT</code> recalculates with active policy when order is placed.</p>
+                            <p><code>LOCK_AT_ADD</code> (default) locks price snapshot in cart.<br><code>RECALCULATE_AT_CHECKOUT</code> recalculates with active policy.</p>
                         </div>
                     </div>
 
@@ -1047,182 +1524,75 @@ double finalPrice = policy.apply(product);</code></pre>
                     <div class="blueprint-grid">
                         <div class="blueprint-card">
                             <h4><code>AbstractReportService</code> (abstract)</h4>
-                            <p><strong>Fields:</strong> product/user/order repositories</p>
-                            <p><strong>Implemented methods:</strong> <code>buildTimestamp</code>, <code>formatCurrency</code>, <code>buildHeader</code></p>
-                            <p><strong>Abstract:</strong> <code>exportReport()</code></p>
+                            <p>Implemented: <code>buildTimestamp</code>, <code>formatCurrency</code>, <code>buildHeader</code><br>Abstract: <code>exportReport()</code></p>
                         </div>
                         <div class="blueprint-card">
                             <h4><code>ConsoleReportService</code></h4>
-                            <p>Computes system totals and prints report to terminal.</p>
+                            <p>Computes totals and prints report to terminal.</p>
                         </div>
                         <div class="blueprint-card">
                             <h4><code>CsvReportService</code></h4>
                             <p>Computes same metrics and writes CSV to configured path.</p>
                         </div>
                     </div>
-
-                    <h3>Modified Existing Classes</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Class</th>
-                                <th>New Fields</th>
-                                <th>New/Updated Methods</th>
-                                <th>Why</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>ShopService</code></td>
-                                <td><code>DiscountPolicy discountPolicy</code>, <code>PricingMode pricingMode</code></td>
-                                <td><code>setDiscountPolicy</code>, <code>setPricingMode</code>, pricing-aware cart/checkout flow</td>
-                                <td>Pluggable pricing behavior and polymorphism</td>
-                            </tr>
-                            <tr>
-                                <td><code>AdminService</code></td>
-                                <td><code>Map&lt;String, AbstractReportService&gt; reportServicesByFormat</code></td>
-                                <td><code>setReportService</code>, <code>exportSystemReport(format)</code></td>
-                                <td>Pluggable report destination and runtime strategy switch</td>
-                            </tr>
-                            <tr>
-                                <td><code>ConsoleUI</code></td>
-                                <td><code>MenuActions customerScreen/adminScreen</code></td>
-                                <td>role delegation in <code>start()</code></td>
-                                <td>Cleaner UI separation and role polymorphism</td>
-                            </tr>
-                            <tr>
-                                <td><code>Main</code></td>
-                                <td>none</td>
-                                <td>new wiring for policies/report service</td>
-                                <td>Dependency injection for new abstractions</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </section>
 
                 <section id="oop-method-contracts">
                     <h2>Method Contracts (Deep Dive)</h2>
                     <div class="method-card">
-                        <h3><code>MenuActions</code></h3>
-                        <ul>
-                            <li><code>showMenu()</code>: Input none; Output none; displays options for current role.</li>
-                            <li><code>handleOption(int option)</code>: Input option number; Output none; calls role-specific business action.</li>
-                        </ul>
-                    </div>
-
-                    <div class="method-card">
-                        <h3><code>AbstractScreen</code></h3>
-                        <ul>
-                            <li><code>AbstractScreen(Scanner, AuthService, ShopService, AdminService)</code>: injects shared dependencies.</li>
-                            <li><code>printTitle(String title)</code>: Input title string; Output none; prints visual section header.</li>
-                            <li><code>pause()</code>: Input none; Output none; waits for Enter.</li>
-                            <li><code>readIntSafe()</code>: Input none; Output valid integer; loops until numeric input is provided.</li>
-                            <li><code>truncate(String value, int maxLength)</code>: Input string + max; Output formatted string.</li>
-                            <li><code>showMenu()</code> and <code>handleOption(int)</code>: abstract role hooks.</li>
-                        </ul>
-                    </div>
-
-                    <div class="method-card">
-                        <h3><code>CustomerScreen</code></h3>
-                        <ul>
-                            <li><code>showMenu()</code> override: renders customer command set.</li>
-                            <li><code>handleOption(int option)</code> override: routes option to customer methods.</li>
-                            <li><code>browseAllProducts()</code>: Input none; Output none; uses <code>shopService.getAllProducts()</code>.</li>
-                            <li><code>viewProductDetails()</code>: Input product id; Output none; prints product details.</li>
-                            <li><code>addProductToCart()</code>: Input product id and quantity; Output status message via UI print.</li>
-                            <li><code>viewCart()</code>: Input none; Output none; renders current cart table and totals.</li>
-                            <li><code>removeFromCart()</code>: Input product id; Output status message.</li>
-                            <li><code>checkout()</code>: Input user confirm yes/no; Output success/failure printout.</li>
-                        </ul>
-                        <pre><code>Example interaction
-Input: productId=7, qty=2
-Output: "Product added to cart successfully!"</code></pre>
-                    </div>
-
-                    <div class="method-card">
-                        <h3><code>AdminScreen</code></h3>
-                        <ul>
-                            <li><code>showMenu()</code> override: renders admin panel options.</li>
-                            <li><code>handleOption(int option)</code> override: dispatches to admin management actions.</li>
-                            <li>Product methods: <code>addNewProduct</code>, <code>updateProductPrice</code>, <code>updateProductName</code>, <code>setProductDiscount</code>, <code>addStock</code>, <code>removeStock</code>, <code>deleteProduct</code>.</li>
-                            <li>User methods: <code>addNewUser</code>, <code>updateUser</code>, <code>deleteUser</code>, <code>viewAllUsers</code>.</li>
-                            <li><code>exportReport()</code>: Input format (console/csv); Output status print from admin service.</li>
-                        </ul>
-                    </div>
-
-                    <div class="method-card">
-                        <h3><code>DiscountPolicy</code> + Implementations</h3>
-                        <ul>
-                            <li><code>apply(Product product)</code>: Input product; Output final price.</li>
-                            <li><code>StandardDiscountPolicy.apply</code>: uses product's own discount fields.</li>
-                            <li><code>SeasonalDiscountPolicy.apply</code>: applies standard then extra seasonal percent.</li>
-                            <li><code>PricingMode</code>: controls when policy is applied (<code>LOCK_AT_ADD</code> or <code>RECALCULATE_AT_CHECKOUT</code>).</li>
-                        </ul>
-                    </div>
-
-                    <div class="method-card">
-                        <h3><code>AbstractReportService</code> + Implementations</h3>
-                        <ul>
-                            <li><code>buildTimestamp()</code>: Output current timestamp string.</li>
-                            <li><code>formatCurrency(double amount)</code>: Output formatted money string.</li>
-                            <li><code>buildHeader(String title)</code>: Output decorative report header.</li>
-                            <li><code>exportReport()</code> (abstract): Output status/result string.</li>
-                            <li><code>ConsoleReportService.exportReport()</code>: side effect print to console.</li>
-                            <li><code>CsvReportService.exportReport()</code>: side effect file write; returns <code>SUCCESS:path</code> or <code>ERROR:reason</code>.</li>
-                            <li>CSV export behavior: auto-create directories, overwrite mode, escaped quoted values, and required header row.</li>
-                        </ul>
-                    </div>
-
-                    <div class="method-card">
-                        <h3>Modified Existing Classes: Method-Level Changes</h3>
-                        <ul>
-                            <li><code>ShopService</code>: add <code>setDiscountPolicy(DiscountPolicy)</code> and <code>setPricingMode(PricingMode)</code>; default to <code>StandardDiscountPolicy + LOCK_AT_ADD</code>.</li>
-                            <li><code>AdminService</code>: route <code>exportSystemReport(String format)</code> through <code>reportServicesByFormat</code> with normalized keys.</li>
-                            <li><code>ConsoleUI.start()</code>: choose active <code>MenuActions</code>, render menu, read choice centrally, and delegate option handling.</li>
-                            <li><code>Main.main()</code>: instantiate and inject policy/report concrete implementations.</li>
-                        </ul>
+                        <h3>Modified Existing Classes</h3>
+                        <table>
+                            <thead>
+                                <tr><th>Class</th><th>New Fields</th><th>New/Updated Methods</th><th>Why</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>ShopService</code></td>
+                                    <td><code>DiscountPolicy discountPolicy</code>, <code>PricingMode pricingMode</code></td>
+                                    <td><code>setDiscountPolicy</code>, <code>setPricingMode</code></td>
+                                    <td>Pluggable pricing behavior</td>
+                                </tr>
+                                <tr>
+                                    <td><code>AdminService</code></td>
+                                    <td><code>Map&lt;String, AbstractReportService&gt; reportServicesByFormat</code></td>
+                                    <td><code>setReportService</code>, <code>exportSystemReport(format)</code></td>
+                                    <td>Pluggable report destination</td>
+                                </tr>
+                                <tr>
+                                    <td><code>ConsoleUI</code></td>
+                                    <td><code>MenuActions customerScreen/adminScreen</code></td>
+                                    <td>role delegation in <code>start()</code></td>
+                                    <td>Role polymorphism</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </section>
 
                 <section id="oop-workflows">
                     <h2>Workflows (Visual)</h2>
-
                     <div class="flow">
-                        <h3>Workflow A: Role-Based Menu (Polymorphism)</h3>
-                                                <pre><code>ConsoleUI.start()
-    -> check authService.isLoggedIn()
+                        <h3>Workflow A: Role-Based Menu</h3>
+                        <pre><code>ConsoleUI.start()
     -> MenuActions active = isAdmin ? adminScreen : customerScreen
     -> active.showMenu()
     -> choice = getIntInput()
-    -> active.handleOption(choice)
-
-Runtime type decides concrete behavior.
-Same variable type, different implementations.</code></pre>
+    -> active.handleOption(choice)</code></pre>
                     </div>
-
                     <div class="flow">
                         <h3>Workflow B: Checkout with Pricing Policy</h3>
                         <pre><code>CustomerScreen.checkout()
   -> ShopService.checkout(userId)
-  -> validate items + stock
   -> default: use locked OrderItem.priceAtPurchase
-  -> optional mode: recalculate via discountPolicy.apply(product)
-  -> create Order(total)
-  -> save order and clear cart</code></pre>
+  -> optional mode: recalculate via discountPolicy.apply(product)</code></pre>
                     </div>
-
                     <div class="flow">
                         <h3>Workflow C: Admin Report Export</h3>
-                                                <pre><code>AdminScreen.exportReport()
+                        <pre><code>AdminScreen.exportReport()
     -> AdminService.exportSystemReport(format)
-    -> normalize format key
     -> reportService = reportServicesByFormat.get(format)
     -> reportService.exportReport()
-
-reportService runtime concrete class:
-    - ConsoleReportService (prints)
-    - CsvReportService (writes CSV)
-    - unsupported key -> ERROR:Unsupported format</code></pre>
+    // ConsoleReportService (prints) or CsvReportService (writes CSV)</code></pre>
                     </div>
                 </section>
 
@@ -1239,1201 +1609,278 @@ reportService runtime concrete class:
                         </div>
                         <div class="blueprint-card">
                             <h4>Remove</h4>
-                            <p>None required in this milestone. Keep current repository/model persistence untouched to minimize risk.</p>
+                            <p>None required. Keep current repository/model persistence untouched.</p>
                         </div>
                         <div class="blueprint-card">
                             <h4 class="status-change">Rewrite (Targeted)</h4>
-                            <p>Only role-menu handling in <code>ConsoleUI</code> should be rewritten into delegating screens. Keep login/register and guest browse flow stable.</p>
+                            <p>Only role-menu handling in <code>ConsoleUI</code> rewritten into delegating screens.</p>
                         </div>
                     </div>
                 </section>
 
                 <section id="oop-audit">
-                    <h2>Engineering Decisions (Finalized)</h2>
+                    <h2>Engineering Decisions</h2>
                     <table>
                         <thead>
-                            <tr>
-                                <th>Decision Area</th>
-                                <th>Implementation Behavior</th>
-                                <th>Outcome</th>
-                            </tr>
+                            <tr><th>Decision Area</th><th>Behavior</th><th>Outcome</th></tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Status handling</td>
-                                <td>Current responses remain compatible; constants/enums are planned as next hardening step.</td>
-                                <td>Stable rollout with forward path.</td>
-                            </tr>
-                            <tr>
-                                <td>Money precision</td>
-                                <td>Checkout and totals use decimal-safe arithmetic.</td>
-                                <td>Accurate order totals and reports.</td>
-                            </tr>
-                            <tr>
-                                <td>Discount toggling</td>
-                                <td>Admin discount methods apply provided boolean and percentage values directly.</td>
-                                <td>Predictable discount controls.</td>
-                            </tr>
-                            <tr>
-                                <td>ID lookup</td>
-                                <td>Repository operations resolve entities by id value, not by array index assumptions.</td>
-                                <td>Reliable CRUD behavior after deletions.</td>
-                            </tr>
-                            <tr>
-                                <td>Pricing lifecycle</td>
-                                <td>Default mode is <code>LOCK_AT_ADD</code>; optional mode <code>RECALCULATE_AT_CHECKOUT</code> is explicit and testable.</td>
-                                <td>Deterministic totals with configurable strategy.</td>
-                            </tr>
-                            <tr>
-                                <td>Report format routing</td>
-                                <td><code>exportSystemReport(format)</code> normalizes key and resolves implementation via format map.</td>
-                                <td>Clear runtime polymorphism and predictable format handling.</td>
-                            </tr>
+                            <tr><td>Pricing lifecycle</td><td>Default: <code>LOCK_AT_ADD</code>; optional: <code>RECALCULATE_AT_CHECKOUT</code></td><td>Deterministic totals with configurable strategy</td></tr>
+                            <tr><td>Report format routing</td><td>Normalizes key and resolves via format map</td><td>Clear runtime polymorphism</td></tr>
+                            <tr><td>ID lookup</td><td>Repository operations resolve by id value, not array index</td><td>Reliable CRUD after deletions</td></tr>
+                            <tr><td>Money precision</td><td>Checkout and totals use decimal-safe arithmetic</td><td>Accurate order totals</td></tr>
                         </tbody>
                     </table>
                 </section>
 
                 <section id="oop-qa">
-                    <h2>QA Scenarios and Example Output</h2>
+                    <h2>QA Scenarios</h2>
                     <div class="method-card">
                         <h3>Scenario 1: Menu polymorphism</h3>
-                        <pre><code>Input: login as admin
-Expected menu output includes: "Product Management", "User Management"
-
-Input: login as customer
-Expected menu output includes: "Add Product to Cart", "Checkout"</code></pre>
+                        <pre><code>login as admin   -> menu shows "Product Management", "User Management"
+login as customer -> menu shows "Add Product to Cart", "Checkout"</code></pre>
                     </div>
-
                     <div class="method-card">
-                        <h3>Scenario 2: Pricing strategy switch</h3>
-                        <pre><code>Policy: StandardDiscountPolicy
-Product: base 1000, discount 10%
-Expected charged price: 900
-
-Policy: SeasonalDiscountPolicy(5)
-Expected charged price: 850</code></pre>
+                        <h3>Scenario 2: Pricing strategy</h3>
+                        <pre><code>StandardDiscountPolicy:  base 1000, discount 10% -> charged: 900
+SeasonalDiscountPolicy(5): same product         -> charged: 850</code></pre>
                     </div>
-
                     <div class="method-card">
-                        <h3>Scenario 3: Pricing lifecycle mode</h3>
-                        <pre><code>Mode: LOCK_AT_ADD
-1) Add item with Standard policy
-2) Switch to Seasonal policy
-Expected checkout total: uses locked add-time snapshot
-
-Mode: RECALCULATE_AT_CHECKOUT
-Expected checkout total: uses active policy at checkout</code></pre>
-                    </div>
-
-                    <div class="method-card">
-                        <h3>Scenario 4: Report destination polymorphism</h3>
-                        <pre><code>reportService = new ConsoleReportService(...)
-Output: formatted report printed in terminal
-
-reportService = new CsvReportService(..., "reports/system.csv")
-Output: SUCCESS:reports/system.csv
-
-Input: format = "xml"
-Output: ERROR:Unsupported format</code></pre>
+                        <h3>Scenario 3: Report destination</h3>
+                        <pre><code>format = "console" -> report printed in terminal
+format = "csv"    -> SUCCESS:reports/system.csv
+format = "xml"    -> ERROR:Unsupported format</code></pre>
                     </div>
                 </section>
             </div>
+            <!-- ==================== END V2 SCREEN ==================== -->
 
+            <!-- ==================== V1 SCREEN ==================== -->
             <div id="screen-v1" class="doc-screen">
-            <!-- ARCHITECTURE OVERVIEW -->
-            <section id="overview">
-                <h2>📐 Architecture Overview</h2>
+                <section id="overview">
+                    <h2>📐 Architecture Overview</h2>
 
-                <div class="box box-info">
-                    <h3>Access Modifier Guidelines</h3>
-                    <p><strong>Java Access Modifiers (from most to least restrictive):</strong></p>
-                    <ul>
-                        <li><code>private</code>: Accessible only within the same class</li>
-                        <li><code>default</code> (no modifier): Accessible within the same package (package-private)</li>
-                        <li><code>protected</code>: Accessible within the same package AND by subclasses</li>
-                        <li><code>public</code>: Accessible from anywhere</li>
-                    </ul>
-                </div>
-
-                <div class="box box-success">
-                    <h3>Our Security Policy</h3>
-                    <ul>
-                        <li><strong>Fields:</strong> Always <code>private</code> (encapsulation)</li>
-                        <li><strong>Internal helper methods:</strong> <code>private</code></li>
-                        <li><strong>Methods called by other classes:</strong> <code>public</code></li>
-                        <li><strong>Model classes:</strong> <code>public</code> (need to pass between layers)</li>
-                        <li><strong>Repository classes:</strong> <code>public</code> (dependency injection)</li>
-                        <li><strong>Service classes:</strong> <code>public</code> (dependency injection)</li>
-                        <li><strong>Static usage:</strong> ONLY in MockDatabase (simulates shared database)</li>
-                    </ul>
-                </div>
-
-                <h3>Project Philosophy</h3>
-                <p><strong>Layered Architecture with Separation of Concerns</strong></p>
-                <p>The application is structured into 4 distinct layers:</p>
-                <ol>
-                    <li><strong>Model Layer</strong> - Pure data structures (POJOs) with no logic</li>
-                    <li><strong>Repository Layer</strong> - Data access and storage management (currently in-memory arrays)</li>
-                    <li><strong>Service Layer</strong> - Business logic and rules (the "brain" of the application)</li>
-                    <li><strong>View Layer</strong> - User interface and input/output handling (Console-based)</li>
-                </ol>
-
-                <h3>Package Structure</h3>
-                <pre><code>com.university.shopping/
-├── Main.java                    # Application entry point
-├── model/                       # Data definitions
-│   ├── User.java
-│   ├── Product.java
-│   ├── Order.java
-│   ├── OrderItem.java
-│   ├── Cart.java
-│   └── MockDatabase.java        # In-memory data storage
-├── repository/                  # Data access layer
-│   ├── UserRepository.java
-│   ├── ProductRepository.java
-│   ├── OrderRepository.java
-│   └── CartRepository.java
-├── service/                     # Business logic layer
-│   ├── AuthService.java
-│   ├── ShopService.java
-│   └── AdminService.java
-└── view/                        # User interface layer
-    └── ConsoleUI.java</code></pre>
-
-                <h3>Key Design Principles</h3>
-                <ul>
-                    <li><strong>Dependency Injection:</strong> Services receive repositories via constructor</li>
-                    <li><strong>No Cross-Layer Dependencies:</strong> View never talks to Repository directly</li>
-                    <li><strong>Scalability:</strong> Repository layer can be swapped for file/database without touching Service/View</li>
-                    <li><strong>Single Responsibility:</strong> Each class has one clear purpose</li>
-                    <li><strong>Minimal Static:</strong> Only MockDatabase uses static (simulates singleton database)</li>
-                    <li><strong>Maximum Encapsulation:</strong> All fields private, access via methods only</li>
-                </ul>
-            </section>
-
-            <!-- MODEL LAYER -->
-            <section id="model">
-                <h2>📦 Layer 1: Model Package</h2>
-                <p><strong>Package:</strong> <code>com.university.shopping.model</code></p>
-                <p>The Model layer contains only data structures - no business logic, no database calls, no user interaction.</p>
-
-                <!-- User Class -->
-                <div class="method-card">
-                    <h3>Class 1: User.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Represents a system user (customer or administrator)</p>
-
-                    <h4>Fields:</h4>
-                    <pre><code>private int userId;              // unique identifier
-private String username;         // login credential
-private String password;         // plain text
-private boolean isAdmin;         // role flag
-private String createdDate;      // timestamp</code></pre>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public User(int userId, String username, String password, boolean isAdmin, String createdDate)</code></pre>
-                    <p><strong>Access:</strong> <code>public</code> - needs to be instantiated by Repository classes</p>
-
-                    <h4>Getters (all public):</h4>
-                    <pre><code>public int getUserId()
-public String getUsername()
-public String getPassword()
-public boolean isAdmin()
-public String getCreatedDate()</code></pre>
-
-                    <h4>Setters (selective, all public):</h4>
-                    <pre><code>public void setUsername(String username)
-public void setPassword(String password)
-public void setIsAdmin(boolean isAdmin)
-// NO setUserId() - immutable after creation</code></pre>
-
-                    <p><strong>Called By:</strong> Repository classes (for object creation), Service classes (for data access)</p>
-                    <p><strong>Calls:</strong> Nothing (pure data holder)</p>
-                </div>
-
-                <!-- Product Class -->
-                <div class="method-card">
-                    <h3>Class 2: Product.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Represents an electronics product in the shop inventory</p>
-
-                    <h4>Fields:</h4>
-                    <pre><code>private int productId;           // unique identifier
-private String name;             // product name
-private double price;            // base price
-private String category;         // product category
-private String description;      // detailed info
-private int stockQuantity;       // available inventory
-private boolean isDiscounted;    // discount flag
-private double discountPercentage; // 0-100</code></pre>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public Product(int productId, String name, double price, String category, 
-               String description, int stockQuantity, boolean isDiscounted, 
-               double discountPercentage)</code></pre>
-
-                    <h4>Method: getFinalPrice()</h4>
-                    <pre><code>public double getFinalPrice()</code></pre>
-                    <ul>
-                        <li><strong>Access:</strong> <code>public</code> (called by Service and View layers)</li>
-                        <li><strong>Parameters:</strong> none</li>
-                        <li><strong>Returns:</strong> double</li>
-                        <li><strong>Description:</strong> Calculates actual selling price. If isDiscounted==true, returns price × (1 - discountPercentage/100), otherwise returns base price.</li>
-                        <li><strong>Called By:</strong> ShopService (cart total calculation), ConsoleUI (display)</li>
-                        <li><strong>Calls:</strong> Nothing (pure calculation)</li>
-                    </ul>
-
-                    <h4>Getters (all public):</h4>
-                    <pre><code>public int getProductId()
-public String getName()
-public double getPrice()
-public String getCategory()
-public String getDescription()
-public int getStockQuantity()
-public boolean isDiscounted()
-public double getDiscountPercentage()</code></pre>
-
-                    <h4>Setters (all public):</h4>
-                    <pre><code>public void setName(String name)
-public void setPrice(double price)
-public void setCategory(String category)
-public void setDescription(String description)
-public void setStockQuantity(int stockQuantity)
-public void setIsDiscounted(boolean isDiscounted)
-public void setDiscountPercentage(double discountPercentage)
-// NO setProductId() - immutable</code></pre>
-                </div>
-
-                <!-- Order Class -->
-                <div class="method-card">
-                    <h3>Class 3: Order.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Represents a completed purchase transaction</p>
-
-                    <h4>Fields:</h4>
-                    <pre><code>private int orderId;             // unique identifier
-private int userId;              // customer reference
-private String orderDate;        // timestamp
-private double totalPrice;       // final amount
-private String status;           // order status
-private OrderItem[] items;       // purchased products</code></pre>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public Order(int orderId, int userId, String orderDate, double totalPrice, 
-             String status, OrderItem[] items)</code></pre>
-
-                    <h4>Getters (all public):</h4>
-                    <pre><code>public int getOrderId()
-public int getUserId()
-public String getOrderDate()
-public double getTotalPrice()
-public String getStatus()
-public OrderItem[] getItems()</code></pre>
-
-                    <h4>Setters (selective):</h4>
-                    <pre><code>public void setStatus(String status)
-// Other fields immutable after creation</code></pre>
-
-                    <p><strong>Called By:</strong> ShopService (creates Order objects), OrderRepository (stores/retrieves)</p>
-                    <p><strong>Calls:</strong> Nothing (data container)</p>
-                </div>
-
-                <!-- OrderItem Class -->
-                <div class="method-card">
-                    <h3>Class 4: OrderItem.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Represents a single line item in an order</p>
-
-                    <h4>Fields:</h4>
-                    <pre><code>private int productId;           // product reference
-private String productName;      // snapshot at purchase
-private int quantity;            // units purchased
-private double priceAtPurchase;  // locked price</code></pre>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public OrderItem(int productId, String productName, int quantity, double priceAtPurchase)</code></pre>
-
-                    <h4>Getters (all public, NO setters - immutable):</h4>
-                    <pre><code>public int getProductId()
-public String getProductName()
-public int getQuantity()
-public double getPriceAtPurchase()</code></pre>
-
-                    <p><strong>Called By:</strong> ShopService (creates from cart items), Order class (stores array of these)</p>
-                    <p><strong>Calls:</strong> Nothing</p>
-                </div>
-
-                <!-- Cart Class -->
-                <div class="method-card">
-                    <h3>Class 5: Cart.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Temporary storage for user's selected products before checkout</p>
-
-                    <h4>Fields:</h4>
-                    <pre><code>private int userId;              // cart owner
-private OrderItem[] items;       // selected products (size 50)
-private int itemCount;           // number of filled slots</code></pre>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public Cart(int userId) {
-    this.userId = userId;
-    this.items = new OrderItem[50];
-    this.itemCount = 0;
-}</code></pre>
-
-                    <h4>Method: addItem</h4>
-                    <pre><code>public void addItem(int productId, String productName, int quantity, double price)</code></pre>
-                    <ul>
-                        <li><strong>Access:</strong> <code>public</code> (called by ShopService)</li>
-                        <li><strong>Description:</strong> Checks if productId already exists. If yes, increases quantity. If no, adds new OrderItem to items[itemCount++].</li>
-                        <li><strong>Called By:</strong> ShopService.addToCart()</li>
-                    </ul>
-
-                    <h4>Method: removeItem</h4>
-                    <pre><code>public boolean removeItem(int productId)</code></pre>
-                    <ul>
-                        <li><strong>Returns:</strong> boolean (true if removed, false if not found)</li>
-                        <li><strong>Description:</strong> Loops through items array. If found, shifts subsequent items left, decrements itemCount.</li>
-                        <li><strong>Called By:</strong> ShopService.removeFromCart()</li>
-                    </ul>
-
-                    <h4>Method: clear</h4>
-                    <pre><code>public void clear()</code></pre>
-                    <ul>
-                        <li><strong>Description:</strong> Sets itemCount=0 (empties cart)</li>
-                        <li><strong>Called By:</strong> ShopService.checkout() (via CartRepository)</li>
-                    </ul>
-
-                    <h4>Method: getTotalPrice</h4>
-                    <pre><code>public double getTotalPrice()</code></pre>
-                    <ul>
-                        <li><strong>Description:</strong> Sums (quantity × priceAtPurchase) for all items</li>
-                        <li><strong>Called By:</strong> ConsoleUI (display), ShopService (create Order)</li>
-                    </ul>
-
-                    <h4>Getters (all public):</h4>
-                    <pre><code>public int getUserId()
-public OrderItem[] getItems()
-public int getItemCount()</code></pre>
-                </div>
-
-                <!-- MockDatabase Class -->
-                <div class="method-card">
-                    <h3>Class 6: MockDatabase.java</h3>
-                    <p><span class="badge badge-public">public class</span> <span class="badge badge-static">STATIC FIELDS</span></p>
-                    <p><strong>Purpose:</strong> Central in-memory storage simulating a database</p>
-
-                    <div class="box box-warning">
-                        <p><strong>⚠️ ONLY place in project using static!</strong></p>
+                    <div class="box box-info">
+                        <h3>Access Modifier Guidelines</h3>
+                        <ul>
+                            <li><code>private</code>: Accessible only within the same class</li>
+                            <li><code>default</code> (no modifier): Accessible within the same package</li>
+                            <li><code>protected</code>: Accessible within same package AND subclasses</li>
+                            <li><code>public</code>: Accessible from anywhere</li>
+                        </ul>
                     </div>
 
-                    <h4>Fields (ALL PUBLIC STATIC):</h4>
-                    <pre><code>public static User[] users = new User[100];
-public static int userCount = 0;
+                    <div class="box box-success">
+                        <h3>Our Security Policy</h3>
+                        <ul>
+                            <li><strong>Fields:</strong> Always <code>private</code> (encapsulation)</li>
+                            <li><strong>Internal helper methods:</strong> <code>private</code></li>
+                            <li><strong>Methods called by other classes:</strong> <code>public</code></li>
+                            <li><strong>Model/Repository/Service classes:</strong> <code>public</code> (dependency injection)</li>
+                            <li><strong>Static usage:</strong> ONLY in MockDatabase (simulates shared database)</li>
+                        </ul>
+                    </div>
 
+                    <h3>4-Layer Architecture</h3>
+                    <ol>
+                        <li><strong>Model Layer</strong> — Pure data structures (POJOs) with no logic</li>
+                        <li><strong>Repository Layer</strong> — Data access and storage management (in-memory arrays)</li>
+                        <li><strong>Service Layer</strong> — Business logic and rules</li>
+                        <li><strong>View Layer</strong> — User interface and I/O (Console-based)</li>
+                    </ol>
+
+                    <pre><code>com.university.shopping/
+├── Main.java
+├── model/
+│   ├── User.java  /  Product.java  /  Order.java
+│   ├── OrderItem.java  /  Cart.java
+│   └── MockDatabase.java
+├── repository/
+│   ├── UserRepository.java  /  ProductRepository.java
+│   ├── OrderRepository.java  /  CartRepository.java
+├── service/
+│   ├── AuthService.java  /  ShopService.java  /  AdminService.java
+└── view/
+    └── ConsoleUI.java</code></pre>
+                </section>
+
+                <section id="model">
+                    <h2>📦 Layer 1: Model Package</h2>
+
+                    <div class="method-card">
+                        <h3>User.java</h3>
+                        <pre><code>private int userId;
+private String username;
+private String password;
+private boolean isAdmin;
+private String createdDate;
+
+// Getters for all fields
+// Setters: setUsername, setPassword, setIsAdmin (NO setUserId)</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>Product.java</h3>
+                        <pre><code>private int productId;
+private String name;
+private double price;
+private String category;
+private String description;
+private int stockQuantity;
+private boolean isDiscounted;
+private double discountPercentage;
+
+public double getFinalPrice()  // price * (1 - discountPct/100) if discounted</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>Order.java / OrderItem.java / Cart.java</h3>
+                        <p>Order holds <code>OrderItem[]</code>. OrderItem is fully immutable (no setters). Cart manages a 50-slot <code>OrderItem[]</code> with <code>addItem</code>, <code>removeItem</code>, <code>clear</code>, <code>getTotalPrice</code>.</p>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>MockDatabase.java <span class="badge badge-static">STATIC ONLY</span></h3>
+                        <pre><code>public static User[] users = new User[100];
+public static int userCount = 0;
 public static Product[] products = new Product[200];
 public static int productCount = 0;
-
 public static Order[] orders = new Order[500];
 public static int orderCount = 0;
+// ... nextUserId, nextProductId, nextOrderId
 
-public static Cart[] carts = new Cart[100];
-public static int cartCount = 0;
-
-public static int nextUserId = 1;
-public static int nextProductId = 1;
-public static int nextOrderId = 1;</code></pre>
-
-                    <p><strong>Why Public:</strong> Repository classes need direct access (simulates database connection)</p>
-                    <p><strong>Why Static:</strong> Single shared storage across application (singleton pattern)</p>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>private MockDatabase() {}  // Private constructor prevents instantiation</code></pre>
-
-                    <p><strong>Methods:</strong> NONE - Pure data container</p>
-                    <p><strong>Called By:</strong> All Repository classes access these arrays directly</p>
-                </div>
-            </section>
-
-            <!-- REPOSITORY LAYER -->
-            <section id="repository">
-                <h2>📦 Layer 2: Repository Package</h2>
-                <p><strong>Package:</strong> <code>com.university.shopping.repository</code></p>
-                <p>The Repository layer is the <strong>ONLY</strong> layer that directly accesses MockDatabase.</p>
-
-                <!-- UserRepository -->
-                <div class="method-card">
-                    <h3>Class 1: UserRepository.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Manages user data access and storage</p>
-
-                    <p><strong>Fields:</strong> NONE (accesses MockDatabase directly)</p>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public UserRepository() {}</code></pre>
-
-                    <h4>Static Initialization Block:</h4>
-                    <pre><code>static {
-    MockDatabase.users[0] = new User(1, "admin", "admin123", true, "2026-01-01");
-    MockDatabase.users[1] = new User(2, "customer", "pass123", false, "2026-01-15");
-    MockDatabase.userCount = 2;
-    MockDatabase.nextUserId = 3;
-}</code></pre>
-
-                    <h4>Methods:</h4>
-                    <ul>
-                        <li><code>public User findByUsername(String username)</code> - Loops through users array, returns match or null</li>
-                        <li><code>public User findById(int userId)</code> - Linear search by userId</li>
-                        <li><code>public boolean save(User user)</code> - Checks duplicates, adds to array</li>
-                        <li><code>public boolean update(User user)</code> - Finds and replaces user</li>
-                        <li><code>public boolean delete(int userId)</code> - Removes user, shifts array</li>
-                        <li><code>public User[] getAllUsers()</code> - Returns copy of active users</li>
-                        <li><code>public int getNextUserId()</code> - Returns and increments nextUserId</li>
-                    </ul>
-                </div>
-
-                <!-- ProductRepository -->
-                <div class="method-card">
-                    <h3>Class 2: ProductRepository.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Manages product inventory data</p>
-
-                    <h4>Static Initialization Block (15 products):</h4>
-                    <pre><code>static {
-    MockDatabase.products[0] = new Product(1, "iPhone 15 Pro", 1199.99, 
-        "Phone", "Latest Apple flagship with A17 Pro chip", 25, false, 0);
-    MockDatabase.products[1] = new Product(2, "Samsung Galaxy S24", 999.99, 
-        "Phone", "Android flagship with AI features", 30, true, 10);
-    MockDatabase.products[2] = new Product(3, "MacBook Pro M3", 2499.99, 
-        "Laptop", "16-inch professional laptop", 15, false, 0);
-    MockDatabase.products[3] = new Product(4, "Dell XPS 15", 1799.99, 
-        "Laptop", "Windows ultrabook", 20, true, 5);
-    MockDatabase.products[4] = new Product(5, "Sony WH-1000XM5", 399.99, 
-        "Accessory", "Noise-cancelling headphones", 50, false, 0);
-    MockDatabase.products[5] = new Product(6, "AirPods Pro 2", 249.99, 
-        "Accessory", "Apple wireless earbuds", 60, false, 0);
-    MockDatabase.products[6] = new Product(7, "iPad Air M2", 599.99, 
-        "Tablet", "10.9-inch tablet", 40, true, 8);
-    MockDatabase.products[7] = new Product(8, "Samsung Galaxy Tab S9", 799.99, 
-        "Tablet", "11-inch AMOLED display", 35, false, 0);
-    MockDatabase.products[8] = new Product(9, "Logitech MX Master 3S", 99.99, 
-        "Accessory", "Premium wireless mouse", 80, false, 0);
-    MockDatabase.products[9] = new Product(10, "Apple Magic Keyboard", 149.99, 
-        "Accessory", "Wireless keyboard", 45, false, 0);
-    MockDatabase.products[10] = new Product(11, "LG UltraWide Monitor", 499.99, 
-        "Accessory", "34-inch curved display", 20, true, 12);
-    MockDatabase.products[11] = new Product(12, "Bose QuietComfort 45", 329.99, 
-        "Accessory", "Wireless headphones", 40, false, 0);
-    MockDatabase.products[12] = new Product(13, "Google Pixel 8 Pro", 899.99, 
-        "Phone", "Google flagship phone", 28, true, 15);
-    MockDatabase.products[13] = new Product(14, "ASUS ROG Gaming Laptop", 1999.99, 
-        "Laptop", "RTX 4070 gaming laptop", 12, false, 0);
-    MockDatabase.products[14] = new Product(15, "Apple Watch Series 9", 399.99, 
-        "Accessory", "Smartwatch with health tracking", 55, false, 0);
-    
-    MockDatabase.productCount = 15;
-    MockDatabase.nextProductId = 16;
-}</code></pre>
-
-                    <h4>Methods:</h4>
-                    <ul>
-                        <li><code>public Product findById(int productId)</code></li>
-                        <li><code>public Product[] findAll()</code></li>
-                        <li><code>public Product[] findByCategory(String category)</code></li>
-                        <li><code>public boolean save(Product product)</code></li>
-                        <li><code>public boolean update(Product product)</code></li>
-                        <li><code>public boolean delete(int productId)</code></li>
-                        <li><code>public boolean updateStock(int productId, int quantityChange)</code> ⚠️ Critical method</li>
-                        <li><code>public Product[] searchByName(String keyword)</code></li>
-                        <li><code>public int getNextProductId()</code></li>
-                    </ul>
-                </div>
-
-                <!-- OrderRepository -->
-                <div class="method-card">
-                    <h3>Class 3: OrderRepository.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Manages order/transaction history</p>
-
-                    <h4>Methods:</h4>
-                    <ul>
-                        <li><code>public boolean save(Order order)</code></li>
-                        <li><code>public Order findById(int orderId)</code></li>
-                        <li><code>public Order[] findAllByUserId(int userId)</code></li>
-                        <li><code>public Order[] findAll()</code></li>
-                        <li><code>public int getNextOrderId()</code></li>
-                    </ul>
-                </div>
-
-                <!-- CartRepository -->
-                <div class="method-card">
-                    <h3>Class 4: CartRepository.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Manages user shopping carts (one cart per user)</p>
-
-                    <h4>Methods:</h4>
-                    <ul>
-                        <li><code>public Cart findByUserId(int userId)</code> - Never returns null, creates if doesn't exist</li>
-                        <li><code>public void save(Cart cart)</code></li>
-                        <li><code>public void clear(int userId)</code></li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- SERVICE LAYER -->
-            <section id="service">
-                <h2>📦 Layer 3: Service Package</h2>
-                <p><strong>Package:</strong> <code>com.university.shopping.service</code></p>
-                <p>The Service layer contains <strong>ALL business logic</strong>. Never prints to console, never reads input, never directly accesses MockDatabase.</p>
-
-                <!-- AuthService -->
-                <div class="method-card">
-                    <h3>Class 1: AuthService.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Handles authentication and session management</p>
-
-                    <h4>Fields:</h4>
-                    <pre><code>private UserRepository userRepository;
-private User currentUser;  // null when not logged in</code></pre>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public AuthService(UserRepository userRepository) {
-    this.userRepository = userRepository;
-    this.currentUser = null;
-}</code></pre>
-
-                    <h4>Methods:</h4>
-                    <ul>
-                        <li><code>public String login(String username, String password)</code> - Returns: "SUCCESS", "WRONG_PASSWORD", "USER_NOT_FOUND"</li>
-                        <li><code>public String register(String username, String password)</code> - Returns: "SUCCESS", "USERNAME_EXISTS", "INVALID_PASSWORD"</li>
-                        <li><code>public void logout()</code></li>
-                        <li><code>public User getCurrentUser()</code></li>
-                        <li><code>public boolean isLoggedIn()</code></li>
-                        <li><code>public boolean isAdmin()</code></li>
-                        <li><code>private boolean validatePassword(String password)</code> - Helper method</li>
-                    </ul>
-
-                    <h4>Password Validation Logic:</h4>
-                    <pre><code>boolean hasLetter = false;
-boolean hasDigit = false;
-for (char c : password.toCharArray()) {
-    if (Character.isLetter(c)) hasLetter = true;
-    if (Character.isDigit(c)) hasDigit = true;
-}
-return password.length() >= 6 && hasLetter && hasDigit;</code></pre>
-                </div>
-
-                <!-- ShopService -->
-                <div class="method-card">
-                    <h3>Class 2: ShopService.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Handles customer shopping operations</p>
-
-                    <h4>Fields:</h4>
-                    <pre><code>private ProductRepository productRepository;
-private OrderRepository orderRepository;
-private CartRepository cartRepository;
-private AuthService authService;</code></pre>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public ShopService(ProductRepository productRepo, OrderRepository orderRepo,
-                   CartRepository cartRepo, AuthService authService)</code></pre>
-
-                    <h4>Methods:</h4>
-                    <ul>
-                        <li><code>public Product[] getAllProducts()</code></li>
-                        <li><code>public Product getProductById(int productId)</code></li>
-                        <li><code>public String addToCart(int productId, int quantity)</code></li>
-                        <li><code>public boolean removeFromCart(int productId)</code></li>
-                        <li><code>public Cart viewCart()</code></li>
-                        <li><code>public String checkout()</code> ⚠️ CRITICAL TRANSACTIONAL METHOD</li>
-                        <li><code>public Order[] getUserOrders()</code></li>
-                    </ul>
-
-                    <h4>Checkout Process Algorithm:</h4>
-                    <div class="algorithm">
-                        <pre><code>1. Check authService.isLoggedIn()
-   If false, return "NOT_LOGGED_IN"
-
-2. Get user's cart via cartRepository.findByUserId()
-
-3. Check cart.getItemCount() > 0
-   If 0, return "EMPTY_CART"
-
-4. VALIDATION PHASE (check all items before modifying anything)
-   For each item in cart.getItems()[0...itemCount-1]:
-     - Fetch fresh Product from productRepository.findById()
-     - Check if product still exists (not deleted)
-     - Check if product.stockQuantity >= item.quantity
-     - If ANY item fails, return "STOCK_ERROR:<productName>"
-
-5. STOCK DEDUCTION PHASE (only if all validations passed)
-   For each item in cart:
-     - productRepository.updateStock(item.productId, -item.quantity)
-
-6. ORDER CREATION PHASE
-   - Generate orderId via orderRepository.getNextOrderId()
-   - Get current timestamp
-   - Calculate totalPrice via cart.getTotalPrice()
-   - Copy cart items to new OrderItem[] array
-   - Create Order object with status="COMPLETED"
-   - orderRepository.save(order)
-
-7. CART CLEARING PHASE
-   - cartRepository.clear(currentUser.getUserId())
-
-8. Return "SUCCESS"</code></pre>
+private MockDatabase() {}  // No instantiation</code></pre>
                     </div>
-                </div>
+                </section>
 
-                <!-- AdminService -->
-                <div class="method-card">
-                    <h3>Class 3: AdminService.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Handles administrative operations</p>
+                <section id="repository">
+                    <h2>📦 Layer 2: Repository Package</h2>
+                    <p>Only layer that directly accesses MockDatabase. Seeded via static initialization blocks.</p>
 
-                    <div class="box box-warning">
-                        <p><strong>⚠️ IMPORTANT:</strong> Every method MUST check <code>authService.isAdmin()</code> first</p>
+                    <div class="method-card">
+                        <h3>UserRepository — key methods</h3>
+                        <pre><code>User findByUsername(String username)
+User findById(int userId)
+boolean save(User user)
+boolean update(User user)
+boolean delete(int userId)
+User[] getAllUsers()
+int getNextUserId()</code></pre>
                     </div>
 
-                    <h4>Fields:</h4>
-                    <pre><code>private ProductRepository productRepository;
-private UserRepository userRepository;
-private OrderRepository orderRepository;
-private AuthService authService;</code></pre>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public AdminService(ProductRepository productRepo, UserRepository userRepo,
-                    OrderRepository orderRepo, AuthService authService)</code></pre>
-
-                    <h4>Product Management Methods:</h4>
-                    <ul>
-                        <li><code>public String addNewProduct(...)</code> - Returns: "SUCCESS", "NOT_ADMIN", "INVALID_DATA"</li>
-                        <li><code>public String addStockToExistingProduct(int productId, int quantityToAdd)</code></li>
-                        <li><code>public String removeStock(int productId, int quantityToRemove)</code></li>
-                        <li><code>public String deleteProduct(int productId)</code></li>
-                        <li><code>public String updateProductPrice(int productId, double newPrice)</code></li>
-                        <li><code>public String updateProductName(int productId, String newName)</code></li>
-                        <li><code>public String setProductDiscount(int productId, boolean isDiscounted, double discountPercentage)</code></li>
-                        <li><code>public Product[] getAllProducts()</code></li>
-                    </ul>
-
-                    <h4>User Management Methods:</h4>
-                    <ul>
-                        <li><code>public String addUser(String username, String password, boolean isAdmin)</code></li>
-                        <li><code>public String updateUser(int userId, String newUsername, String newPassword, boolean isAdmin)</code></li>
-                        <li><code>public String deleteUser(int userId)</code> - Prevents self-deletion</li>
-                        <li><code>public User[] getAllUsers()</code></li>
-                    </ul>
-
-                    <h4>Statistics Method:</h4>
-                    <ul>
-                        <li><code>public String getStatistics()</code> - Returns formatted statistics string</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- VIEW LAYER -->
-            <section id="view">
-                <h2>📦 Layer 4: View Package</h2>
-                <p><strong>Package:</strong> <code>com.university.shopping.view</code></p>
-                <p>The View layer handles <strong>ALL user interaction</strong>. Contains all System.out.println() and Scanner calls.</p>
-
-                <div class="method-card">
-                    <h3>Class 1: ConsoleUI.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Terminal-based UI and application loop</p>
-
-                    <h4>Fields:</h4>
-                    <pre><code>private Scanner scanner;
-private AuthService authService;
-private ShopService shopService;
-private AdminService adminService;
-private int currentPage;
-private static final int ITEMS_PER_PAGE = 10;</code></pre>
-
-                    <h4>Constructor:</h4>
-                    <pre><code>public ConsoleUI(AuthService authService, ShopService shopService, AdminService adminService) {
-    this.scanner = new Scanner(System.in);
-    this.authService = authService;
-    this.shopService = shopService;
-    this.adminService = adminService;
-    this.currentPage = 0;
-}</code></pre>
-
-                    <h4>Public Method (Entry Point):</h4>
-                    <ul>
-                        <li><code>public void start()</code> - MAIN APPLICATION LOOP</li>
-                    </ul>
-
-                    <pre><code>while (true) {
-    mainMenu();  // Display and handle main menu
-    // mainMenu() handles its own input and navigation
-    // Only breaks loop when user explicitly exits (input 0 in main menu)
-}
-// When loop exits:
-scanner.close();</code></pre>
-
-                    <h4>Private Methods (Internal Navigation):</h4>
-                    <ul>
-                        <li><code>private void mainMenu()</code></li>
-                        <li><code>private void showProductList()</code> - Paginated catalog with Z/M navigation</li>
-                        <li><code>private void showProductDetail(int productId)</code></li>
-                        <li><code>private void handleAddToCart(int productId)</code></li>
-                        <li><code>private void forceLogin()</code></li>
-                        <li><code>private void registerFlow()</code></li>
-                        <li><code>private void loginFlow()</code></li>
-                        <li><code>private void handleAuth()</code></li>
-                        <li><code>private void showBasket()</code></li>
-                        <li><code>private void handleRemoveFromBasket(Cart cart)</code></li>
-                        <li><code>private void handleCheckout()</code></li>
-                        <li><code>private void adminMenu()</code></li>
-                        <li><code>private void adminProductMenu()</code></li>
-                        <li><code>private void adminUserMenu()</code></li>
-                        <li><code>private void showStatistics()</code></li>
-                        <li><code>private void clearScreen()</code> - Helper</li>
-                        <li><code>private void waitForEnter()</code> - Helper</li>
-                    </ul>
-
-                    <h4>Main Menu Flow:</h4>
-                    <div class="algorithm">
-                        <pre><code>1. Clear screen (print "\n\n===================\n")
-
-2. Display header and current status:
-   "====== ELECTRONICS SHOP ======"
-   If authService.isLoggedIn():
-     "Logged in as: [username]"
-     If authService.isAdmin():
-       "(Administrator)"
-
-3. Display menu options:
-   "1 - View Products"
-   If authService.isLoggedIn():
-     "2 - Logout"
-   Else:
-     "2 - Login / Register"
-   "3 - View Basket"
-   If authService.isAdmin():
-     "4 - Admin Panel"
-   "0 - Exit Application"
-
-4. Read user input (integer)
-
-5. Switch on input:
-   case 1: showProductList(); break;
-   case 2: handleAuth(); break;
-   case 3: showBasket(); break;
-   case 4:
-     if (authService.isAdmin()) adminMenu();
-     else print "Access denied";
-     break;
-   case 0:
-     print "Thank you for visiting Electronics Shop!";
-     System.exit(0);  // Only place that exits application
-   default: print "Invalid option"
-
-6. After each option completes, loop in start() calls mainMenu() again</code></pre>
+                    <div class="method-card">
+                        <h3>ProductRepository — key methods</h3>
+                        <pre><code>Product findById(int productId)
+Product[] findAll()
+boolean save(Product product)
+boolean update(Product product)
+boolean delete(int productId)
+boolean updateStock(int productId, int quantityChange)  // critical
+Product[] searchByName(String keyword)
+int getNextProductId()</code></pre>
+                        <p>Seeded with 15 products (phones, laptops, accessories, tablets).</p>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- MAIN ENTRY POINT -->
-            <section id="main">
-                <h2>📍 Main Entry Point</h2>
-                <p><strong>Package:</strong> <code>com.university.shopping</code></p>
+                <section id="service">
+                    <h2>📦 Layer 3: Service Package</h2>
 
-                <div class="method-card">
-                    <h3>Main.java</h3>
-                    <p><span class="badge badge-public">public class</span></p>
-                    <p><strong>Purpose:</strong> Application bootstrap - initializes all components and starts UI loop</p>
+                    <div class="method-card">
+                        <h3>AuthService</h3>
+                        <pre><code>String login(String username, String password)
+  // returns: "SUCCESS" | "WRONG_PASSWORD" | "USER_NOT_FOUND"
+String register(String username, String password)
+  // returns: "SUCCESS" | "USERNAME_EXISTS" | "INVALID_PASSWORD"
+void logout()
+User getCurrentUser()
+boolean isLoggedIn()
+boolean isAdmin()
+private boolean validatePassword(String password)
+  // 6+ chars, must have letter AND digit</code></pre>
+                    </div>
 
-                    <h4>Method: main</h4>
+                    <div class="method-card">
+                        <h3>ShopService — Checkout Algorithm</h3>
+                        <div class="algorithm">
+                            <pre><code>1. Check isLoggedIn() or return "NOT_LOGGED_IN"
+2. Get cart; check itemCount > 0 or return "EMPTY_CART"
+3. VALIDATION: for each item, check stock >= quantity
+   -> any fail: return "STOCK_ERROR:&lt;productName&gt;"
+4. DEDUCTION: productRepository.updateStock(id, -qty) for each
+5. CREATE ORDER: generate id, timestamp, calculate total, save
+6. CLEAR CART: cartRepository.clear(userId)
+7. Return "SUCCESS"</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>AdminService</h3>
+                        <p>Every method checks <code>authService.isAdmin()</code> first, returns "NOT_ADMIN" if false.</p>
+                        <p>Product methods: <code>addNewProduct</code>, <code>addStockToExistingProduct</code>, <code>removeStock</code>, <code>deleteProduct</code>, <code>updateProductPrice</code>, <code>updateProductName</code>, <code>setProductDiscount</code>.</p>
+                        <p>User methods: <code>addUser</code>, <code>updateUser</code>, <code>deleteUser</code> (prevents self-deletion), <code>getAllUsers</code>.</p>
+                    </div>
+                </section>
+
+                <section id="view">
+                    <h2>📦 Layer 4: View Package</h2>
+                    <div class="method-card">
+                        <h3>ConsoleUI.java</h3>
+                        <p>Only public method: <code>start()</code> — main application loop. All UI methods are <code>private</code>.</p>
+                        <pre><code>public void start()   // while(true) loop -> mainMenu()
+private void mainMenu()
+private void showProductList()  // paginated, Z/M navigation
+private void showBasket()
+private void handleCheckout()
+private void adminMenu()
+private void adminProductMenu()
+private void adminUserMenu()
+// ... etc</code></pre>
+                    </div>
+                </section>
+
+                <section id="main">
+                    <h2>📍 Main Entry Point</h2>
                     <pre><code>public static void main(String[] args) {
-    // 1. Display initialization messages
-    System.out.println("==========================================");
-    System.out.println("   ELECTRONICS SHOP - INITIALIZING");
-    System.out.println("==========================================");
-    System.out.println();
-    System.out.println("Loading data...");
-    
-    // 2. Initialize Repositories (triggers static blocks)
+    // 1. Initialize Repositories (triggers static seeding blocks)
     UserRepository userRepo = new UserRepository();
     ProductRepository productRepo = new ProductRepository();
     OrderRepository orderRepo = new OrderRepository();
     CartRepository cartRepo = new CartRepository();
-    
-    System.out.println("✓ Data loaded");
-    System.out.println("Initializing services...");
-    
-    // 3. Initialize Services (dependency injection)
+
+    // 2. Initialize Services (dependency injection)
     AuthService authService = new AuthService(userRepo);
     ShopService shopService = new ShopService(productRepo, orderRepo, cartRepo, authService);
     AdminService adminService = new AdminService(productRepo, userRepo, orderRepo, authService);
-    
-    System.out.println("✓ Services initialized");
-    System.out.println("Starting application...");
-    System.out.println();
-    
-    // 4. Wait 1 second
-    try { Thread.sleep(1000); } catch (InterruptedException e) {}
-    
-    // 5. Initialize View
+
+    // 3. Start UI loop
     ConsoleUI ui = new ConsoleUI(authService, shopService, adminService);
-    
-    // 6. Start application loop (runs until System.exit(0))
     ui.start();
-    
-    // 7. This line only reached after System.exit()
-    System.out.println("Application terminated.");
 }</code></pre>
-                </div>
-            </section>
+                </section>
 
-            <!-- ACCESS MODIFIER SUMMARY -->
-            <section id="access-summary">
-                <h2>🔐 Access Modifier Summary</h2>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Layer</th>
-                            <th>Component</th>
-                            <th>Fields</th>
-                            <th>Constructor</th>
-                            <th>Public Methods</th>
-                            <th>Private Methods</th>
-                            <th>Static</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Model</strong></td>
-                            <td>User, Product, Order, OrderItem, Cart</td>
-                            <td><code>private</code></td>
-                            <td><code>public</code></td>
-                            <td>Getters/Setters</td>
-                            <td>None</td>
-                            <td>None</td>
-                        </tr>
-                        <tr style="background: #fff3cd;">
-                            <td><strong>Model</strong></td>
-                            <td>MockDatabase</td>
-                            <td><code>public static</code></td>
-                            <td><code>private</code></td>
-                            <td>None</td>
-                            <td>None</td>
-                            <td><strong>ALL</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Repository</strong></td>
-                            <td>All</td>
-                            <td>None</td>
-                            <td><code>public</code></td>
-                            <td>All CRUD</td>
-                            <td>None</td>
-                            <td>Init blocks only</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Service</strong></td>
-                            <td>All</td>
-                            <td><code>private</code></td>
-                            <td><code>public</code></td>
-                            <td>Business logic</td>
-                            <td>Helpers</td>
-                            <td>None</td>
-                        </tr>
-                        <tr>
-                            <td><strong>View</strong></td>
-                            <td>ConsoleUI</td>
-                            <td><code>private</code></td>
-                            <td><code>public</code></td>
-                            <td>start() only</td>
-                            <td>All UI methods</td>
-                            <td>One constant</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Main</strong></td>
-                            <td>Main</td>
-                            <td>None</td>
-                            <td>N/A</td>
-                            <td>main()</td>
-                            <td>None</td>
-                            <td>main() only</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <!-- DATA FLOWS -->
-            <section id="flows">
-                <h2>🔄 Critical Data Flows</h2>
-
-                <div class="method-card">
-                    <h3>Flow 1: User Registers and Makes First Purchase</h3>
-                    <pre><code>1. User starts app → Main.main() initializes everything → ui.start()
-2. ConsoleUI.start() enters while(true) loop → calls mainMenu()
-3. User selects option 1 (View Products)
-4. showProductList() displays paginated catalog
-5. User enters product number → showProductDetail(productId)
-6. User selects "Add to Basket" → handleAddToCart()
-7. handleAddToCart() calls shopService.addToCart()
-8. ShopService checks authService.isLoggedIn() → false
-9. Returns "NOT_LOGGED_IN"
-10. ConsoleUI calls forceLogin()
-11. User selects "Create Account" → registerFlow()
-12. Collects username, password (twice)
-13. Validates passwords match
-14. Calls authService.register()
-15. AuthService validates password rules
-16. Generates userId via userRepository.getNextUserId()
-17. Creates User object (isAdmin=false)
-18. Calls userRepository.save(user)
-19. UserRepository checks duplicates via findByUsername()
-20. Adds to MockDatabase.users[userCount++]
-21. AuthService sets currentUser = user
-22. Returns "SUCCESS"
-23. ConsoleUI retries addToCart (now authenticated)
-24. ShopService validates stock
-25. Gets cart via cartRepository.findByUserId()
-26. CartRepository creates new Cart(userId)
-27. Adds to MockDatabase.carts[]
-28. ShopService calls cart.addItem()
-29. Saves cart
-30. Returns "SUCCESS"
-31. ConsoleUI displays confirmation</code></pre>
-                </div>
-
-                <div class="method-card">
-                    <h3>Flow 2: Checkout Process</h3>
-                    <pre><code>1. User navigates to basket (option 3)
-2. showBasket() displays cart items and total
-3. User selects "Checkout" → handleCheckout()
-4. Calls shopService.checkout()
-
-VALIDATION PHASE:
-5. ShopService gets cart
-6. For each item:
-   - Fetches FRESH product data
-   - Validates stock >= quantity
-7. If any fail, returns "STOCK_ERROR:<name>"
-
-STOCK DEDUCTION PHASE:
-8. For each item:
-   - productRepository.updateStock(id, -qty)
-   - ProductRepository updates stockQuantity
-   - Saves product
-
-ORDER CREATION:
-9. Generate orderId
-10. Calculate totalPrice
-11. Copy cart items to OrderItem[]
-12. Create Order object
-13. orderRepository.save(order)
-
-CART CLEARING:
-14. cartRepository.clear(userId)
-15. Cart sets itemCount = 0
-
-16. Return "SUCCESS"
-17. ConsoleUI displays confirmation
-18. Returns to main menu (loop continues)</code></pre>
-                </div>
-
-                <div class="method-card">
-                    <h3>Flow 3: Admin Changes Product Price</h3>
-                    <pre><code>1. Admin logs in via loginFlow()
-2. Main menu shows admin panel option
-3. Admin selects option 4 → adminMenu()
-4. Checks authService.isAdmin() → true
-5. Admin selects "Manage Products" → adminProductMenu()
-6. Admin selects "Change Price"
-7. Prompts for product ID and new price
-8. Calls adminService.updateProductPrice(id, price)
-9. AdminService checks isAdmin() → true
-10. Validates price > 0 → true
-11. Calls productRepository.findById(id)
-12. ProductRepository searches MockDatabase.products[]
-13. Returns Product object
-14. AdminService calls product.setPrice(newPrice)
-15. Calls productRepository.update(product)
-16. ProductRepository replaces object in array
-17. Returns "SUCCESS"
-18. ConsoleUI displays confirmation
-19. Returns to product menu (loop continues)</code></pre>
-                </div>
-            </section>
-
-            <!-- SUMMARY -->
-            <section id="summary">
-                <h2>📊 Summary</h2>
-
-                <div class="box box-success">
-                    <h3>Architecture Recap</h3>
-                    <p><strong>4-Layer Architecture with Maximum Encapsulation:</strong></p>
-
-                    <h4>1. Model Layer (6 classes)</h4>
-                    <ul>
-                        <li>All fields: <code>private</code></li>
-                        <li>Getters/Setters: <code>public</code></li>
-                        <li>Classes: <code>public</code> (data transfer)</li>
-                        <li><strong>Exception:</strong> MockDatabase uses <code>public static</code> (simulates DB)</li>
-                    </ul>
-
-                    <h4>2. Repository Layer (4 classes)</h4>
-                    <ul>
-                        <li>Classes: <code>public</code> (DI)</li>
-                        <li>All methods: <code>public</code> (API for Service)</li>
-                        <li>No instance fields</li>
-                        <li>Static init blocks for seeding</li>
-                    </ul>
-
-                    <h4>3. Service Layer (3 classes)</h4>
-                    <ul>
-                        <li>Classes: <code>public</code> (DI)</li>
-                        <li>Fields: <code>private</code> (encapsulation)</li>
-                        <li>Business methods: <code>public</code></li>
-                        <li>Helpers: <code>private</code></li>
-                        <li>No static</li>
-                    </ul>
-
-                    <h4>4. View Layer (1 class)</h4>
-                    <ul>
-                        <li>Class: <code>public</code></li>
-                        <li>Fields: <code>private</code></li>
-                        <li>start(): <code>public</code> (Main entry)</li>
-                        <li>All UI methods: <code>private</code></li>
-                        <li>One static constant</li>
-                    </ul>
-                </div>
-
-                <div class="box box-info">
-                    <h3>Key Features</h3>
-
-                    <h4>User Features:</h4>
-                    <ul>
-                        <li>Browse products (pagination, 10/page, Z/M navigation)</li>
-                        <li>View product details</li>
-                        <li>Add to basket (with quantity)</li>
-                        <li>Remove from basket (numbered selection)</li>
-                        <li>Register (password validation: 6+ chars, letters + digits)</li>
-                        <li>Login/Logout</li>
-                        <li>Checkout (stock validation)</li>
-                    </ul>
-
-                    <h4>Admin Features:</h4>
-                    <ul>
-                        <li>Add/update/delete products</li>
-                        <li>Manage stock (add/remove partial quantities)</li>
-                        <li>Change prices/names/discounts</li>
-                        <li>Add/edit/delete users</li>
-                        <li>View statistics (product/user/order counts, revenue)</li>
-                        <li>Role-based access control</li>
-                    </ul>
-
-                    <h4>Technical Features:</h4>
-                    <ul>
-                        <li>Session management (persistent login)</li>
-                        <li>Application loop (doesn't exit on logout)</li>
-                        <li>Cart persistence (per user)</li>
-                        <li>Stock validation (prevents overselling)</li>
-                        <li>Transaction integrity (validates all before any deduction)</li>
-                        <li>Maximum encapsulation</li>
-                        <li>Minimal static usage</li>
-                    </ul>
-                </div>
-
-                <div class="box box-warning">
-                    <h3>Static Usage Justification</h3>
-                    <p><strong>Only MockDatabase uses static:</strong></p>
-                    <ul>
-                        <li>Simulates singleton database instance</li>
-                        <li>Provides shared storage across application</li>
-                        <li>Will be replaced by actual database connection (still singleton)</li>
-                    </ul>
-
-                    <p><strong>Everything else is non-static:</strong></p>
-                    <ul>
-                        <li>Services are instantiated (testable, flexible)</li>
-                        <li>Repositories are instantiated (swappable data sources)</li>
-                        <li>View is instantiated (multiple UI instances possible)</li>
-                    </ul>
-                </div>
-
-                <div class="box">
-                    <h3>Security & Encapsulation Benefits</h3>
-                    <ol>
-                        <li><strong>Data Hiding:</strong> Private fields prevent unauthorized access</li>
-                        <li><strong>Controlled Access:</strong> Public methods are gatekeepers with validation</li>
-                        <li><strong>Minimal Static:</strong> Prevents global state issues</li>
-                        <li><strong>Layer Isolation:</strong> Private methods prevent layer-hopping</li>
-                        <li><strong>Dependency Injection:</strong> Testable, modular, flexible code</li>
-                    </ol>
-                </div>
-            </section>
-
-            <!-- IMPLEMENTATION CHECKLIST -->
-            <section id="checklist">
-                <h2>🎯 Implementation Checklist</h2>
-
-                <div class="box box-success">
-                    <p>When implementing, follow this order:</p>
-
-                    <h3>Phase 1: Model Layer</h3>
-                    <ul class="checklist">
-                        <li>Create all Model classes with private fields</li>
-                        <li>Add public getters/setters</li>
-                        <li>Create MockDatabase with public static fields</li>
-                        <li>Test: Can create objects and access fields</li>
-                    </ul>
-
-                    <h3>Phase 2: Repository Layer</h3>
-                    <ul class="checklist">
-                        <li>Create Repository classes</li>
-                        <li>Add static initialization blocks with sample data</li>
-                        <li>Implement CRUD methods</li>
-                        <li>Test: Can save/retrieve data from MockDatabase</li>
-                    </ul>
-
-                    <h3>Phase 3: Service Layer</h3>
-                    <ul class="checklist">
-                        <li>Create Service classes with private fields</li>
-                        <li>Implement business logic methods</li>
-                        <li>Add validation and error handling</li>
-                        <li>Test: Methods return correct status codes</li>
-                    </ul>
-
-                    <h3>Phase 4: View Layer</h3>
-                    <ul class="checklist">
-                        <li>Create ConsoleUI with private fields</li>
-                        <li>Implement start() and mainMenu()</li>
-                        <li>Add all menu methods</li>
-                        <li>Test: Navigate through all menus</li>
-                    </ul>
-
-                    <h3>Phase 5: Integration</h3>
-                    <ul class="checklist">
-                        <li>Create Main.java</li>
-                        <li>Wire dependencies in main()</li>
-                        <li>Test complete user flows</li>
-                        <li>Test admin functions</li>
-                    </ul>
-
-                    <h3>Phase 6: Polish</h3>
-                    <ul class="checklist">
-                        <li>Add input validation</li>
-                        <li>Improve error messages</li>
-                        <li>Test edge cases</li>
-                        <li>Add code comments</li>
-                    </ul>
-                </div>
-            </section>
+                <section id="access-summary">
+                    <h2>🔐 Access Modifier Summary</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Layer</th><th>Fields</th><th>Constructor</th><th>Public Methods</th><th>Private Methods</th><th>Static</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Model (entities)</strong></td><td><code>private</code></td><td><code>public</code></td><td>Getters/Setters</td><td>None</td><td>None</td></tr>
+                            <tr style="background:#fff3cd"><td><strong>MockDatabase</strong></td><td><code>public static</code></td><td><code>private</code></td><td>None</td><td>None</td><td>ALL</td></tr>
+                            <tr><td><strong>Repository</strong></td><td>None</td><td><code>public</code></td><td>All CRUD</td><td>None</td><td>Init blocks only</td></tr>
+                            <tr><td><strong>Service</strong></td><td><code>private</code></td><td><code>public</code></td><td>Business logic</td><td>Helpers</td><td>None</td></tr>
+                            <tr><td><strong>View (ConsoleUI)</strong></td><td><code>private</code></td><td><code>public</code></td><td><code>start()</code> only</td><td>All UI methods</td><td>One constant</td></tr>
+                        </tbody>
+                    </table>
+                </section>
             </div>
+            <!-- ==================== END V1 SCREEN ==================== -->
+
         </div>
 
         <footer>
             <p><strong>📱 Electronics Shop Project</strong></p>
             <p>Layered Architecture with Maximum Encapsulation</p>
-            <p>Java Console Application - January 2026</p>
+            <p>Java Console Application — January 2026</p>
             <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.8;">Complete Architecture Documentation</p>
         </footer>
     </div>
@@ -2444,13 +1891,15 @@ CART CLEARING:
         const screens = {
             v1: document.getElementById('screen-v1'),
             v2: document.getElementById('screen-v2'),
-            v3: document.getElementById('screen-v3')
+            v3: document.getElementById('screen-v3'),
+            v4: document.getElementById('screen-v4')
         };
 
         const screenButtons = {
             v1: document.getElementById('show-v1'),
             v2: document.getElementById('show-v2'),
-            v3: document.getElementById('show-v3')
+            v3: document.getElementById('show-v3'),
+            v4: document.getElementById('show-v4')
         };
 
         function activateScreen(screenName) {
@@ -2461,16 +1910,17 @@ CART CLEARING:
             });
         }
 
-        // Default view: Step 3 CSV persistence screen.
-        activateScreen('v3');
+        // Default view: Step 5 JavaFX SPA Router screen.
+        activateScreen('v4');
 
+        screenButtons.v4.addEventListener('click', () => activateScreen('v4'));
         screenButtons.v3.addEventListener('click', () => activateScreen('v3'));
         screenButtons.v2.addEventListener('click', () => activateScreen('v2'));
         screenButtons.v1.addEventListener('click', () => activateScreen('v1'));
 
         // Scroll to top functionality
         const scrollTopBtn = document.getElementById('scrollTop');
-        
+
         window.addEventListener('scroll', () => {
             if (window.pageYOffset > 300) {
                 scrollTopBtn.classList.add('visible');
@@ -2480,10 +1930,7 @@ CART CLEARING:
         });
 
         scrollTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
         // Smooth scroll for navigation links
@@ -2491,15 +1938,11 @@ CART CLEARING:
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const screen = this.getAttribute('data-screen');
-                if (screen === 'v1' || screen === 'v2' || screen === 'v3') {
-                    activateScreen(screen);
-                }
+                if (screen) activateScreen(screen);
                 const targetId = this.getAttribute('href');
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
                 }
             });
         });
