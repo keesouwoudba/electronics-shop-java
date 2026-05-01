@@ -68,21 +68,24 @@ public class AdminProductEditorPage implements ScreenComponent {
             File selected = chooser.showOpenDialog(null);
             if (selected != null) {
                 // Use product image service if available
+                String savedPath = null;
                 if (context.getProductImageService() != null) {
-                    String savedPath = context.getProductImageService().saveImage(selected, selected.getName());
-                    if (savedPath != null) {
-                        stagedImageName[0] = selected.getName();
-                        stagedImagePath[0] = savedPath;
-                        imagePreview = ImageHelper.createProductImageView(new com.university.shopping.model.Product(0, "", 0.0, "", "", 0, false, 0.0, stagedImageName[0], stagedImagePath[0]), 120, 80);
+                    savedPath = context.getProductImageService().saveImage(selected, selected.getName());
+                    if (savedPath == null) {
+                        context.getRenderer().setNotification("Image invalid (type/size) or failed to save.", true);
                     }
                 } else {
-                    // Fallback: don't copy, just preview
-                    stagedImageName[0] = selected.getName();
-                    stagedImagePath[0] = selected.getAbsolutePath();
-                    imagePreview = ImageHelper.createProductImageView(new com.university.shopping.model.Product(0, "", 0.0, "", "", 0, false, 0.0, stagedImageName[0], stagedImagePath[0]), 120, 80);
+                    // Fallback: don't copy, just preview from original path
+                    savedPath = selected.getAbsolutePath();
                 }
-                imageRow.getChildren().clear();
-                imageRow.getChildren().addAll(imagePreview, uploadBtn, removeBtn);
+
+                if (savedPath != null) {
+                    stagedImageName[0] = selected.getName();
+                    stagedImagePath[0] = savedPath;
+                    imagePreview = ImageHelper.createProductImageView(new com.university.shopping.model.Product(0, "", 0.0, "", "", 0, false, 0.0, stagedImageName[0], stagedImagePath[0]), 120, 80);
+                    imageRow.getChildren().clear();
+                    imageRow.getChildren().addAll(imagePreview, uploadBtn, removeBtn);
+                }
             }
         });
 

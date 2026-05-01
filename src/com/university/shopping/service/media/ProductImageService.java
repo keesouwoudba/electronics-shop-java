@@ -9,6 +9,8 @@ import java.nio.file.StandardCopyOption;
 
 public class ProductImageService {
     private final Path imagesDir;
+    private final String[] allowedExtensions = new String[]{"png","jpg","jpeg","webp"};
+    private final long maxBytes = 5L * 1024L * 1024L; // 5 MB
 
     public ProductImageService() {
         this.imagesDir = Paths.get("data", "images");
@@ -24,10 +26,26 @@ public class ProductImageService {
      */
     public String saveImage(File sourceFile, String desiredNameHint) {
         if (sourceFile == null || !sourceFile.exists()) return null;
-        String safeName = System.currentTimeMillis() + "_" + sourceFile.getName();
-        if (desiredNameHint != null && !desiredNameHint.isEmpty()) {
-            safeName = System.currentTimeMillis() + "_" + desiredNameHint;
+        // basic size check
+        if (sourceFile.length() > maxBytes) return null;
+
+        // extension check (case-insensitive)
+        String name = sourceFile.getName();
+        int dot = name.lastIndexOf('.');
+        if (dot <= 0 || dot == name.length() - 1) return null;
+        String ext = name.substring(dot + 1).toLowerCase();
+        boolean allowed = false;
+        for (int i = 0; i < allowedExtensions.length; i++) {
+            if (allowedExtensions[i].equals(ext)) { allowed = true; break; }
         }
+        if (!allowed) return null;
+        // sanitize desired name hint or fallback to original filename
+        String baseName = (desiredNameHint != null && !desiredNameHint.isEmpty()) ? desiredNameHint : sourceFile.getName();
+        baseName = baseName.replaceAll("[^a-zA-Z0-9._-]", "_");
+        if (!baseName.toLowerCase().endsWith("." + ext)) {
+            baseName = baseName + "." + ext;
+        }
+        String safeName = System.currentTimeMillis() + "_" + baseName;
 
         Path target = imagesDir.resolve(safeName);
         try {
