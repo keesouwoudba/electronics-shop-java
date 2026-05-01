@@ -137,6 +137,10 @@ public class AdminProductEditorPage implements ScreenComponent {
                         p.setPrice(price);
                         p.setStockQuantity(stock);
                         if (stagedImageName[0] != null && !stagedImageName[0].isEmpty()) {
+                            String prevPath = p.getImagePath();
+                            if (prevPath != null && !prevPath.isEmpty() && !prevPath.equals(stagedImagePath[0]) && context.getProductImageService() != null) {
+                                context.getProductImageService().deleteImage(prevPath);
+                            }
                             p.setImageName(stagedImageName[0]);
                             p.setImagePath(stagedImagePath[0]);
                         }

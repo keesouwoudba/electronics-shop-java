@@ -68,7 +68,20 @@ public class ProductImageService {
         if (pathStr == null || pathStr.isEmpty()) return false;
         try {
             Path p = Paths.get(pathStr);
-            return Files.deleteIfExists(p);
+            boolean removed = Files.deleteIfExists(p);
+
+            // Also remove any generated thumbnails that reference this file name.
+            String baseName = p.getFileName().toString();
+            try (java.nio.file.DirectoryStream<Path> ds = Files.newDirectoryStream(imagesDir)) {
+                for (Path child : ds) {
+                    String fn = child.getFileName().toString();
+                    if (fn.startsWith("thumb_") && fn.endsWith(baseName)) {
+                        try { Files.deleteIfExists(child); } catch (Exception ignored) {}
+                    }
+                }
+            } catch (Exception ignored) {}
+
+            return removed;
         } catch (Exception e) {
             return false;
         }
