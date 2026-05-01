@@ -50,7 +50,7 @@ public class MainFx extends Application {
     }
 
     private void initializeServices() {
-        new CsvBootstrapInitializer();
+        CsvBootstrapInitializer bootstrapInitializer = new CsvBootstrapInitializer();
 
         UserRepository userRepository = new UserRepository();
         ProductRepository productRepository = new ProductRepository();

@@ -45,7 +45,7 @@ public class CsvBootstrapInitializer {
     private void ensureFilesWithHeaders() {
         ensureCsvFile(CsvPersistenceUtil.USERS_FILE, "id,username,password,isAdmin,createdDate");
         ensureCsvFile(CsvPersistenceUtil.PRODUCTS_FILE,
-                "id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage");
+            "id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath");
         ensureCsvFile(CsvPersistenceUtil.ORDERS_FILE, "id,userId,orderDate,totalPrice,status");
         ensureCsvFile(CsvPersistenceUtil.ORDER_ITEMS_FILE,
                 "orderId,productId,productName,quantity,priceAtPurchase");
@@ -150,6 +150,7 @@ public class CsvBootstrapInitializer {
             String header = reader.readLine();
             validateHeader(filePath, header,
                     "id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage");
+            // Allow trailing columns for backward compatibility in header parsing if needed
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -158,8 +159,8 @@ public class CsvBootstrapInitializer {
 
                 try {
                     String[] parts = CsvPersistenceUtil.splitCsvLine(line);
-                    if (parts.length != 8) {
-                        throw new IllegalArgumentException("Expected 8 columns but got " + parts.length);
+                    if (parts.length < 8) {
+                        throw new IllegalArgumentException("Expected min 8 columns but got " + parts.length);
                     }
 
                     int id = Integer.parseInt(parts[0].trim());
@@ -170,6 +171,13 @@ public class CsvBootstrapInitializer {
                     int stockQuantity = Integer.parseInt(parts[5].trim());
                     boolean isDiscounted = parseBooleanStrict(parts[6].trim(), "isDiscounted");
                     double discountPercentage = Double.parseDouble(parts[7].trim());
+                    
+                    String imageName = "";
+                    String imagePath = "";
+                    if (parts.length >= 10) {
+                        imageName = CsvPersistenceUtil.unescapeCsv(parts[8].trim());
+                        imagePath = CsvPersistenceUtil.unescapeCsv(parts[9].trim());
+                    }
 
                     if (name.isEmpty() || category.isEmpty()) {
                         throw new IllegalArgumentException("name/category cannot be empty");
@@ -177,7 +185,7 @@ public class CsvBootstrapInitializer {
 
                     if (index < MockDatabase.products.length) {
                         MockDatabase.products[index++] = new Product(
-                                id, name, price, category, description, stockQuantity, isDiscounted, discountPercentage
+                                id, name, price, category, description, stockQuantity, isDiscounted, discountPercentage, imageName, imagePath
                         );
                     }
 

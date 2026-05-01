@@ -10,8 +10,14 @@ public class Product {
     private int stockQuantity;
     private boolean isDiscounted;
     private double discountPercentage; //0-100
+    private String imageName;
+    private String imagePath;
 
     public Product(String name, double price, String category, String description, int stockQuantity, boolean isDiscounted, double discountPercentage) {
+        this(name, price, category, description, stockQuantity, isDiscounted, discountPercentage, "", "");
+    }
+
+    public Product(String name, double price, String category, String description, int stockQuantity, boolean isDiscounted, double discountPercentage, String imageName, String imagePath) {
         this.productId = MockDatabase.nextProductId;
         MockDatabase.nextProductId++;
         this.name = name;
@@ -21,9 +27,15 @@ public class Product {
         this.stockQuantity = stockQuantity;
         this.isDiscounted = isDiscounted;
         this.discountPercentage = discountPercentage;
+        this.imageName = imageName;
+        this.imagePath = imagePath;
     }
 
     public Product(int productId, String name, double price, String category, String description, int stockQuantity, boolean isDiscounted, double discountPercentage) {
+        this(productId, name, price, category, description, stockQuantity, isDiscounted, discountPercentage, "", "");
+    }
+
+    public Product(int productId, String name, double price, String category, String description, int stockQuantity, boolean isDiscounted, double discountPercentage, String imageName, String imagePath) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -32,10 +44,18 @@ public class Product {
         this.stockQuantity = stockQuantity;
         this.isDiscounted = isDiscounted;
         this.discountPercentage = discountPercentage;
+        this.imageName = imageName;
+        this.imagePath = imagePath;
         if (productId >= MockDatabase.nextProductId) {
             MockDatabase.nextProductId = productId + 1;
         }
     }
+
+    public String getImageName() { return imageName; }
+    public void setImageName(String imageName) { this.imageName = imageName; }
+    
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 
     //getters
     public int getProductId() {

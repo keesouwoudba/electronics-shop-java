@@ -45,20 +45,22 @@ public final class CsvPersistenceUtil {
 
     public static boolean writeProductsToCsv() {
         StringBuilder sb = new StringBuilder();
-        sb.append("id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage\n");
+        sb.append("id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath\n");
 
         for (int i = 0; i < MockDatabase.productCount; i++) {
             Product product = MockDatabase.products[i];
             if (product == null) continue;
 
-            sb.append(product.getProductId()).append(",")
+                sb.append(product.getProductId()).append(",")
                     .append(escapeCsv(product.getName())).append(",")
                     .append(product.getPrice()).append(",")
                     .append(escapeCsv(product.getCategory())).append(",")
                     .append(escapeCsv(product.getDescription())).append(",")
                     .append(product.getStockQuantity()).append(",")
                     .append(product.isDiscounted()).append(",")
-                    .append(product.getDiscountPercentage())
+                    .append(product.getDiscountPercentage()).append(",")
+                    .append(escapeCsv(product.getImageName())).append(",")
+                    .append(escapeCsv(product.getImagePath()))
                     .append("\n");
         }
 

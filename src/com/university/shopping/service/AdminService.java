@@ -120,6 +120,14 @@ public class AdminService {
         if (!productRepository.update(tmp_prod)) return "PERSISTENCE_ERROR";
         return "SUCCESS";
     }
+    public String updateProduct(com.university.shopping.model.Product product) {
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (product == null) return "INVALID_DATA";
+        if (productRepository.findById(product.getProductId()) == null) return "Product not exists";
+
+        if (!productRepository.update(product)) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
     public Product[] getAllProducts(){
         if (!this.authService.isAdmin()) return null;
         return productRepository.findAll();

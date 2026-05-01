@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TechVolt Electronics - Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#005bc0",
+                        "secondary": "#515f74",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#9e4300",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-primary-fixed": "#001a41",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2d3038",
+                        "outline-variant": "#c1c6d6",
+                        "on-tertiary-fixed": "#341100",
+                        "on-surface-variant": "#414754",
+                        "surface-dim": "#d8d9e3",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "surface-container": "#ecedf7",
+                        "on-primary-container": "#ffffff",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "on-error": "#ffffff",
+                        "primary-container": "#1a73e8",
+                        "tertiary-fixed": "#ffdbcb",
+                        "background": "#f9f9ff",
+                        "surface-container-low": "#f2f3fd",
+                        "on-secondary-container": "#57657a",
+                        "on-surface": "#191c23",
+                        "outline": "#727785",
+                        "primary-fixed": "#d8e2ff",
+                        "inverse-primary": "#adc7ff",
+                        "surface": "#f9f9ff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "surface-variant": "#e0e2ec",
+                        "inverse-on-surface": "#eff0fa",
+                        "surface-container-highest": "#e0e2ec",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#191c23",
+                        "primary": "#005bbf",
+                        "on-tertiary-container": "#0e0200",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "surface-bright": "#f9f9ff",
+                        "secondary-fixed": "#d5e3fc",
+                        "secondary-container": "#d5e3fc",
+                        "surface-container-high": "#e6e8f2",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "tertiary-container": "#c55500"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "base": "4px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "catalog-title": ["Inter"],
+                        "data-tabular": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-main": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "catalog-title": ["18px", { "lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "600" }],
+                        "data-tabular": ["14px", { "lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-main": ["16px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-main text-body-main antialiased min-h-screen flex flex-col">
+<!-- TopNavBar Component -->
+<header class="bg-white dark:bg-slate-900 font-inter antialiased text-sm font-medium docked full-width top-0 border-b shadow-sm border-b border-slate-200 dark:border-slate-800 fixed top-0 left-0 w-full h-[72px] z-50 flex items-center justify-between px-8 max-w-[1280px] mx-auto w-full">
+<div class="flex items-center gap-lg">
+<div class="text-xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
+                TechVolt Electronics
+            </div>
+<nav class="hidden md:flex gap-lg ml-lg">
+<a class="text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 pb-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors opacity-80 transition-opacity" href="#">Catalog</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">Deals</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">Support</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">Admin</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container rounded-[12px] border-none focus:ring-2 focus:ring-primary text-sm text-on-surface w-64 placeholder-on-surface-variant" placeholder="Search catalog..." type="text"/>
+</div>
+<button class="text-slate-600 dark:text-slate-400 hover:text-blue-500 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+<button class="text-slate-600 dark:text-slate-400 hover:text-blue-500 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+                Cart
+            </button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow pt-[104px] pb-xl px-8 max-w-container-max mx-auto w-full">
+<!-- Notification Banner -->
+<div class="mb-lg bg-surface-container-high border-l-4 border-[#00c853] p-md rounded-r-lg shadow-[0_2px_4px_rgba(0,0,0,0.04)] flex items-center justify-between">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-[#00c853]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-on-surface font-body-main text-body-main">Product added to cart successfully.</span>
+</div>
+<button class="text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- Page Header -->
+<div class="mb-xl flex justify-between items-end">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-xs">Professional Grade Catalog</h1>
+<p class="font-body-main text-body-main text-on-surface-variant">Explore our high-fidelity electronics and components.</p>
+</div>
+<div class="flex gap-md">
+<button class="flex items-center gap-xs border border-outline-variant rounded-[12px] px-4 py-2 hover:bg-surface-container-low transition-colors text-on-surface text-sm">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                    Filters
+                </button>
+<div class="relative">
+<select class="appearance-none bg-surface border border-outline-variant rounded-[12px] pl-4 pr-10 py-2 text-on-surface text-sm focus:ring-2 focus:ring-primary focus:border-primary">
+<option>Sort by: Featured</option>
+<option>Price: Low to High</option>
+<option>Price: High to Low</option>
+<option>Newest Arrivals</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.08)] transition-shadow duration-300 group flex flex-col">
+<div class="relative h-48 bg-surface-container-low w-full overflow-hidden">
+<img alt="Professional Studio Headphones" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A high-end professional studio headphone set resting on a clean, modern white desk surface. The lighting is soft and diffused, creating a premium light-mode aesthetic with minimal shadows. The headphones feature sleek black and metallic silver finishes, contrasting sharply against the pristine white background. The overall mood is crisp, technical, and sophisticated." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrUdZErmJ94ddxO2l-_NdWcJVWFZkCKYsvXKjv0p84bxBc79KsAi7FHhacdvRmW6NNOuJWHB96P3xN6PGpJGfT7TESQ8Z7Gkusjn_W4TTj7AIf9zCNFHC_GLW_JNfNvhaX_XQKFBvHJE9wBbMzRcGDkuKDjep1W0VudLN4CSXrmsgRDL7AhavMJY8YfUjV8o8ruSkbd8gZ6nsK1pD5fQkrjPN8XNUmdwC3G8VDhp5qb_UOmBhz-Wy--UWWPiLuEKCzHtegP5X5UQ2k"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-label-caps text-label-caps text-secondary uppercase tracking-wider">Audio</div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<h3 class="font-catalog-title text-catalog-title text-on-surface mb-xs line-clamp-2">Acoustic Pro Studio Monitor Headphones Series X</h3>
+<div class="flex items-center justify-between mt-auto pt-md">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">$299.00</span>
+<span class="text-xs text-[#00c853] font-medium flex items-center gap-1 mt-1">
+<span class="w-2 h-2 rounded-full bg-[#00c853]"></span> In Stock (15)
+                            </span>
+</div>
+<button aria-label="Add to cart" class="bg-surface text-primary border border-primary hover:bg-primary hover:text-on-primary transition-colors p-2 rounded-[12px] flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.08)] transition-shadow duration-300 group flex flex-col">
+<div class="relative h-48 bg-surface-container-low w-full overflow-hidden">
+<img alt="Mechanical Keyboard" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A premium mechanical gaming keyboard with customizable RGB backlighting set against a sterile, bright white studio background. The keys are a mix of dark slate grey and vibrant blue accents. Soft, highly controlled studio lighting eliminates harsh shadows, emphasizing the clean lines and technical precision of the peripheral. The aesthetic is modern, corporate tech." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvhy_vf6ncbpq1YydJF5KTHC8917Heqvbf9twsy1RrHcC71gw5hTEg1-MAheclZh6gcUxvAbeRxiigXdL9vGF3Dd2d1lAze9Z9tZb1joV88XOiah2j2sxmwABI1VCF4JH2s816Kxu4AbSbScrILrfG6R7zNTNCyZGUXnQKDTLtmkMhEbYemUJQvrYYe_V9C5xGL53Rq9bD2mMZ2rgoXpuwHTntJ12mhlxUk7kYZ-FiC38yVXNIjQhE6fPiffPrUwgDMV95Fnsca0e3"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-label-caps text-label-caps text-secondary uppercase tracking-wider">Peripherals</div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<h3 class="font-catalog-title text-catalog-title text-on-surface mb-xs line-clamp-2">TactileTech Pro Mechanical Keyboard TKL</h3>
+<div class="flex items-center justify-between mt-auto pt-md">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">$145.50</span>
+<span class="text-xs text-[#00c853] font-medium flex items-center gap-1 mt-1">
+<span class="w-2 h-2 rounded-full bg-[#00c853]"></span> In Stock (42)
+                            </span>
+</div>
+<button aria-label="Add to cart" class="bg-surface text-primary border border-primary hover:bg-primary hover:text-on-primary transition-colors p-2 rounded-[12px] flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.08)] transition-shadow duration-300 group flex flex-col">
+<div class="relative h-48 bg-surface-container-low w-full overflow-hidden">
+<img alt="Smart Home Hub" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A sleek, cylindrical smart home hub device rendered in brushed aluminum, sitting on a minimalist light grey surface. The environment is flooded with cool, white natural light, creating a sterile but inviting light-mode technology vibe. Subtle reflections on the device's surface highlight its premium build quality. The overall composition is clean and focused." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqotO0Wy3rzp_yOSQynmQoxYvcrLVv2qeZUoEH2UQj-x8IbO9HCiZZzhcfICIWDHWhKhxu6ZSOEiGJqzpn5GwjEWkIUScudDSCHxsnef8sGzAR3K6nCeU9L9mRbkVr1X-3cMpHSCoVh274DpudGt2tro1_QWlZitj0vxOjQi5wuC8ZxnuZTdM6hDov2XXzxw6QjLtiGjtFSaGenA_Rm1M8M7t2NDdeNLORRr4mrKqLWBi3hek-Qe4uRgnK17qyKUyNjP5-MVUgJR6n"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-label-caps text-label-caps text-secondary uppercase tracking-wider">Smart Home</div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<h3 class="font-catalog-title text-catalog-title text-on-surface mb-xs line-clamp-2">NexusCore Smart Automation Hub Gen 4</h3>
+<div class="flex items-center justify-between mt-auto pt-md">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">$199.99</span>
+<span class="text-xs text-error font-medium flex items-center gap-1 mt-1">
+<span class="w-2 h-2 rounded-full bg-error"></span> Low Stock (3)
+                            </span>
+</div>
+<button aria-label="Add to cart" class="bg-surface text-primary border border-primary hover:bg-primary hover:text-on-primary transition-colors p-2 rounded-[12px] flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.08)] transition-shadow duration-300 group flex flex-col opacity-75">
+<div class="relative h-48 bg-surface-container-low w-full overflow-hidden">
+<img alt="High-End Webcam" class="w-full h-full object-cover grayscale-[50%]" data-alt="A compact, high-definition professional webcam with a large glass lens, mounted on a sleek dark grey stand. The background is a seamless, bright white infinity cove, ensuring maximum focus on the product. Lighting is bright and even, typical of a high-end corporate product catalog. The image feels sharp, clinical, and modern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1AfEkaYyZr8WfhpubM4a7FheOd26D1Tpi2HjqJLRrJadF1McVrvaEITBTK3c30IJFJlHgL5ZDzK8eDm3GW8Z3ZmD83mi-72QTbDlDA3e4_GakEAbZgzS1oUSExmptONLcloARpw449f5txPT-T1O4fgIxl9H3As06LpuoqCRH9ZmEyC8juyN2BkPFn5cdBnr2kbWjtiFfrroiGbpAtk_gL8IWSkoc_g8zJGOsThFum2ZF5RCESy9LE9W6Q5Ju6czRvGL7IU0nC3Fe"/>
+<div class="absolute inset-0 bg-surface/20"></div>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-label-caps text-label-caps text-secondary uppercase tracking-wider">Video</div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<h3 class="font-catalog-title text-catalog-title text-on-surface mb-xs line-clamp-2">OpticClear 4K Pro Streaming Camera</h3>
+<div class="flex items-center justify-between mt-auto pt-md">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface-variant">$249.00</span>
+<span class="text-xs text-secondary font-medium flex items-center gap-1 mt-1">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span> Out of Stock
+                            </span>
+</div>
+<button aria-label="Out of stock" class="bg-surface-variant text-outline cursor-not-allowed p-2 rounded-[12px] flex items-center justify-center" disabled="">
+<span class="material-symbols-outlined text-[20px]">shopping_cart_off</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="bg-slate-50 dark:bg-slate-950 text-xs font-normal text-slate-500 full-width border-t border-slate-200 dark:border-slate-800 flat no shadows w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center max-w-[1280px] mx-auto mt-auto">
+<div class="mb-4 md:mb-0">
+<span class="text-slate-900 dark:text-slate-100">© 2024 TechVolt Electronics. All rights reserved.</span>
+</div>
+<nav class="flex flex-wrap gap-md justify-center md:justify-end">
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4" href="#">Support Center</a>
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4" href="#">Terms of Service</a>
+<span class="text-slate-400">v2.4.0-stable</span>
+</nav>
+</footer>
+</body></html>
