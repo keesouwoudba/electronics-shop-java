@@ -13,5 +13,6 @@ public class RouteDecision {
 
     public Route getRoute() { return route; }
     public String getReason() { return reason; }
+    public String getFlashMessage() { return reason; }
     public boolean isAllowed() { return allowed; }
 }

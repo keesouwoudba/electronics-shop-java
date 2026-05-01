@@ -3,6 +3,7 @@ package com.university.shopping.view.pages;
 import com.university.shopping.app.NavIntent;
 import com.university.shopping.app.Route;
 import com.university.shopping.model.Product;
+import com.university.shopping.view.components.ProductCardComponent;
 import com.university.shopping.view.contracts.ScreenComponent;
 import com.university.shopping.view.contracts.ScreenContext;
 import javafx.geometry.Insets;
@@ -11,8 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import com.university.shopping.view.util.ImageHelper;
-import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 
 public class GuestProductsPage implements ScreenComponent {
@@ -53,23 +52,7 @@ public class GuestProductsPage implements ScreenComponent {
         } else {
             for (Product p : products) {
                 if (p != null) {
-                    VBox card = new VBox(5);
-                    card.setStyle("-fx-border-color: #c1c6d6; -fx-border-radius: 8px; -fx-padding: 10px;");
-                    card.setPrefWidth(200);
-                    
-                    Node img = ImageHelper.createProductImageView(p, 180, 120);
-
-                    Label cat = new Label(p.getCategory());
-                    cat.setStyle("-fx-font-size: 10px; -fx-text-fill: grey;");
-                    Label name = new Label(p.getName());
-                    name.setStyle("-fx-font-weight: bold;");
-                    
-                    // Specific to guest catalog format
-                    Label mockPrice = new Label("Login to view");
-                    mockPrice.setStyle("-fx-text-fill: #005bbf;");
-                    
-                    card.getChildren().addAll(img, cat, name, mockPrice);
-                    grid.getChildren().add(card);
+                    grid.getChildren().add(new ProductCardComponent(p).render(context));
                 }
             }
         }

@@ -14,35 +14,29 @@ import com.university.shopping.service.pricing.StandardDiscountPolicy;
 import com.university.shopping.service.report.AbstractReportService;
 import com.university.shopping.service.report.ConsoleReportService;
 import com.university.shopping.service.report.CsvReportService;
+import com.university.shopping.app.Router;
+import com.university.shopping.view.contracts.ScreenContext;
+import com.university.shopping.view.layout.AppShell;
+import com.university.shopping.view.renderer.UiRenderer;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Main JavaFX application entry point.
+ * Initializes all services, builds the AppShell, and launches the SPA router system.
+ */
 public class MainFx extends Application {
     private AuthService authService;
     private ShopService shopService;
     private AdminService adminService;
+    private Router router;
+    private UiRenderer renderer;
 
     @Override
     public void start(Stage stage) {
         initializeServices();
-
-        BorderPane shell = new BorderPane();
-        shell.setTop(buildHeader());
-        shell.setCenter(buildScrollablePageFlow());
-
-        Scene scene = new Scene(shell, 1100, 760);
-        stage.setTitle("Electronics Shop - JavaFX");
-        stage.setScene(scene);
-        stage.show();
+        buildAndShowSPA(stage);
     }
 
     public static void main(String[] args) {
@@ -50,17 +44,21 @@ public class MainFx extends Application {
     }
 
     private void initializeServices() {
+        // Bootstrap data from CSV files
         CsvBootstrapInitializer bootstrapInitializer = new CsvBootstrapInitializer();
 
+        // Initialize repositories
         UserRepository userRepository = new UserRepository();
         ProductRepository productRepository = new ProductRepository();
         OrderRepository orderRepository = new OrderRepository();
         CartRepository cartRepository = new CartRepository();
 
+        // Initialize core services
         this.authService = new AuthService(userRepository);
         DiscountPolicy discountPolicy = new StandardDiscountPolicy();
         this.shopService = new ShopService(productRepository, orderRepository, cartRepository, authService, discountPolicy);
 
+        // Initialize reporting services
         String[] reportFormats = new String[] {"console", "csv"};
         AbstractReportService[] reportServices = new AbstractReportService[] {
             new ConsoleReportService(productRepository, userRepository, orderRepository),
@@ -69,65 +67,55 @@ public class MainFx extends Application {
         };
         this.adminService = new AdminService(productRepository, userRepository, orderRepository, authService,
             reportFormats, reportServices);
+        
+        // Initialize router and renderer
+        this.router = new Router();
+        this.renderer = null; // Will be created after AppShell is built
     }
 
-    private HBox buildHeader() {
-        Label brand = new Label("Electronics Shop");
-        brand.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
-
-        Label mode = new Label("JavaFX bootstrap mode");
-        mode.setStyle("-fx-font-size: 13px; -fx-opacity: 0.8;");
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        HBox header = new HBox(12, brand, spacer, mode);
-        header.setPadding(new Insets(14, 20, 14, 20));
-        header.setStyle("-fx-background-color: linear-gradient(to right, #16324f, #2d5f89); -fx-text-fill: white;");
-        for (javafx.scene.Node child : header.getChildren()) {
-            if (child instanceof Label) {
-                ((Label) child).setStyle(((Label) child).getStyle() + " -fx-text-fill: white;");
+    private void buildAndShowSPA(Stage stage) {
+        // Create screen context with all services
+        AppShell shell = new AppShell();
+        
+        // Create screen context that will be passed to all pages
+        ScreenContext context = new ScreenContext() {
+            @Override
+            public AuthService getAuthService() {
+                return authService;
             }
-        }
-        return header;
-    }
 
-    private ScrollPane buildScrollablePageFlow() {
-        Product[] products = shopService.getAllProducts();
-        int productCount = products == null ? 0 : products.length;
+            @Override
+            public ShopService getShopService() {
+                return shopService;
+            }
 
-        Label title = new Label("JavaFX is wired successfully");
-        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+            @Override
+            public AdminService getAdminService() {
+                return adminService;
+            }
 
-        Label body = new Label(
-            "This screen confirms your existing repositories and services can run inside a JavaFX app.\n" +
-            "Next step is replacing this placeholder with Router + UiRenderer + page components."
-        );
-        body.setWrapText(true);
-        body.setStyle("-fx-font-size: 14px;");
+            @Override
+            public Router getRouter() {
+                return router;
+            }
 
-        Label stats = new Label("Loaded products from CSV: " + productCount);
-        stats.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
-
-        VBox content = new VBox(12, title, body, stats);
-        content.setPadding(new Insets(24));
-        content.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
-
-        VBox footer = new VBox();
-        footer.setPadding(new Insets(20));
-        footer.setStyle("-fx-background-color: #f2f5f9;");
-        footer.getChildren().add(new Label("Footer is injected at content bottom and reached by scroll on long pages."));
-
-        Region longSpacer = new Region();
-        longSpacer.setMinHeight(520);
-
-        VBox pageFlow = new VBox(16, content, longSpacer, footer);
-        pageFlow.setPadding(new Insets(20));
-        pageFlow.setStyle("-fx-background-color: #e9eef5;");
-
-        ScrollPane scrollPane = new ScrollPane(pageFlow);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        return scrollPane;
+            @Override
+            public UiRenderer getRenderer() {
+                return renderer;
+            }
+        };
+        
+        // Create renderer with shell and context
+        this.renderer = new UiRenderer(context, shell);
+        
+        // Set up the primary stage
+        Scene scene = new Scene(shell.buildRoot(context), 1100, 760);
+        stage.setTitle("TechVolt Electronics - JavaFX");
+        stage.setScene(scene);
+        
+        // Initialize the SPA router and render the first page
+        renderer.initialize(scene);
+        
+        stage.show();
     }
 }

@@ -537,10 +537,153 @@
             font-weight: 700;
         }
 
+        .landing-hero {
+            background: linear-gradient(135deg, #eef2ff 0%, #ffffff 35%, #f8fafc 100%);
+            border: 2px solid #dbe4ff;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 26px;
+            box-shadow: 0 14px 40px rgba(102, 126, 234, 0.12);
+        }
+
+        .landing-hero-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 0.9fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .landing-kicker {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eef1ff;
+            color: var(--secondary);
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .landing-title {
+            color: #172554;
+            font-size: clamp(2.1rem, 4vw, 3.6rem);
+            line-height: 1.05;
+            margin-bottom: 14px;
+        }
+
+        .landing-lead {
+            color: #334155;
+            font-size: 1.05em;
+            max-width: 68ch;
+        }
+
+        .landing-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .landing-badge {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            border: 1px solid #dbe4ff;
+            color: #1e3a8a;
+            font-weight: 600;
+            font-size: 0.92em;
+        }
+
+        .quick-facts {
+            display: grid;
+            gap: 12px;
+        }
+
+        .fact-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        }
+
+        .fact-card strong {
+            display: block;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+            font-size: 1.05em;
+        }
+
+        .team-grid,
+        .dept-grid,
+        .pattern-grid,
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .mini-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            padding: 18px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .mini-card h4 {
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-weight: 700;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 14px;
+        }
+
+        .flow-card {
+            background: #f8fafc;
+            border: 1px solid #dbe4ff;
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .flow-card span {
+            display: inline-flex;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
         .status-change {
             color: #ad7b00;
             font-weight: 700;
         }
+
+            .landing-hero-grid {
+                grid-template-columns: 1fr;
+            }
 
         .status-risk {
             color: #b42318;
@@ -559,7 +702,8 @@
         <nav>
             <h3>📚 Documentation Screens</h3>
             <div class="screen-switcher">
-                <button id="show-v4" class="screen-btn active" type="button">v4 - Step 5 JavaFX SPA Router (Default)</button>
+                <button id="show-v5" class="screen-btn active" type="button">v5 - Project Landing Page (Default)</button>
+                <button id="show-v4" class="screen-btn" type="button">v4 - Step 5 JavaFX SPA Router</button>
                 <button id="show-v3" class="screen-btn" type="button">v3 - Step 3 CSV Persistence</button>
                 <button id="show-v2" class="screen-btn" type="button">v2 - OOP Extension Blueprint</button>
                 <button id="show-v1" class="screen-btn" type="button">v1 - Legacy Architecture Doc</button>
@@ -617,8 +761,157 @@
 
         <div class="content">
 
+            <!-- ==================== V5 SCREEN ==================== -->
+            <div id="screen-v5" class="doc-screen active">
+                <section id="landing-home">
+                    <h2>TechVolt Electronics Project Landing Page</h2>
+                    <div class="landing-hero">
+                        <div class="landing-hero-grid">
+                            <div>
+                                <span class="landing-kicker">Default page</span>
+                                <h3 class="landing-title">A clean front page for the project, with the old architecture pages still inside the same HTML.</h3>
+                                <p class="landing-lead">This landing page introduces the team, QA, departments, architecture, and design patterns without removing the original multi-screen documentation. Use the buttons above to switch between the new presentation page and the original deep-dive pages.</p>
+                                <div class="landing-badges">
+                                    <span class="landing-badge">Java 17</span>
+                                    <span class="landing-badge">JavaFX</span>
+                                    <span class="landing-badge">CSV persistence</span>
+                                    <span class="landing-badge">Router-driven UI</span>
+                                    <span class="landing-badge">Layered backend</span>
+                                </div>
+                            </div>
+                            <div class="quick-facts">
+                                <div class="fact-card">
+                                    <strong>What this page does</strong>
+                                    <p>It presents the project in a cleaner, shareable format while the original screens remain available below.</p>
+                                </div>
+                                <div class="fact-card">
+                                    <strong>What stays the same</strong>
+                                    <p>The deeper architecture, CSV steps, and OOP blueprint pages are still part of the same file and can be switched to instantly.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>Who we are</h3>
+                            <p>The people behind the project, with roles and the right amount of team energy.</p>
+                        </div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="mini-card">
+                            <span class="section-tag">Team Lead</span>
+                            <h4>MAXMUDOV V</h4>
+                            <p>Team lead. Keeps the project moving and the big decisions from drifting into chaos.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Senior</span>
+                            <h4>JAXONGIROV SH</h4>
+                            <p>Another senior, but busy. The kind of teammate whose calendar is already doing overtime.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Intern</span>
+                            <h4>KHABIBULLAYEV K</h4>
+                            <p>Aspiring developer intern. Learns quickly and keeps the energy useful.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Developer</span>
+                            <h4>ABDULLAYEV M</h4>
+                            <p>I like anime, clean code, and making the UI less boring than it first looked.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Mystery Slot</span>
+                            <h4>MEMBER X</h4>
+                            <p>Who is that? The placeholder legend that somehow makes every roster more interesting.</p>
+                        </div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>QA team</h3>
+                            <p>We checked the project 😎 </p>
+                        </div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="mini-card">
+                            <span class="section-tag">QA</span>
+                            <h4>PROKOFYEV D</h4>
+                  
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">QA LEAD</span>
+                            <h4>ISAMXOJAYEV A</h4>
+
+                        </div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>Departments in the project</h3>
+                            <p>Every major area has a job, and each department owns a slice of the system.</p>
+                        </div>
+                    </div>
+                    <div class="dept-grid">
+                        <div class="mini-card">
+                            <span class="section-tag">Frontend</span>
+                            <h4>View layer</h4>
+                            <p>Landing page, JavaFX shell, pages, reusable components, and presentation helpers.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Navigation</span>
+                            <h4>App state and router</h4>
+                            <p>AppState, NavIntent, RouteDecision, and Router control what page appears next.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Backend</span>
+                            <h4>Services</h4>
+                            <p>AuthService, ShopService, AdminService, pricing, report, and media logic.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Data</span>
+                            <h4>Repositories</h4>
+                            <p>UserRepository, ProductRepository, OrderRepository, CartRepository, and CSV persistence.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Domain</span>
+                            <h4>Model layer</h4>
+                            <p>User, Product, Order, OrderItem, Cart, and MockDatabase as the shared store.</p>
+                        </div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>Architecture in short</h3>
+                            <p>Frontend presents, backend decides, repositories persist, and the router keeps the flow clean.</p>
+                        </div>
+                    </div>
+                    <div class="flow-grid">
+                        <div class="flow-card"><span>1</span><h4>Frontend</h4><p>JavaFX shell, header, footer, and route-swapped page content.</p></div>
+                        <div class="flow-card"><span>2</span><h4>State</h4><p>AppState stores the current user, route, and page-specific selections.</p></div>
+                        <div class="flow-card"><span>3</span><h4>Services</h4><p>Auth, shop, and admin logic enforce rules before any data changes happen.</p></div>
+                        <div class="flow-card"><span>4</span><h4>Persistence</h4><p>Repositories update MockDatabase and write CSV files immediately.</p></div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>Design patterns used</h3>
+                            <p>The same project uses a handful of patterns that keep it understandable and flexible.</p>
+                        </div>
+                    </div>
+                    <div class="pattern-grid">
+                        <div class="mini-card"><h4>Repository</h4><p>Separates data access from business logic and UI code.</p></div>
+                        <div class="mini-card"><h4>Strategy</h4><p>Used in pricing and report behavior through interchangeable services.</p></div>
+                        <div class="mini-card"><h4>Facade</h4><p>Service classes simplify access to multiple repository operations.</p></div>
+                        <div class="mini-card"><h4>Command-style intent</h4><p>NavIntent packages navigation actions before the router processes them.</p></div>
+                        <div class="mini-card"><h4>State-aware routing</h4><p>Router decisions depend on the current AppState and user role.</p></div>
+                        <div class="mini-card"><h4>Shared store</h4><p>MockDatabase acts as the in-memory data source for the entire app.</p></div>
+                    </div>
+                </section>
+            </div>
+            <!-- ==================== END V5 SCREEN ==================== -->
+
             <!-- ==================== V4 SCREEN ==================== -->
-            <div id="screen-v4" class="doc-screen active">
+            <div id="screen-v4" class="doc-screen">
 
                 <section id="v4-summary">
                     <h2>v4: Step 5 &mdash; JavaFX SPA Router + Product Image Refactor</h2>
@@ -1889,6 +2182,7 @@ private void adminUserMenu()
 
     <script>
         const screens = {
+            v5: document.getElementById('screen-v5'),
             v1: document.getElementById('screen-v1'),
             v2: document.getElementById('screen-v2'),
             v3: document.getElementById('screen-v3'),
@@ -1896,6 +2190,7 @@ private void adminUserMenu()
         };
 
         const screenButtons = {
+            v5: document.getElementById('show-v5'),
             v1: document.getElementById('show-v1'),
             v2: document.getElementById('show-v2'),
             v3: document.getElementById('show-v3'),
@@ -1910,9 +2205,10 @@ private void adminUserMenu()
             });
         }
 
-        // Default view: Step 5 JavaFX SPA Router screen.
-        activateScreen('v4');
+        // Default view: project landing page screen.
+        activateScreen('v5');
 
+        screenButtons.v5.addEventListener('click', () => activateScreen('v5'));
         screenButtons.v4.addEventListener('click', () => activateScreen('v4'));
         screenButtons.v3.addEventListener('click', () => activateScreen('v3'));
         screenButtons.v2.addEventListener('click', () => activateScreen('v2'));

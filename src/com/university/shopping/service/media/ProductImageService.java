@@ -1,5 +1,7 @@
 package com.university.shopping.service.media;
 
+import com.university.shopping.dto.ProductImageUpdateRequest;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -62,6 +64,28 @@ public class ProductImageService {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    public String storeProductImage(ProductImageUpdateRequest request) {
+        if (request == null || request.getSourceFilePath() == null || request.getSourceFilePath().isEmpty()) {
+            return null;
+        }
+        return saveImage(new File(request.getSourceFilePath()), request.getImageName());
+    }
+
+    public boolean removeProductImage(String relativePath) {
+        return deleteImage(relativePath);
+    }
+
+    public boolean isSupportedImage(String fileName) {
+        if (fileName == null || fileName.isEmpty()) return false;
+        int dot = fileName.lastIndexOf('.');
+        if (dot <= 0 || dot == fileName.length() - 1) return false;
+        String ext = fileName.substring(dot + 1).toLowerCase();
+        for (int i = 0; i < allowedExtensions.length; i++) {
+            if (allowedExtensions[i].equals(ext)) return true;
+        }
+        return false;
     }
 
     public boolean deleteImage(String pathStr) {

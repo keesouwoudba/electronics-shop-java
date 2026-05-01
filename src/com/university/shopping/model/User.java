@@ -7,11 +7,6 @@ public class User {
     private boolean isAdmin;
     private final String createdDate;
 
-    public enum Role {
-        ADMIN,
-        CUSTOMER
-    }
-
     public User(String username, String password, boolean isAdmin, String createdDate) {
         this.id = MockDatabase.nextUserId;
         MockDatabase.nextUserId++;
@@ -51,10 +46,6 @@ public class User {
 
     public String getCreatedDate() {
         return createdDate;
-    }
-
-    public Role getRole() {
-        return this.isAdmin ? Role.ADMIN : Role.CUSTOMER;
     }
 
     // setters

@@ -11,6 +11,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.io.File;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Path;
 
 public final class ImageHelper {
     private ImageHelper() {}
@@ -20,9 +22,7 @@ public final class ImageHelper {
         if (path != null && !path.isEmpty()) {
             try {
                 File orig = new File(path);
-                // prefer thumbnail if exists: look for thumb_ prefix in same dir
-                File thumb = new File(orig.getParentFile(), "thumb_" + orig.getName());
-                File toLoad = thumb.exists() ? thumb : orig;
+                File toLoad = findThumbnail(orig);
                 String uri = toLoad.exists() ? toLoad.toURI().toString() : "file:" + path;
                 Image img = new Image(uri, width, height, true, true, false);
                 if (!img.isError()) {
@@ -49,5 +49,24 @@ public final class ImageHelper {
         StackPane sp = new StackPane(rect, lbl);
         sp.setAlignment(Pos.CENTER);
         return sp;
+    }
+
+    private static File findThumbnail(File original) {
+        if (original == null) return null;
+        File parent = original.getParentFile();
+        if (parent == null || !parent.exists()) return original;
+
+        String originalName = original.getName();
+        try (DirectoryStream<Path> stream = java.nio.file.Files.newDirectoryStream(parent.toPath())) {
+            for (Path entry : stream) {
+                String fileName = entry.getFileName().toString();
+                if (fileName.startsWith("thumb_") && fileName.endsWith(originalName)) {
+                    return entry.toFile();
+                }
+            }
+        } catch (Exception ignored) {
+            // fallback to original
+        }
+        return original;
     }
 }

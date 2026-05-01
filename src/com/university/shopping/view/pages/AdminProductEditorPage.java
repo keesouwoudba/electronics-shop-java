@@ -2,6 +2,7 @@ package com.university.shopping.view.pages;
 
 import com.university.shopping.app.NavIntent;
 import com.university.shopping.app.Route;
+import com.university.shopping.dto.ProductImageUpdateRequest;
 import com.university.shopping.model.Product;
 import com.university.shopping.view.contracts.ScreenComponent;
 import com.university.shopping.view.contracts.ScreenContext;
@@ -70,7 +71,8 @@ public class AdminProductEditorPage implements ScreenComponent {
                 // Use product image service if available
                 String savedPath = null;
                 if (context.getProductImageService() != null) {
-                    savedPath = context.getProductImageService().saveImage(selected, selected.getName());
+                    ProductImageUpdateRequest request = new ProductImageUpdateRequest(pid == null ? 0 : pid, selected.getAbsolutePath(), selected.getName());
+                    savedPath = context.getProductImageService().storeProductImage(request);
                     if (savedPath == null) {
                         context.getRenderer().setNotification("Image invalid (type/size) or failed to save.", true);
                     }
@@ -92,7 +94,7 @@ public class AdminProductEditorPage implements ScreenComponent {
         removeBtn.setOnAction(ev -> {
             // remove staged image and attempt delete via service
             if (stagedImagePath[0] != null && !stagedImagePath[0].isEmpty() && context.getProductImageService() != null) {
-                context.getProductImageService().deleteImage(stagedImagePath[0]);
+                context.getProductImageService().removeProductImage(stagedImagePath[0]);
             }
             stagedImageName[0] = "";
             stagedImagePath[0] = "";
@@ -139,7 +141,7 @@ public class AdminProductEditorPage implements ScreenComponent {
                         if (stagedImageName[0] != null && !stagedImageName[0].isEmpty()) {
                             String prevPath = p.getImagePath();
                             if (prevPath != null && !prevPath.isEmpty() && !prevPath.equals(stagedImagePath[0]) && context.getProductImageService() != null) {
-                                context.getProductImageService().deleteImage(prevPath);
+                                context.getProductImageService().removeProductImage(prevPath);
                             }
                             p.setImageName(stagedImageName[0]);
                             p.setImagePath(stagedImagePath[0]);
