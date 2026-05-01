@@ -19,8 +19,11 @@ public final class ImageHelper {
         String path = p.getImagePath();
         if (path != null && !path.isEmpty()) {
             try {
-                File f = new File(path);
-                String uri = f.exists() ? f.toURI().toString() : "file:" + path;
+                File orig = new File(path);
+                // prefer thumbnail if exists: look for thumb_ prefix in same dir
+                File thumb = new File(orig.getParentFile(), "thumb_" + orig.getName());
+                File toLoad = thumb.exists() ? thumb : orig;
+                String uri = toLoad.exists() ? toLoad.toURI().toString() : "file:" + path;
                 Image img = new Image(uri, width, height, true, true, false);
                 if (!img.isError()) {
                     ImageView iv = new ImageView(img);

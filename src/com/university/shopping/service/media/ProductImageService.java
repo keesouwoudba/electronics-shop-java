@@ -6,6 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 public class ProductImageService {
     private final Path imagesDir;
@@ -50,6 +54,10 @@ public class ProductImageService {
         Path target = imagesDir.resolve(safeName);
         try {
             Files.copy(sourceFile.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
+            // generate thumbnail (best-effort)
+            try {
+                generateThumbnail(target.toFile(), 400, 400);
+            } catch (Exception ignored) {}
             return target.toString();
         } catch (IOException e) {
             return null;
@@ -63,6 +71,47 @@ public class ProductImageService {
             return Files.deleteIfExists(p);
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    /**
+     * Generate a thumbnail for the given image file and return its path, or null on failure.
+     */
+    public String generateThumbnail(File sourceFile, int maxWidth, int maxHeight) {
+        if (sourceFile == null || !sourceFile.exists()) return null;
+        try {
+            BufferedImage img = ImageIO.read(sourceFile);
+            if (img == null) return null;
+
+            int origW = img.getWidth();
+            int origH = img.getHeight();
+            double scale = Math.min((double) maxWidth / origW, (double) maxHeight / origH);
+            if (scale > 1.0) scale = 1.0; // don't upscale
+
+            int newW = Math.max(1, (int) Math.round(origW * scale));
+            int newH = Math.max(1, (int) Math.round(origH * scale));
+
+            BufferedImage thumb = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = thumb.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2.drawImage(img, 0, 0, newW, newH, null);
+            g2.dispose();
+
+            String name = sourceFile.getName();
+            String thumbName = "thumb_" + System.currentTimeMillis() + "_" + name;
+            Path thumbPath = imagesDir.resolve(thumbName);
+            String ext = "png";
+            int dot = name.lastIndexOf('.');
+            if (dot > 0 && dot < name.length() - 1) {
+                ext = name.substring(dot + 1).toLowerCase();
+                if (!ImageIO.getImageWritersByFormatName(ext).hasNext()) ext = "png";
+            }
+
+            ImageIO.write(thumb, ext, thumbPath.toFile());
+            return thumbPath.toString();
+        } catch (Exception e) {
+            return null;
         }
     }
 }
