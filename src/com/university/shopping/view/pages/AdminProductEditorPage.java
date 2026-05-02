@@ -7,6 +7,7 @@ import com.university.shopping.model.Product;
 import com.university.shopping.view.contracts.ScreenComponent;
 import com.university.shopping.view.contracts.ScreenContext;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -32,7 +33,7 @@ public class AdminProductEditorPage implements ScreenComponent {
         
         Button backBtn = new Button("← Back");
         backBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #005bbf; -fx-cursor: hand;");
-        backBtn.setOnAction(e -> context.getRouter().dispatch(NavIntent.open(Route.ADMIN_PRODUCTS)));
+        backBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.open(Route.ADMIN_PRODUCTS)));
 
         VBox form = new VBox(15);
         form.setMaxWidth(500);
@@ -50,10 +51,20 @@ public class AdminProductEditorPage implements ScreenComponent {
         TextField stockFld = new TextField();
         stockFld.setPromptText("Stock Quantity");
 
+        // Stock adjustment controls for existing products
+        TextField stockAdjustFld = new TextField();
+        stockAdjustFld.setPromptText("Adjust quantity");
+        stockAdjustFld.setMaxWidth(160);
+
+        Button addStockBtn = new Button("Add Stock");
+        Button removeStockBtn = new Button("Remove Stock");
+        HBox stockAdjustRow = new HBox(10, stockAdjustFld, addStockBtn, removeStockBtn);
+        stockAdjustRow.setAlignment(Pos.CENTER_LEFT);
+
         // Image controls
         HBox imageRow = new HBox(10);
         imageRow.setPadding(new Insets(6,0,6,0));
-        Node imagePreview = new Label("No Image");
+        final Node[] imagePreview = new Node[]{new Label("No Image")};
         Button uploadBtn = new Button("Upload Image");
         Button removeBtn = new Button("Remove Image");
 
@@ -84,9 +95,9 @@ public class AdminProductEditorPage implements ScreenComponent {
                 if (savedPath != null) {
                     stagedImageName[0] = selected.getName();
                     stagedImagePath[0] = savedPath;
-                    imagePreview = ImageHelper.createProductImageView(new com.university.shopping.model.Product(0, "", 0.0, "", "", 0, false, 0.0, stagedImageName[0], stagedImagePath[0]), 120, 80);
+                    imagePreview[0] = ImageHelper.createProductImageView(new com.university.shopping.model.Product(0, "", 0.0, "", "", 0, false, 0.0, stagedImageName[0], stagedImagePath[0]), 120, 80);
                     imageRow.getChildren().clear();
-                    imageRow.getChildren().addAll(imagePreview, uploadBtn, removeBtn);
+                    imageRow.getChildren().addAll(imagePreview[0], uploadBtn, removeBtn);
                 }
             }
         });
@@ -98,12 +109,12 @@ public class AdminProductEditorPage implements ScreenComponent {
             }
             stagedImageName[0] = "";
             stagedImagePath[0] = "";
-            imagePreview = new Label("No Image");
+            imagePreview[0] = new Label("No Image");
             imageRow.getChildren().clear();
-            imageRow.getChildren().addAll(imagePreview, uploadBtn, removeBtn);
+            imageRow.getChildren().addAll(imagePreview[0], uploadBtn, removeBtn);
         });
 
-        imageRow.getChildren().addAll(imagePreview, uploadBtn, removeBtn);
+        imageRow.getChildren().addAll(imagePreview[0], uploadBtn, removeBtn);
 
         if (isEdit) {
             Product p = context.getShopService().getProductById(pid);
@@ -115,12 +126,50 @@ public class AdminProductEditorPage implements ScreenComponent {
                 if (p.getImagePath() != null && !p.getImagePath().isEmpty()) {
                     stagedImageName[0] = p.getImageName();
                     stagedImagePath[0] = p.getImagePath();
-                    imagePreview = ImageHelper.createProductImageView(p, 120, 80);
+                    imagePreview[0] = ImageHelper.createProductImageView(p, 120, 80);
                     imageRow.getChildren().clear();
-                    imageRow.getChildren().addAll(imagePreview, uploadBtn, removeBtn);
+                    imageRow.getChildren().addAll(imagePreview[0], uploadBtn, removeBtn);
                 }
             }
+        } else {
+            stockAdjustRow.setDisable(true);
         }
+
+        addStockBtn.setOnAction(ev -> {
+            if (!isEdit) {
+                context.getRenderer().setNotification("Save the product before adjusting stock.", true);
+                return;
+            }
+
+            try {
+                int quantity = Integer.parseInt(stockAdjustFld.getText());
+                String result = context.getAdminService().addStockToExistingProduct(pid, quantity);
+                context.getRenderer().setNotification("Add stock: " + result, "SUCCESS".equals(result) ? false : true);
+                if ("SUCCESS".equals(result)) {
+                    context.getRenderer().navigate(NavIntent.open(Route.ADMIN_PRODUCT_EDITOR));
+                }
+            } catch (NumberFormatException ex) {
+                context.getRenderer().setNotification("Enter a valid quantity to add.", true);
+            }
+        });
+
+        removeStockBtn.setOnAction(ev -> {
+            if (!isEdit) {
+                context.getRenderer().setNotification("Save the product before adjusting stock.", true);
+                return;
+            }
+
+            try {
+                int quantity = Integer.parseInt(stockAdjustFld.getText());
+                String result = context.getAdminService().removeStock(pid, quantity);
+                context.getRenderer().setNotification("Remove stock: " + result, "SUCCESS".equals(result) ? false : true);
+                if ("SUCCESS".equals(result)) {
+                    context.getRenderer().navigate(NavIntent.open(Route.ADMIN_PRODUCT_EDITOR));
+                }
+            } catch (NumberFormatException ex) {
+                context.getRenderer().setNotification("Enter a valid quantity to remove.", true);
+            }
+        });
 
         Button saveBtn = new Button("Save Product");
         saveBtn.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px;");
@@ -155,7 +204,7 @@ public class AdminProductEditorPage implements ScreenComponent {
                     String res = context.getAdminService().addNewProduct(newProd);
                     context.getRenderer().setNotification("Create: " + res, "SUCCESS".equals(res) ? false : true);
                 }
-                context.getRouter().dispatch(NavIntent.open(Route.ADMIN_PRODUCTS));
+                context.getRenderer().navigate(NavIntent.open(Route.ADMIN_PRODUCTS));
             } catch (Exception ex) {
                 context.getRenderer().setNotification("Invalid input fields! Check numbers.", true);
             }
@@ -166,6 +215,7 @@ public class AdminProductEditorPage implements ScreenComponent {
             new Label("Description:"), descFld,
             new Label("Price:"), priceFld,
             new Label("Stock:"), stockFld,
+            stockAdjustRow,
             saveBtn
         );
 

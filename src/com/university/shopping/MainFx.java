@@ -1,5 +1,6 @@
 package com.university.shopping;
 
+import com.university.shopping.app.AppState;
 import com.university.shopping.model.Product;
 import com.university.shopping.repository.CartRepository;
 import com.university.shopping.repository.CsvBootstrapInitializer;
@@ -18,6 +19,7 @@ import com.university.shopping.app.Router;
 import com.university.shopping.view.contracts.ScreenContext;
 import com.university.shopping.view.layout.AppShell;
 import com.university.shopping.view.renderer.UiRenderer;
+import com.university.shopping.service.media.ProductImageService;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -27,9 +29,11 @@ import javafx.stage.Stage;
  * Initializes all services, builds the AppShell, and launches the SPA router system.
  */
 public class MainFx extends Application {
+    private AppState appState;
     private AuthService authService;
     private ShopService shopService;
     private AdminService adminService;
+    private ProductImageService productImageService;
     private Router router;
     private UiRenderer renderer;
 
@@ -47,6 +51,9 @@ public class MainFx extends Application {
         // Bootstrap data from CSV files
         CsvBootstrapInitializer bootstrapInitializer = new CsvBootstrapInitializer();
 
+        this.appState = new AppState();
+        this.productImageService = new ProductImageService();
+
         // Initialize repositories
         UserRepository userRepository = new UserRepository();
         ProductRepository productRepository = new ProductRepository();
@@ -54,7 +61,7 @@ public class MainFx extends Application {
         CartRepository cartRepository = new CartRepository();
 
         // Initialize core services
-        this.authService = new AuthService(userRepository);
+        this.authService = new AuthService(userRepository, appState);
         DiscountPolicy discountPolicy = new StandardDiscountPolicy();
         this.shopService = new ShopService(productRepository, orderRepository, cartRepository, authService, discountPolicy);
 
@@ -69,44 +76,20 @@ public class MainFx extends Application {
             reportFormats, reportServices);
         
         // Initialize router and renderer
-        this.router = new Router();
+        this.router = new Router(appState);
         this.renderer = null; // Will be created after AppShell is built
     }
 
     private void buildAndShowSPA(Stage stage) {
         // Create screen context with all services
         AppShell shell = new AppShell();
-        
+
         // Create screen context that will be passed to all pages
-        ScreenContext context = new ScreenContext() {
-            @Override
-            public AuthService getAuthService() {
-                return authService;
-            }
-
-            @Override
-            public ShopService getShopService() {
-                return shopService;
-            }
-
-            @Override
-            public AdminService getAdminService() {
-                return adminService;
-            }
-
-            @Override
-            public Router getRouter() {
-                return router;
-            }
-
-            @Override
-            public UiRenderer getRenderer() {
-                return renderer;
-            }
-        };
+        ScreenContext context = new ScreenContext(appState, router, null, authService, shopService, adminService, productImageService);
         
         // Create renderer with shell and context
         this.renderer = new UiRenderer(context, shell);
+        context.setRenderer(renderer);
         
         // Set up the primary stage
         Scene scene = new Scene(shell.buildRoot(context), 1100, 760);

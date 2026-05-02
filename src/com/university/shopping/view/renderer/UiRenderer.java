@@ -29,6 +29,7 @@ public class UiRenderer {
 
     public void navigate(NavIntent intent) {
         RouteDecision decision = context.getRouter().dispatch(intent);
+        context.getAppState().setCurrentRoute(decision.getRoute());
         
         if (decision.getFlashMessage() != null) {
             setNotification(decision.getFlashMessage(), false); // Defaulting to info for routing flash

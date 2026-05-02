@@ -7,8 +7,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import java.util.function.Consumer;
 
 /**
  * Reusable form component for authentication pages (login/register).
@@ -35,7 +37,7 @@ public class AuthFormComponent {
         private String subtitle;
         private AuthField[] fields;
         private String buttonText;
-        private Runnable onSubmit;
+        private Consumer<TextInputControl[]> onSubmit;
         private Node footerNode;
         
         public AuthFormBuilder withTitle(String title) {
@@ -58,7 +60,7 @@ public class AuthFormComponent {
             return this;
         }
         
-        public AuthFormBuilder withOnSubmit(Runnable onSubmit) {
+        public AuthFormBuilder withOnSubmit(Consumer<TextInputControl[]> onSubmit) {
             this.onSubmit = onSubmit;
             return this;
         }
@@ -86,7 +88,7 @@ public class AuthFormComponent {
             
             // Form container
             VBox form = new VBox(15);
-            TextField[] textFields = new TextField[fields != null ? fields.length : 0];
+            TextInputControl[] textFields = new TextInputControl[fields != null ? fields.length : 0];
             
             if (fields != null) {
                 for (int i = 0; i < fields.length; i++) {
@@ -102,12 +104,7 @@ public class AuthFormComponent {
                             passwordField.setPromptText(field.placeholder);
                         }
                         fieldInput = passwordField;
-                        textFields[i] = new TextField() {
-                            @Override
-                            public String getText() {
-                                return passwordField.getText();
-                            }
-                        };
+                        textFields[i] = passwordField;
                     } else {
                         TextField textField = new TextField();
                         if (field.placeholder != null) {
@@ -136,7 +133,7 @@ public class AuthFormComponent {
             submitButton.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px;");
             submitButton.setOnAction(e -> {
                 if (onSubmit != null) {
-                    onSubmit.run();
+                    onSubmit.accept(textFields);
                 }
             });
             form.getChildren().add(submitButton);
@@ -159,9 +156,9 @@ public class AuthFormComponent {
     
     public static class AuthFormResult {
         public final Node root;
-        public final TextField[] fields;
+        public final TextInputControl[] fields;
         
-        public AuthFormResult(Node root, TextField[] fields) {
+        public AuthFormResult(Node root, TextInputControl[] fields) {
             this.root = root;
             this.fields = fields;
         }

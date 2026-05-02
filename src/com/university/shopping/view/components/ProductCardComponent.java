@@ -44,7 +44,7 @@ public class ProductCardComponent {
 
 			Button detailsBtn = new Button("Login");
 			detailsBtn.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white;");
-			detailsBtn.setOnAction(e -> context.getRouter().dispatch(NavIntent.open(Route.AUTH_LOGIN)));
+			detailsBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.open(Route.LOGIN)));
 
 			actions.getChildren().addAll(price, detailsBtn);
 		} else if (context.getAppState().getCurrentUser().isAdmin()) {
@@ -54,7 +54,7 @@ public class ProductCardComponent {
 			Button editBtn = new Button("Edit");
 			editBtn.setOnAction(e -> {
 				context.getAppState().setSelectedProductId(product.getProductId());
-				context.getRouter().dispatch(NavIntent.open(Route.ADMIN_PRODUCT_EDITOR));
+				context.getRenderer().navigate(NavIntent.open(Route.ADMIN_PRODUCT_EDITOR));
 			});
 
 			actions.getChildren().addAll(price, editBtn);
@@ -78,7 +78,7 @@ public class ProductCardComponent {
 
 			Button detailsBtn = new Button("View Details");
 			detailsBtn.setStyle("-fx-background-color: white; -fx-border-color: #005bbf; -fx-text-fill: #005bbf;");
-			detailsBtn.setOnAction(e -> context.getRouter().dispatch(NavIntent.openProduct(product.getProductId())));
+			detailsBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.openProduct(product.getProductId())));
 
 			Button addCartBtn = new Button("Add to Cart");
 			addCartBtn.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white;");
@@ -88,6 +88,7 @@ public class ProductCardComponent {
 				boolean success = context.getShopService().addToCart(product.getProductId(), 1, userId);
 				if (success) {
 					context.getRenderer().setNotification("Added " + product.getName() + " to cart.", false);
+					context.getRenderer().navigate(NavIntent.open(Route.CUSTOMER_CART));
 				} else {
 					context.getRenderer().setNotification("Failed to add to cart. Insufficient stock.", true);
 				}

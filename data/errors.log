@@ -1,12 +1,6 @@
-[2026-04-27T10:55:41.834852405] Invalid users CSV schema
-java.lang.IllegalArgumentException: Header mismatch in data/users.csv. expected='id,username,password,isAdmin,createdDate' actual='﻿id,username,password,isAdmin,createdDate'
+[2026-05-02T08:28:31.490288959] Invalid products CSV schema/state
+java.lang.IllegalArgumentException: Header mismatch in data/products.csv. expected='id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage' actual='id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath'
 
-[2026-04-27T10:55:41.854196142] Invalid products CSV schema/state
-java.lang.IllegalArgumentException: Header mismatch in data/products.csv. expected='id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage' actual='﻿id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage'
-
-[2026-04-27T10:55:41.858674652] Invalid orders CSV schema
-java.lang.IllegalArgumentException: Header mismatch in data/orders.csv. expected='id,userId,orderDate,totalPrice,status' actual='﻿id,userId,orderDate,totalPrice,status'
-
-[2026-04-27T10:55:41.865852152] Invalid order_items CSV schema
-java.lang.IllegalArgumentException: Header mismatch in data/order_items.csv. expected='orderId,productId,productName,quantity,priceAtPurchase' actual='﻿orderId,productId,productName,quantity,priceAtPurchase'
+[2026-05-02T08:31:43.158874673] Invalid products CSV schema/state
+java.lang.IllegalArgumentException: Header mismatch in data/products.csv. expected='id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage' actual='id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath'
 

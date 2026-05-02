@@ -1,1 +1,2 @@
-﻿orderId,productId,productName,quantity,priceAtPurchase
+orderId,productId,productName,quantity,priceAtPurchase
+1,2,Samsung Galaxy S23,1,1000.0

@@ -1,5 +1,7 @@
 package com.university.shopping.view.components;
 
+import com.university.shopping.app.NavIntent;
+import com.university.shopping.app.Route;
 import com.university.shopping.view.contracts.ScreenContext;
 import com.university.shopping.view.util.StyleHelper;
 import javafx.geometry.Insets;
@@ -40,8 +42,8 @@ public class HeaderNavComponent {
         root.getChildren().add(spacer);
         
         // User info display
-        String userInfo = context.getAuthService().isLoggedIn() 
-            ? context.getAuthService().getCurrentUser() 
+        String userInfo = context.getAuthService().isLoggedIn()
+            ? context.getAuthService().getCurrentUser().getUsername()
             : "Guest";
         
         userBadge.setText(userInfo);
@@ -69,7 +71,7 @@ public class HeaderNavComponent {
     private void handleLogout() {
         if (context != null) {
             context.getAuthService().logout();
-            refresh(context);
+            context.getRenderer().navigate(NavIntent.open(Route.GUEST_PRODUCTS));
         }
     }
 }

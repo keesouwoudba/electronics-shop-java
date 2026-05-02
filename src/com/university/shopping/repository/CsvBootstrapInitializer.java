@@ -149,7 +149,7 @@ public class CsvBootstrapInitializer {
             reader = new BufferedReader(new FileReader(filePath));
             String header = reader.readLine();
             validateHeader(filePath, header,
-                    "id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage");
+                "id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath");
             // Allow trailing columns for backward compatibility in header parsing if needed
 
             String line;
@@ -347,9 +347,14 @@ public class CsvBootstrapInitializer {
         if (header == null) {
             throw new IllegalArgumentException("Missing header in " + filePath);
         }
-        if (!expectedHeader.equals(header.trim())) {
+        // Remove UTF-8 BOM if present
+        String cleanHeader = header.trim();
+        if (cleanHeader.startsWith("\uFEFF")) {
+            cleanHeader = cleanHeader.substring(1);
+        }
+        if (!expectedHeader.equals(cleanHeader)) {
             throw new IllegalArgumentException(
-                    "Header mismatch in " + filePath + ". expected='" + expectedHeader + "' actual='" + header + "'");
+                    "Header mismatch in " + filePath + ". expected='" + expectedHeader + "' actual='" + cleanHeader + "'");
         }
     }
 

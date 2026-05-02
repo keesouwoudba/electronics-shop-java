@@ -6,6 +6,7 @@ public class AppState {
     private User currentUser;
     private Route currentRoute;
     private Integer selectedProductId;
+    private Integer selectedUserId;
     private String flashMessage;
     private boolean loading;
 
@@ -17,6 +18,9 @@ public class AppState {
 
     public Integer getSelectedProductId() { return selectedProductId; }
     public void setSelectedProductId(Integer id) { this.selectedProductId = id; }
+
+    public Integer getSelectedUserId() { return selectedUserId; }
+    public void setSelectedUserId(Integer id) { this.selectedUserId = id; }
 
     public String consumeFlashMessage() {
         String message = this.flashMessage;

@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.TextInputControl;
 
 public class RegisterPage implements ScreenComponent {
     @Override
@@ -20,7 +21,7 @@ public class RegisterPage implements ScreenComponent {
         footer.setAlignment(Pos.CENTER);
         Label loginPrompt = new Label("Already have an account?");
         Hyperlink loginLink = new Hyperlink("Log in");
-        loginLink.setOnAction(e -> context.getRouter().dispatch(NavIntent.open(Route.AUTH_LOGIN)));
+        loginLink.setOnAction(e -> context.getRenderer().navigate(NavIntent.open(Route.LOGIN)));
         footer.getChildren().addAll(loginPrompt, loginLink);
         
         // Define form fields with hints
@@ -35,17 +36,17 @@ public class RegisterPage implements ScreenComponent {
             .withSubtitle("Join TechVolt Electronics today.")
             .withFields(fields)
             .withButtonText("Register")
-            .withOnSubmit(() -> {
-                String username = form.fields[0].getText();
-                String password = form.fields[1].getText();
+            .withOnSubmit(inputs -> {
+                String username = inputs[0].getText();
+                String password = inputs[1].getText();
                 String result = context.getAuthService().register(username, password);
                 if ("Successfully registered".equals(result)) {
                     // If auto-logged in by auth service
                     if (context.getAuthService().isLoggedIn()) {
-                        context.getRouter().dispatch(NavIntent.loginSuccess());
+                        context.getRenderer().navigate(NavIntent.loginSuccess());
                     } else {
                         context.getRenderer().setNotification("Registered successfully, please login", false);
-                        context.getRouter().dispatch(NavIntent.open(Route.AUTH_LOGIN));
+                        context.getRenderer().navigate(NavIntent.open(Route.LOGIN));
                     }
                 } else {
                     context.getRenderer().setNotification("Registration failed: " + result, true);

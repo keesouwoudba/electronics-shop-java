@@ -1,1 +1,2 @@
-﻿id,userId,orderDate,totalPrice,status
+id,userId,orderDate,totalPrice,status
+1,2,2026-05-02,1000.0,COMPLETED

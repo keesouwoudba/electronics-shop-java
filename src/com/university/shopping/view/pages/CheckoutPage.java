@@ -3,6 +3,7 @@ package com.university.shopping.view.pages;
 import com.university.shopping.app.NavIntent;
 import com.university.shopping.app.Route;
 import com.university.shopping.model.Cart;
+import com.university.shopping.view.components.CustomerNavComponent;
 import com.university.shopping.view.contracts.ScreenComponent;
 import com.university.shopping.view.contracts.ScreenContext;
 import javafx.geometry.Insets;
@@ -19,12 +20,15 @@ import javafx.scene.layout.Region;
 public class CheckoutPage implements ScreenComponent {
     @Override
     public Node render(ScreenContext context) {
-        VBox root = new VBox(20);
-        root.setPadding(new Insets(30));
+        VBox root = new VBox();
+        root.getChildren().add(CustomerNavComponent.render(context));
+
+        VBox content = new VBox(20);
+        content.setPadding(new Insets(30));
 
         Button backBtn = new Button("← Return to Cart");
         backBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #005bbf; -fx-cursor: hand;");
-        backBtn.setOnAction(e -> context.getRouter().dispatch(NavIntent.open(Route.CUSTOMER_CART)));
+        backBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.open(Route.CUSTOMER_CART)));
 
         Label title = new Label("Checkout");
         title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
@@ -35,7 +39,8 @@ public class CheckoutPage implements ScreenComponent {
         Cart cart = context.getShopService().viewCart(userId);
 
         if (cart == null || cart.getItemCount() == 0) {
-            root.getChildren().addAll(title, new Label("Your cart is empty."));
+            content.getChildren().addAll(title, new Label("Your cart is empty."));
+            root.getChildren().add(content);
             return root;
         }
 
@@ -90,7 +95,7 @@ public class CheckoutPage implements ScreenComponent {
             String result = context.getShopService().checkout(userId);
             if ("Success".equals(result)) {
                 // Flash message is handled by CHECKOUT_SUCCESS intent in router
-                context.getRouter().dispatch(NavIntent.checkoutSuccess());
+                context.getRenderer().navigate(NavIntent.checkoutSuccess());
             } else {
                 context.getRenderer().setNotification("Checkout failed: " + result, true);
             }
@@ -104,7 +109,8 @@ public class CheckoutPage implements ScreenComponent {
         summaryBox.getChildren().addAll(sumTitle, totalRow, confirmBtn, secureLbl);
 
         mainLayout.getChildren().addAll(formBox, summaryBox);
-        root.getChildren().addAll(backBtn, title, subtitle, mainLayout);
+        content.getChildren().addAll(backBtn, title, subtitle, mainLayout);
+        root.getChildren().add(content);
 
         return root;
     }

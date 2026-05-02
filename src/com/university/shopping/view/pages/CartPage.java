@@ -4,6 +4,7 @@ import com.university.shopping.app.NavIntent;
 import com.university.shopping.app.Route;
 import com.university.shopping.model.Cart;
 import com.university.shopping.model.OrderItem;
+import com.university.shopping.view.components.CustomerNavComponent;
 import com.university.shopping.view.contracts.ScreenComponent;
 import com.university.shopping.view.contracts.ScreenContext;
 import javafx.geometry.Insets;
@@ -19,13 +20,16 @@ import javafx.scene.layout.Region;
 public class CartPage implements ScreenComponent {
     @Override
     public Node render(ScreenContext context) {
-        VBox root = new VBox(20);
-        root.setPadding(new Insets(30));
+        VBox root = new VBox();
+        root.getChildren().add(CustomerNavComponent.render(context));
+
+        VBox content = new VBox(20);
+        content.setPadding(new Insets(30));
 
         Label title = new Label("Your Cart");
         title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
 
-        root.getChildren().add(title);
+        content.getChildren().add(title);
 
         int userId = context.getAppState().getCurrentUser().getUserId();
         Cart cart = context.getShopService().viewCart(userId);
@@ -33,8 +37,9 @@ public class CartPage implements ScreenComponent {
         if (cart == null || cart.getItemCount() == 0) {
             Label emptyLbl = new Label("Your cart is empty. Time to start shopping!");
             Button browseBtn = new Button("Browse Products");
-            browseBtn.setOnAction(e -> context.getRouter().dispatch(NavIntent.open(Route.CUSTOMER_PRODUCTS)));
-            root.getChildren().addAll(emptyLbl, browseBtn);
+            browseBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.open(Route.CUSTOMER_PRODUCTS)));
+            content.getChildren().addAll(emptyLbl, browseBtn);
+            root.getChildren().add(content);
             return root;
         }
 
@@ -89,7 +94,7 @@ public class CartPage implements ScreenComponent {
                 delBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: red; -fx-cursor: hand;");
                 delBtn.setOnAction(e -> {
                     context.getShopService().removeFromCart(item.getProductId(), userId);
-                    context.getRouter().dispatch(NavIntent.open(Route.CUSTOMER_CART)); // reload
+                    context.getRenderer().navigate(NavIntent.open(Route.CUSTOMER_CART)); // reload
                 });
 
                 row.getChildren().addAll(pCol, qCol, priceCol, totalCol, delBtn);
@@ -117,12 +122,13 @@ public class CartPage implements ScreenComponent {
         Button checkoutBtn = new Button("Proceed to Checkout →");
         checkoutBtn.setMaxWidth(Double.MAX_VALUE);
         checkoutBtn.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12px;");
-        checkoutBtn.setOnAction(e -> context.getRouter().dispatch(NavIntent.open(Route.CUSTOMER_CHECKOUT)));
+        checkoutBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.open(Route.CUSTOMER_CHECKOUT)));
 
         summaryBox.getChildren().addAll(sumTitle, totalRow, checkoutBtn);
 
         mainLayout.getChildren().addAll(itemsBox, summaryBox);
-        root.getChildren().add(mainLayout);
+        content.getChildren().add(mainLayout);
+        root.getChildren().add(content);
 
         return root;
     }

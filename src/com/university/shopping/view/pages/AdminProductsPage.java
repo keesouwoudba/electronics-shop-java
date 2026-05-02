@@ -3,6 +3,7 @@ package com.university.shopping.view.pages;
 import com.university.shopping.app.NavIntent;
 import com.university.shopping.app.Route;
 import com.university.shopping.model.Product;
+import com.university.shopping.view.components.AdminNavComponent;
 import com.university.shopping.view.contracts.ScreenComponent;
 import com.university.shopping.view.contracts.ScreenContext;
 import javafx.geometry.Insets;
@@ -17,8 +18,13 @@ import javafx.scene.layout.VBox;
 public class AdminProductsPage implements ScreenComponent {
     @Override
     public Node render(ScreenContext context) {
-        VBox root = new VBox(20);
-        root.setPadding(new Insets(30));
+        VBox root = new VBox();
+        
+        // Admin navigation tabs
+        root.getChildren().add(AdminNavComponent.render(context, Route.ADMIN_PRODUCTS));
+        
+        VBox content = new VBox(20);
+        content.setPadding(new Insets(30));
 
         HBox headerBox = new HBox();
         headerBox.setAlignment(Pos.CENTER_LEFT);
@@ -34,12 +40,11 @@ public class AdminProductsPage implements ScreenComponent {
         addBtn.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8px 16px;");
         addBtn.setOnAction(e -> {
             context.getAppState().setSelectedProductId(null); // Clear selected product for a new one
-            context.getRouter().dispatch(NavIntent.open(Route.ADMIN_PRODUCT_EDITOR));
-            context.getRenderer().setNotification("Add product functionality coming up.", false);
+            context.getRenderer().navigate(NavIntent.open(Route.ADMIN_PRODUCT_EDITOR));
         });
 
         headerBox.getChildren().addAll(title, spacer, addBtn);
-        root.getChildren().add(headerBox);
+        content.getChildren().add(headerBox);
 
         VBox listContainer = new VBox(10);
         listContainer.setStyle("-fx-border-color: #e0e2ec; -fx-border-radius: 8px; -fx-padding: 20px; -fx-background-color: white;");
@@ -94,15 +99,17 @@ public class AdminProductsPage implements ScreenComponent {
                 editBtn.setStyle("-fx-background-color: #f2f3fd; -fx-text-fill: #005bbf; -fx-cursor: hand;");
                 editBtn.setOnAction(e -> {
                     context.getAppState().setSelectedProductId(p.getProductId());
-                    // context.getRouter().dispatch(NavIntent.open(Route.ADMIN_PRODUCT_EDITOR));
-                    context.getRenderer().setNotification("Edit clicked for ID: " + p.getProductId(), false);
+                    context.getRenderer().navigate(NavIntent.open(Route.ADMIN_PRODUCT_EDITOR));
                 });
 
                 Button delBtn = new Button("Del");
                 delBtn.setStyle("-fx-background-color: #ffebee; -fx-text-fill: #ba1a1a; -fx-cursor: hand;");
                 delBtn.setOnAction(e -> {
-                    // Requires AdminService to actually delete
-                    context.getRenderer().setNotification("Delete clicked (to be wired) for ID: " + p.getProductId(), false);
+                    String result = context.getAdminService().deleteProduct(p.getProductId());
+                    context.getRenderer().setNotification("Delete: " + result, "SUCCESS".equals(result) ? false : true);
+                    if ("SUCCESS".equals(result)) {
+                        context.getRenderer().navigate(NavIntent.open(Route.ADMIN_PRODUCTS));
+                    }
                 });
 
                 actionCol.getChildren().addAll(editBtn, delBtn);
@@ -112,7 +119,8 @@ public class AdminProductsPage implements ScreenComponent {
             }
         }
 
-        root.getChildren().add(listContainer);
+        content.getChildren().add(listContainer);
+        root.getChildren().add(content);
         return root;
     }
 }

@@ -3,6 +3,7 @@ package com.university.shopping.view.pages;
 import com.university.shopping.app.NavIntent;
 import com.university.shopping.app.Route;
 import com.university.shopping.model.Product;
+import com.university.shopping.view.components.CustomerNavComponent;
 import com.university.shopping.view.contracts.ScreenComponent;
 import com.university.shopping.view.contracts.ScreenContext;
 import javafx.geometry.Insets;
@@ -16,22 +17,27 @@ import javafx.scene.layout.VBox;
 public class ProductDetailsPage implements ScreenComponent {
     @Override
     public Node render(ScreenContext context) {
-        VBox root = new VBox(20);
-        root.setPadding(new Insets(30));
+        VBox root = new VBox();
+        root.getChildren().add(CustomerNavComponent.render(context));
+
+        VBox content = new VBox(20);
+        content.setPadding(new Insets(30));
 
         Button backBtn = new Button("← Back to Catalog");
         backBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #005bbf; -fx-cursor: hand;");
-        backBtn.setOnAction(e -> context.getRouter().dispatch(NavIntent.open(Route.CUSTOMER_PRODUCTS)));
+        backBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.open(Route.CUSTOMER_PRODUCTS)));
 
         Integer pid = context.getAppState().getSelectedProductId();
         if (pid == null) {
-            root.getChildren().addAll(backBtn, new Label("No product selected."));
+            content.getChildren().addAll(backBtn, new Label("No product selected."));
+            root.getChildren().add(content);
             return root;
         }
 
         Product p = context.getShopService().getProductById(pid);
         if (p == null) {
-            root.getChildren().addAll(backBtn, new Label("Product not found."));
+            content.getChildren().addAll(backBtn, new Label("Product not found."));
+            root.getChildren().add(content);
             return root;
         }
 
@@ -150,6 +156,7 @@ public class ProductDetailsPage implements ScreenComponent {
             boolean success = context.getShopService().addToCart(p.getProductId(), qty, userId);
             if (success) {
                 context.getRenderer().setNotification("Successfully added " + qty + " of " + p.getName() + " to cart.", false);
+                context.getRenderer().navigate(NavIntent.open(Route.CUSTOMER_CART));
             } else {
                 context.getRenderer().setNotification("Failed to add to cart.", true);
             }
@@ -161,7 +168,8 @@ public class ProductDetailsPage implements ScreenComponent {
         detailsBox.getChildren().addAll(skuLabel, title, desc, pricingBox);
         mainLayout.getChildren().addAll(imageBox, detailsBox);
 
-        root.getChildren().addAll(backBtn, mainLayout);
+        content.getChildren().addAll(backBtn, mainLayout);
+        root.getChildren().add(content);
         return root;
     }
 }

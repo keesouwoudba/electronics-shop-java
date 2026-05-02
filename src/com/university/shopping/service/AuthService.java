@@ -1,5 +1,6 @@
 package com.university.shopping.service;
 
+import com.university.shopping.app.AppState;
 import com.university.shopping.repository.UserRepository;
 import com.university.shopping.model.User;
 import java.time.LocalDate;
@@ -9,10 +10,16 @@ import java.time.format.DateTimeFormatter;
 public class AuthService {
     private UserRepository userRepository;
     private User currentUser;  // null when not logged in
+    private final AppState appState;
 
     //Constructors
     public AuthService(UserRepository userRepository) {
+        this(userRepository, null);
+    }
+
+    public AuthService(UserRepository userRepository, AppState appState) {
         this.userRepository = userRepository;
+        this.appState = appState;
         this.currentUser = null;
     }
 
@@ -52,10 +59,12 @@ public class AuthService {
         if (user == null) return "User do not exist!";
         if (password.equals(user.getPassword())) {
             this.currentUser = user;
+            if (this.appState != null) this.appState.setCurrentUser(user);
             return "Successfull login";
         }
         else{
             this.currentUser = null;
+            if (this.appState != null) this.appState.setCurrentUser(null);
             return "Wrong Password";
         }
     } // I think this function should be void instead of string
@@ -74,12 +83,14 @@ public class AuthService {
 
         // Successful registration should also authenticate the user for this session.
         this.currentUser = buffer_u;
+        if (this.appState != null) this.appState.setCurrentUser(buffer_u);
         return "Successfully registered";
     }
     //----------------------------------------------------
 
     public void logout(){
         this.currentUser = null;
+        if (this.appState != null) this.appState.setCurrentUser(null);
     }
 
 

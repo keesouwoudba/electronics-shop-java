@@ -11,7 +11,7 @@ import com.university.shopping.view.renderer.UiRenderer;
 public class ScreenContext {
     private final AppState appState;
     private final Router router;
-    private final UiRenderer renderer;
+    private UiRenderer renderer;
     private final AuthService authService;
     private final ShopService shopService;
     private final AdminService adminService;
@@ -32,6 +32,7 @@ public class ScreenContext {
     public AppState getAppState() { return appState; }
     public Router getRouter() { return router; }
     public UiRenderer getRenderer() { return renderer; }
+    public void setRenderer(UiRenderer renderer) { this.renderer = renderer; }
     public AuthService getAuthService() { return authService; }
     public ShopService getShopService() { return shopService; }
     public AdminService getAdminService() { return adminService; }

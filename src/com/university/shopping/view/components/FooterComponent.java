@@ -1,5 +1,7 @@
 package com.university.shopping.view.components;
 
+import com.university.shopping.app.NavIntent;
+import com.university.shopping.app.Route;
 import com.university.shopping.view.contracts.ScreenContext;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,9 +31,25 @@ public class FooterComponent {
         HBox linksRow = new HBox(20);
         linksRow.setAlignment(Pos.CENTER);
         
-        Label aboutLink = new Hyperlink("About Us");
-        Label contactLink = new Hyperlink("Contact");
-        Label policyLink = new Hyperlink("Privacy Policy");
+        Hyperlink aboutLink = new Hyperlink("About Us");
+        Hyperlink contactLink = new Hyperlink("Contact");
+        Hyperlink policyLink = new Hyperlink("Privacy Policy");
+
+        aboutLink.setOnAction(e -> {
+            if (context != null && context.getRenderer() != null) {
+                context.getRenderer().setNotification("About Us page is not implemented yet.", false);
+            }
+        });
+        contactLink.setOnAction(e -> {
+            if (context != null && context.getRenderer() != null) {
+                context.getRenderer().navigate(NavIntent.open(Route.GUEST_PRODUCTS));
+            }
+        });
+        policyLink.setOnAction(e -> {
+            if (context != null && context.getRenderer() != null) {
+                context.getRenderer().setNotification("Privacy Policy page is not implemented yet.", false);
+            }
+        });
         
         linksRow.getChildren().addAll(aboutLink, contactLink, policyLink);
         root.getChildren().add(linksRow);
