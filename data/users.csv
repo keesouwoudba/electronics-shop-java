@@ -1,0 +1,3 @@
+id,username,password,isAdmin,createdDate
+1,admin,Admin1234,true,2026-01-01
+2,customer,Pass1234,false,2026-01-15

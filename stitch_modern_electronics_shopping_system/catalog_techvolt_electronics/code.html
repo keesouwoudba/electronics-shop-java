@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Guest Product Catalog - TechVolt Electronics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#005bc0",
+                    "secondary": "#515f74",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#9e4300",
+                    "on-primary-fixed-variant": "#004493",
+                    "on-primary-fixed": "#001a41",
+                    "primary-fixed-dim": "#adc7ff",
+                    "on-primary": "#ffffff",
+                    "inverse-surface": "#2d3038",
+                    "outline-variant": "#c1c6d6",
+                    "on-tertiary-fixed": "#341100",
+                    "on-surface-variant": "#414754",
+                    "surface-dim": "#d8d9e3",
+                    "secondary-fixed-dim": "#b9c7df",
+                    "surface-container": "#ecedf7",
+                    "on-primary-container": "#ffffff",
+                    "on-secondary-fixed": "#0d1c2e",
+                    "on-error": "#ffffff",
+                    "primary-container": "#1a73e8",
+                    "tertiary-fixed": "#ffdbcb",
+                    "background": "#f9f9ff",
+                    "surface-container-low": "#f2f3fd",
+                    "on-secondary-container": "#57657a",
+                    "on-surface": "#191c23",
+                    "outline": "#727785",
+                    "primary-fixed": "#d8e2ff",
+                    "inverse-primary": "#adc7ff",
+                    "surface": "#f9f9ff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "surface-variant": "#e0e2ec",
+                    "inverse-on-surface": "#eff0fa",
+                    "surface-container-highest": "#e0e2ec",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#191c23",
+                    "primary": "#005bbf",
+                    "on-tertiary-container": "#0e0200",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb691",
+                    "surface-bright": "#f9f9ff",
+                    "secondary-fixed": "#d5e3fc",
+                    "secondary-container": "#d5e3fc",
+                    "surface-container-high": "#e6e8f2",
+                    "on-secondary-fixed-variant": "#3a485b",
+                    "tertiary-container": "#c55500"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "xs": "8px",
+                    "gutter": "24px",
+                    "base": "4px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "catalog-title": ["Inter"],
+                    "data-tabular": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-main": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "catalog-title": ["18px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "600"}],
+                    "data-tabular": ["14px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-main": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex flex-col font-body-main text-on-background">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full h-[72px] z-50 flex items-center justify-between px-8 max-w-[1280px] mx-auto bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm font-inter antialiased text-sm font-medium">
+<div class="flex items-center gap-8">
+<div class="text-xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
+                TechVolt Electronics
+            </div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 pb-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors Active: opacity-80 transition-opacity" href="#">Catalog</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">Deals</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">Support</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">Admin</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<!-- Search Bar (on_right logic implied by placement) -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="pl-9 pr-4 py-2 bg-surface-variant text-on-surface text-data-tabular font-data-tabular rounded-xl border-none focus:ring-2 focus:ring-primary w-64 transition-all" placeholder="Search catalog..." type="text"/>
+</div>
+<!-- Trailing Icon Actions -->
+<div class="flex items-center gap-2 text-primary-container">
+<button aria-label="account_circle" class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+<button aria-label="notifications" class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<!-- Trailing Actions (Secondary then Primary) -->
+<button class="text-slate-600 dark:text-slate-400 hover:text-blue-500 font-medium px-3 py-2 rounded-lg border border-outline-variant hover:bg-surface-variant transition-colors">Logout</button>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-medium shadow-sm hover:bg-on-primary-fixed-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">shopping_cart</span> Cart
+            </button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow pt-[104px] pb-xl px-8 max-w-[1280px] mx-auto w-full">
+<!-- Guest Banner -->
+<div class="bg-surface-container-low border border-primary-fixed-dim rounded-xl p-md mb-xl flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-sm text-primary">
+<span class="material-symbols-outlined text-[24px]">info</span>
+<p class="font-body-main text-on-surface">Please login or register to add items to cart and view pricing details.</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-4 py-2 border border-outline-variant text-on-surface rounded-lg font-medium hover:bg-surface-variant transition-colors">Register</button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-medium shadow-sm hover:bg-on-primary-fixed-variant transition-colors">Login</button>
+</div>
+</div>
+<!-- Page Header -->
+<div class="flex items-end justify-between mb-lg">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-xs">Product Catalog</h1>
+<p class="font-body-main text-body-main text-secondary">Browse our extensive collection of premium electronics.</p>
+</div>
+<!-- Filters Mockup -->
+<div class="flex gap-sm">
+<button class="flex items-center gap-2 px-3 py-2 border border-outline-variant rounded-lg text-on-surface hover:bg-surface-variant transition-colors font-data-tabular text-data-tabular">
+<span class="material-symbols-outlined text-sm">filter_list</span> Filters
+                </button>
+<button class="flex items-center gap-2 px-3 py-2 border border-outline-variant rounded-lg text-on-surface hover:bg-surface-variant transition-colors font-data-tabular text-data-tabular">
+<span class="material-symbols-outlined text-sm">sort</span> Sort
+                </button>
+</div>
+</div>
+<!-- Product Grid (Bento/Asymmetric styling approach) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col relative">
+<div class="h-48 w-full bg-surface-variant relative overflow-hidden">
+<img alt="High-end laptop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A sleek, professional high-end laptop sitting open on a clean, modern desk surface. The lighting is soft and natural, emphasizing the metallic finish of the device. The background is slightly blurred, maintaining a clean-room aesthetic with cool, corporate tech undertones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7u0V5qs18WTkraXldtWfIrGpX7_eSjUMxUGgUOA6Bs_Uo-PjHKDUZbm4dIwHyFnrQabeRPtlG7cepuODldE38xOmnwvOYRy3TJHJf6zFH2jzN_xhwCDBqlrfEnNeSeGy-ay7KE8kSL5uDlJReI67VGllcNuk4MfXhnWPZnJNEh_zd9r1vV8Rfj7XGjno7b-g69fdkt5gu-yOCHZ_pNXzA60JxnyQIUdpeBEyd6__UrICK2gDqn8vO3shsM0U6tvjiHKeqlRt4UqEf"/>
+<div class="absolute top-sm right-sm bg-surface-container-lowest px-2 py-1 rounded text-label-caps font-label-caps text-secondary shadow-sm">
+                        Laptops
+                    </div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<h3 class="font-catalog-title text-catalog-title text-on-surface mb-xs">TechPro Workstation Z9</h3>
+<p class="font-data-tabular text-data-tabular text-secondary mb-md flex-grow">Professional grade performance for demanding workloads. Features latest gen processors and high-fidelity display.</p>
+<div class="flex items-center justify-between mt-auto pt-sm border-t border-surface-variant">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="font-data-tabular text-data-tabular font-medium">Login to view</span>
+</div>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+<span class="font-data-tabular text-data-tabular">In Stock</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col relative">
+<div class="h-48 w-full bg-surface-variant relative overflow-hidden">
+<img alt="Smartwatch" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A modern smartwatch with a dark metallic band displayed on a pristine white surface. Soft, diffused lighting highlights the curved glass of the watch face. The overall composition is minimalist, aligning with a premium corporate tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfjBBLtWq0WOo--uO1Rxv-CYFOrGl_R78spJBSJC9Ie3jFNhUjSTyYEWkRhWwFuv4hlCRvvgfEOY3p4A0iGELKeDan-8Sbop1l1y9iP08d28RBdiNCidYuK9DWdGMMXigrhtlcCEgiQt1eTpNcxWeTFGZ0Af-prbR6rMEmQQO74r60vLt5ygBW6W1Jkqxe8ROOwqhUX28SZGVj5RmmSPDqE2wW-QTuuctZD8klYuw2bdfcfwVfKjWr4MCyz1i5hw1DST2QB2WNE4sx"/>
+<div class="absolute top-sm right-sm bg-surface-container-lowest px-2 py-1 rounded text-label-caps font-label-caps text-secondary shadow-sm">
+                        Wearables
+                    </div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<h3 class="font-catalog-title text-catalog-title text-on-surface mb-xs">VoltWatch Series 5</h3>
+<p class="font-data-tabular text-data-tabular text-secondary mb-md flex-grow">Advanced health tracking and seamless connectivity. Premium materials designed for all-day comfort.</p>
+<div class="flex items-center justify-between mt-auto pt-sm border-t border-surface-variant">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="font-data-tabular text-data-tabular font-medium">Login to view</span>
+</div>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+<span class="font-data-tabular text-data-tabular">In Stock</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col relative">
+<div class="h-48 w-full bg-surface-variant relative overflow-hidden">
+<img alt="Wireless Headphones" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Premium over-ear wireless headphones resting on a clean, light grey background. The lighting is studio-quality, casting soft, ambient shadows that provide subtle depth. The mood is sophisticated and focus-oriented, typical of high-end audio gear presentation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFXOeQPwpox1BuqSlHc9I8sxD6s75P2WbViCtWiAa18rL0RpNvEMlBPAd9O_pgQ_m9yzUkRAdrxQimF3Hd_hYqa-w4V4e1CwYxgePABft-vQnlBf2VpgvrnI_XzAQ-Njj4fioK-GYmJv5iU_6DGRX7QLKsD4Bdi-Cpgik5oWP6neQ4gLSTY9fARFkPZglUI_SqO7OgdE2FQ09C_DPsC0Ws5zkTAyoxyHMXcFEhI9nERwYcnRVwVx5ekjZpjDKZL6cI1NVii-26kFSa"/>
+<div class="absolute top-sm right-sm bg-surface-container-lowest px-2 py-1 rounded text-label-caps font-label-caps text-secondary shadow-sm">
+                        Audio
+                    </div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<h3 class="font-catalog-title text-catalog-title text-on-surface mb-xs">AcousticPro ANC</h3>
+<p class="font-data-tabular text-data-tabular text-secondary mb-md flex-grow">Industry-leading active noise cancellation. High-fidelity audio with up to 40 hours of battery life.</p>
+<div class="flex items-center justify-between mt-auto pt-sm border-t border-surface-variant">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="font-data-tabular text-data-tabular font-medium">Login to view</span>
+</div>
+<div class="flex items-center gap-1 text-error">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span class="font-data-tabular text-data-tabular">Low Stock</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col relative lg:col-span-2">
+<div class="h-64 w-full bg-surface-variant relative overflow-hidden">
+<img alt="Large curved monitor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A wide, ultrawide curved computer monitor displaying a vibrant abstract landscape. It sits on a minimalist white desk in a bright, modern office setting. The lighting emphasizes the sleek bezels and premium stand of the monitor, fitting a corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZmuQb0zzwM9iRK3fBO7u95rI06XjDaJ0uLOx3czldWTd_uuaHroUIpMkf9RFOBlccOAMSG7FPmVxaBS-7X0WZbmdK-nxTvqlAXs-YcJIGqzQ1O_JeY2KSDYl4ciLFo16v6nQg_Mnwy5a2Qa9Fo_AsblAmmIHqRZp8Mhf5VNQHQHuMDS1qFusSfkopxVnqEH1Q2GXYynMIHCTwU_UCfuUtOxy1LL5t3w2gUG8Vf8X0DUrmWxxVzghXYQ4R_Lnrah43X1zreOsmFW7L"/>
+<div class="absolute top-sm right-sm bg-surface-container-lowest px-2 py-1 rounded text-label-caps font-label-caps text-secondary shadow-sm">
+                        Displays
+                    </div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<h3 class="font-catalog-title text-catalog-title text-on-surface mb-xs">UltraView 34" Curved Monitor</h3>
+<p class="font-data-tabular text-data-tabular text-secondary mb-md flex-grow">Immersive ultrawide display with WQHD resolution. Perfect for productivity and creative workflows with 99% sRGB color accuracy.</p>
+<div class="flex items-center justify-between mt-auto pt-sm border-t border-surface-variant">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="font-data-tabular text-data-tabular font-medium">Login to view</span>
+</div>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+<span class="font-data-tabular text-data-tabular">In Stock</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Card 5 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col relative">
+<div class="h-64 w-full bg-surface-variant relative overflow-hidden">
+<img alt="External Hard Drive" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A rugged, portable external solid-state drive placed on a subtle textured grey surface. The lighting is crisp and cool, casting a distinct but soft shadow to give the drive depth. The aesthetic is clean, technical, and reliable." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOu0wDKT3zzYi4-INJVyyRTn3Or7Q9sOT5XgpudkEZC9I9sQeqodyAyGETy4KK-YKM1ppFm86FrXT0Lj7ZTFklkwGh4SqQ7dtMRRBHQIKSNKeF7mtxEFEJQ3ZICQRP-SWeCXCK_RMFGvTxihMlWwqPu1YRngqKYqavGNpmBblXiqFG5o1Q0dpxNMZ1h_VD5oT2X0wM-cmv2qCiVXrMxg2DEoG4vXEIO90VqBlBKvXw2VzVYEkmR972hs_s_ngLx-MsiN_rgW2chZNz"/>
+<div class="absolute top-sm right-sm bg-surface-container-lowest px-2 py-1 rounded text-label-caps font-label-caps text-secondary shadow-sm">
+                        Storage
+                    </div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<h3 class="font-catalog-title text-catalog-title text-on-surface mb-xs">VaultDrive Rugged SSD 2TB</h3>
+<p class="font-data-tabular text-data-tabular text-secondary mb-md flex-grow">High-speed NVMe performance in a drop-resistant casing. Built for on-the-go professionals.</p>
+<div class="flex items-center justify-between mt-auto pt-sm border-t border-surface-variant">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="font-data-tabular text-data-tabular font-medium">Login to view</span>
+</div>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+<span class="font-data-tabular text-data-tabular">In Stock</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center max-w-[1280px] mx-auto mt-auto bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-xs font-normal text-slate-500 flat no shadows">
+<div class="mb-4 md:mb-0">
+            © 2024 TechVolt Electronics. All rights reserved.
+        </div>
+<div class="flex items-center gap-6">
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4" href="#">Support Center</a>
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4" href="#">Terms of Service</a>
+<span class="text-slate-500">v2.4.0-stable</span>
+</div>
+</footer>
+</body></html>

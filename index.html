@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronics Shop - Complete Architecture Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --dark: #2d2d2d;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        nav {
+            background: var(--light);
+            padding: 25px 40px;
+            border-bottom: 4px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 1.2em;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        nav a {
+            color: var(--primary);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            background: white;
+            border: 2px solid var(--primary);
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .content {
+            padding: 60px;
+        }
+
+        section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 2.5em;
+            margin: 40px 0 30px 0;
+            padding-bottom: 15px;
+            border-bottom: 4px solid var(--primary);
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--secondary);
+        }
+
+        h3 {
+            color: var(--secondary);
+            font-size: 1.8em;
+            margin: 35px 0 20px 0;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+        }
+
+        h5 {
+            color: #666;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 18px;
+            line-height: 1.8;
+        }
+
+        ul, ol {
+            margin-left: 35px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', Consolas, monospace;
+            color: #e83e8c;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: var(--dark);
+            color: #f8f8f2;
+            padding: 25px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 25px 0;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        pre::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            background: #ff5f56;
+            border-radius: 50%;
+            box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
+        }
+
+        pre code {
+            background: transparent;
+            color: #f8f8f2;
+            padding: 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .box {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .box-warning {
+            background: #fff3cd;
+            border-left-color: var(--warning);
+        }
+
+        .box-success {
+            background: #d4edda;
+            border-left-color: var(--success);
+        }
+
+        .box-info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+
+        .box-danger {
+            background: #f8d7da;
+            border-left-color: var(--danger);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e9ecef;
+            transition: background 0.3s;
+        }
+
+        .method-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .method-card:hover {
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .method-card h4 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge-public {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-private {
+            background: var(--danger);
+            color: white;
+        }
+
+        .badge-static {
+            background: var(--warning);
+            color: #333;
+        }
+
+        .badge-protected {
+            background: #17a2b8;
+            color: white;
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 30px 20px;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        .algorithm {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+
+        .method-signature {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+
+        .return-values {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--warning);
+            margin: 15px 0;
+        }
+
+        strong {
+            color: #222;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 40px 0;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: var(--secondary);
+            transform: translateY(-5px);
+        }
+
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checklist li {
+            padding-left: 35px;
+            position: relative;
+        }
+
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-size: 1.3em;
+        }
+
+        .screen-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .screen-btn {
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .screen-btn.active,
+        .screen-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .doc-screen {
+            display: none;
+        }
+
+        .doc-screen.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .blueprint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .blueprint-card {
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 18px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.8em;
+            margin-right: 6px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            background: #eef1ff;
+            color: #2b3f9f;
+        }
+
+        .flow {
+            background: #f7fbff;
+            border-left: 4px solid #1e88e5;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .status-good {
+            color: #1b7f3a;
+            font-weight: 700;
+        }
+
+        .landing-hero {
+            background: linear-gradient(135deg, #eef2ff 0%, #ffffff 35%, #f8fafc 100%);
+            border: 2px solid #dbe4ff;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 26px;
+            box-shadow: 0 14px 40px rgba(102, 126, 234, 0.12);
+        }
+
+        .landing-hero-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 0.9fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .landing-kicker {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eef1ff;
+            color: var(--secondary);
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .landing-title {
+            color: #172554;
+            font-size: clamp(2.1rem, 4vw, 3.6rem);
+            line-height: 1.05;
+            margin-bottom: 14px;
+        }
+
+        .landing-lead {
+            color: #334155;
+            font-size: 1.05em;
+            max-width: 68ch;
+        }
+
+        .landing-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .landing-badge {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            border: 1px solid #dbe4ff;
+            color: #1e3a8a;
+            font-weight: 600;
+            font-size: 0.92em;
+        }
+
+        .quick-facts {
+            display: grid;
+            gap: 12px;
+        }
+
+        .fact-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        }
+
+        .fact-card strong {
+            display: block;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+            font-size: 1.05em;
+        }
+
+        .team-grid,
+        .dept-grid,
+        .pattern-grid,
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .mini-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            padding: 18px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .mini-card h4 {
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-weight: 700;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 14px;
+        }
+
+        .flow-card {
+            background: #f8fafc;
+            border: 1px solid #dbe4ff;
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .flow-card span {
+            display: inline-flex;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .status-change {
+            color: #ad7b00;
+            font-weight: 700;
+        }
+
+            .landing-hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+        .status-risk {
+            color: #b42318;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📱 Electronics Shop</h1>
+            <p>Complete Architecture Documentation with Access Modifiers</p>
+            <p style="font-size: 0.95em; margin-top: 15px; opacity: 0.9;">Java Project - 4-Layer Architecture with Maximum Encapsulation</p>
+        </header>
+
+        <nav>
+            <h3>📚 Documentation Screens</h3>
+            <div class="screen-switcher">
+                <button id="show-v5" class="screen-btn active" type="button">v5 - Project Landing Page (Default)</button>
+                <button id="show-v4" class="screen-btn" type="button">v4 - Step 5 JavaFX SPA Router</button>
+                <button id="show-v3" class="screen-btn" type="button">v3 - Step 3 CSV Persistence</button>
+                <button id="show-v2" class="screen-btn" type="button">v2 - OOP Extension Blueprint</button>
+                <button id="show-v1" class="screen-btn" type="button">v1 - Legacy Architecture Doc</button>
+            </div>
+
+            <h3>🆕 v4 Step 5 Navigation</h3>
+            <ul>
+                <li><a href="#v4-summary" data-screen="v4">Summary</a></li>
+                <li><a href="#v4-arch" data-screen="v4">Architecture</a></li>
+                <li><a href="#v4-rules" data-screen="v4">UI Rules</a></li>
+                <li><a href="#v4-tree" data-screen="v4">File Structure</a></li>
+                <li><a href="#v4-router" data-screen="v4">Router + Renderer</a></li>
+                <li><a href="#v4-routes" data-screen="v4">Route Map</a></li>
+                <li><a href="#v4-image" data-screen="v4">Image Refactor</a></li>
+                <li><a href="#v4-classes" data-screen="v4">New Classes</a></li>
+                <li><a href="#v4-existing" data-screen="v4">Modified Classes</a></li>
+                <li><a href="#v4-phases" data-screen="v4">Phases</a></li>
+                <li><a href="#v4-checklist" data-screen="v4">Test Checklist</a></li>
+            </ul>
+
+            <h3>🆕 v3 Step 3 Navigation</h3>
+            <ul>
+                <li><a href="#v3-goal" data-screen="v3">Goal and Mapping</a></li>
+                <li><a href="#v3-tree" data-screen="v3">New Files Tree</a></li>
+                <li><a href="#v3-workflows" data-screen="v3">Workflow and Data Flow</a></li>
+                <li><a href="#v3-schemas" data-screen="v3">CSV Schemas</a></li>
+                <li><a href="#v3-errors" data-screen="v3">Error Handling Plan</a></li>
+                <li><a href="#v3-implementation" data-screen="v3">File-by-File Specs</a></li>
+                <li><a href="#v3-checklist" data-screen="v3">Checklist and Non-Goals</a></li>
+            </ul>
+
+            <h3>🧭 v2 OOP Blueprint Navigation</h3>
+            <ul>
+                <li><a href="#oop-overview" data-screen="v2">Overview</a></li>
+                <li><a href="#oop-tree" data-screen="v2">Class Tree</a></li>
+                <li><a href="#oop-matrix" data-screen="v2">Requirement Matrix</a></li>
+                <li><a href="#oop-packages" data-screen="v2">Package and Class Spec</a></li>
+                <li><a href="#oop-method-contracts" data-screen="v2">Method Contracts</a></li>
+                <li><a href="#oop-workflows" data-screen="v2">Workflows</a></li>
+                <li><a href="#oop-changes" data-screen="v2">Create/Modify/Rewrite</a></li>
+                <li><a href="#oop-audit" data-screen="v2">Engineering Decisions</a></li>
+                <li><a href="#oop-qa" data-screen="v2">QA Scenarios</a></li>
+            </ul>
+
+            <h3>📜 v1 Legacy Navigation</h3>
+            <ul>
+                <li><a href="#overview" data-screen="v1">Overview</a></li>
+                <li><a href="#model" data-screen="v1">Model Layer</a></li>
+                <li><a href="#repository" data-screen="v1">Repository Layer</a></li>
+                <li><a href="#service" data-screen="v1">Service Layer</a></li>
+                <li><a href="#view" data-screen="v1">View Layer</a></li>
+                <li><a href="#main" data-screen="v1">Main Entry</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+
+            <!-- ==================== V5 SCREEN ==================== -->
+            <div id="screen-v5" class="doc-screen active">
+                <section id="landing-home">
+                    <h2>TechVolt Electronics Project Landing Page</h2>
+                    <div class="landing-hero">
+                        <div class="landing-hero-grid">
+                            <div>
+                                <span class="landing-kicker">Default page</span>
+                                <h3 class="landing-title">A clean front page for the project, with the old architecture pages still inside the same HTML.</h3>
+                                <p class="landing-lead">This landing page introduces the team, QA, departments, architecture, and design patterns without removing the original multi-screen documentation. Use the buttons above to switch between the new presentation page and the original deep-dive pages.</p>
+                                <div class="landing-badges">
+                                    <span class="landing-badge">Java 17</span>
+                                    <span class="landing-badge">JavaFX</span>
+                                    <span class="landing-badge">CSV persistence</span>
+                                    <span class="landing-badge">Router-driven UI</span>
+                                    <span class="landing-badge">Layered backend</span>
+                                </div>
+                            </div>
+                            <div class="quick-facts">
+                                <div class="fact-card">
+                                    <strong>What this page does</strong>
+                                    <p>It presents the project in a cleaner, shareable format while the original screens remain available below.</p>
+                                </div>
+                                <div class="fact-card">
+                                    <strong>What stays the same</strong>
+                                    <p>The deeper architecture, CSV steps, and OOP blueprint pages are still part of the same file and can be switched to instantly.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>Who we are</h3>
+                            <p>The people behind the project, with roles and the right amount of team energy.</p>
+                        </div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="mini-card">
+                            <span class="section-tag">Team Lead</span>
+                            <h4>MAXMUDOV V</h4>
+                            <p>Team lead. Keeps the project moving and the big decisions from drifting into chaos.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Senior</span>
+                            <h4>JAXONGIROV SH</h4>
+                            <p>Another senior, but busy. The kind of teammate whose calendar is already doing overtime.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Intern</span>
+                            <h4>KHABIBULLAYEV K</h4>
+                            <p>Aspiring developer intern. Learns quickly and keeps the energy useful.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Developer</span>
+                            <h4>ABDULLAYEV M</h4>
+                            <p>I like anime, clean code, and making the UI less boring than it first looked.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Mystery Slot</span>
+                            <h4>MEMBER X</h4>
+                            <p>Who is that? The placeholder legend that somehow makes every roster more interesting.</p>
+                        </div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>QA team</h3>
+                            <p>We checked the project 😎 </p>
+                        </div>
+                    </div>
+                    <div class="team-grid">
+                        <div class="mini-card">
+                            <span class="section-tag">QA</span>
+                            <h4>PROKOFYEV D</h4>
+                  
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">QA LEAD</span>
+                            <h4>ISAMXOJAYEV A</h4>
+
+                        </div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>Departments in the project</h3>
+                            <p>Every major area has a job, and each department owns a slice of the system.</p>
+                        </div>
+                    </div>
+                    <div class="dept-grid">
+                        <div class="mini-card">
+                            <span class="section-tag">Frontend</span>
+                            <h4>View layer</h4>
+                            <p>Landing page, JavaFX shell, pages, reusable components, and presentation helpers.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Navigation</span>
+                            <h4>App state and router</h4>
+                            <p>AppState, NavIntent, RouteDecision, and Router control what page appears next.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Backend</span>
+                            <h4>Services</h4>
+                            <p>AuthService, ShopService, AdminService, pricing, report, and media logic.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Data</span>
+                            <h4>Repositories</h4>
+                            <p>UserRepository, ProductRepository, OrderRepository, CartRepository, and CSV persistence.</p>
+                        </div>
+                        <div class="mini-card">
+                            <span class="section-tag">Domain</span>
+                            <h4>Model layer</h4>
+                            <p>User, Product, Order, OrderItem, Cart, and MockDatabase as the shared store.</p>
+                        </div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>Architecture in short</h3>
+                            <p>Frontend presents, backend decides, repositories persist, and the router keeps the flow clean.</p>
+                        </div>
+                    </div>
+                    <div class="flow-grid">
+                        <div class="flow-card"><span>1</span><h4>Frontend</h4><p>JavaFX shell, header, footer, and route-swapped page content.</p></div>
+                        <div class="flow-card"><span>2</span><h4>State</h4><p>AppState stores the current user, route, and page-specific selections.</p></div>
+                        <div class="flow-card"><span>3</span><h4>Services</h4><p>Auth, shop, and admin logic enforce rules before any data changes happen.</p></div>
+                        <div class="flow-card"><span>4</span><h4>Persistence</h4><p>Repositories update MockDatabase and write CSV files immediately.</p></div>
+                    </div>
+
+                    <div class="section-head">
+                        <div>
+                            <h3>Design patterns used</h3>
+                            <p>The same project uses a handful of patterns that keep it understandable and flexible.</p>
+                        </div>
+                    </div>
+                    <div class="pattern-grid">
+                        <div class="mini-card"><h4>Repository</h4><p>Separates data access from business logic and UI code.</p></div>
+                        <div class="mini-card"><h4>Strategy</h4><p>Used in pricing and report behavior through interchangeable services.</p></div>
+                        <div class="mini-card"><h4>Facade</h4><p>Service classes simplify access to multiple repository operations.</p></div>
+                        <div class="mini-card"><h4>Command-style intent</h4><p>NavIntent packages navigation actions before the router processes them.</p></div>
+                        <div class="mini-card"><h4>State-aware routing</h4><p>Router decisions depend on the current AppState and user role.</p></div>
+                        <div class="mini-card"><h4>Shared store</h4><p>MockDatabase acts as the in-memory data source for the entire app.</p></div>
+                    </div>
+                </section>
+            </div>
+            <!-- ==================== END V5 SCREEN ==================== -->
+
+            <!-- ==================== V4 SCREEN ==================== -->
+            <div id="screen-v4" class="doc-screen">
+
+                <section id="v4-summary">
+                    <h2>v4: Step 5 &mdash; JavaFX SPA Router + Product Image Refactor</h2>
+                    <div class="box box-info">
+                        <h3>Executive Summary</h3>
+                        <p>We are moving from a console UI loop to a JavaFX desktop frontend with SPA-style behavior.</p>
+                        <p>The new UI model: one window (<code>Stage</code>), one shell layout, fixed header at top, dynamic page content in center, footer always present at the bottom of page content (not sticky), route decision made by a custom router based on app state.</p>
+                        <p>The old <code>while</code> loop behavior from console is preserved conceptually as: <code>intent &rarr; router decision &rarr; renderer swaps page</code>.</p>
+                    </div>
+                </section>
+
+                <section id="v4-arch">
+                    <h2>1) Current vs Target Architecture</h2>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4>Current (Console)</h4>
+                            <ul>
+                                <li>Console interaction in menu loops</li>
+                                <li>Navigation through numeric options</li>
+                                <li>Rendering is text output in terminal</li>
+                            </ul>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Target (JavaFX)</h4>
+                            <ul>
+                                <li>JavaFX event-driven navigation</li>
+                                <li>Navigation based on route/state, not scanner input loops</li>
+                                <li>Rendering through JavaFX Nodes</li>
+                                <li>Same service and repository business logic reused underneath</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="v4-rules">
+                    <h2>2) Core UI Rules (Non-Negotiable)</h2>
+                    <div class="box box-danger">
+                        <ol>
+                            <li>Header is fixed in the top region and is always visible.</li>
+                            <li>Main page content is route-driven and replaced by renderer.</li>
+                            <li>Footer is always rendered as part of page flow at the bottom.</li>
+                            <li>Footer is <strong>not</strong> fixed to viewport bottom.</li>
+                            <li>On long pages, users scroll to reach footer.</li>
+                        </ol>
+                    </div>
+                    <div class="box box-info">
+                        <h3>Runtime Baseline</h3>
+                        <ul>
+                            <li>JDK 17+</li>
+                            <li>Maven wrapper in repository root</li>
+                            <li>JavaFX dependencies managed by Maven</li>
+                            <li>IntelliJ can open this repository directly as a Maven project</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="v4-tree">
+                    <h2>3) Target File Structure</h2>
+                    <div class="box box-warning">
+                        <p><code>*</code> modified existing file &nbsp;|&nbsp; <code>**</code> new file</p>
+                    </div>
+                    <pre><code>.
+|-- README.md *
+|-- pom.xml *  /  mvnw *  /  mvnw.cmd *
+|-- data
+|   |-- users.csv  /  orders.csv  /  order_items.csv
+|   |-- products.csv *
+|   `-- images **
+|       `-- .gitkeep **
+`-- src/com/university/shopping
+    |-- Main.java
+    |-- Launcher.java *
+    |-- MainFx.java *
+    |-- app **
+    |   |-- AppState.java **
+    |   |-- Route.java **
+    |   |-- NavIntentType.java **
+    |   |-- NavIntent.java **
+    |   |-- RouteDecision.java **
+    |   `-- Router.java **
+    |-- dto **
+    |   `-- ProductImageUpdateRequest.java **
+    |-- model
+    |   |-- MockDatabase.java *
+    |   |-- Product.java *    (+ imageName, imagePath)
+    |   `-- (User, Order, OrderItem, Cart - unchanged)
+    |-- repository
+    |   |-- CsvBootstrapInitializer.java *
+    |   |-- CsvPersistenceUtil.java *
+    |   |-- ProductRepository.java *
+    |   `-- (UserRepository, OrderRepository, CartRepository, ErrorLogger)
+    |-- service
+    |   |-- AuthService.java *
+    |   |-- ShopService.java *
+    |   |-- AdminService.java *
+    |   |-- media **
+    |   |   `-- ProductImageService.java **
+    |   |-- pricing/*
+    |   `-- report/*
+    `-- view
+        |-- ConsoleUI.java *
+        |-- contracts
+        |   |-- MenuActions.java *
+        |   |-- ScreenComponent.java **
+        |   `-- ScreenContext.java **
+        |-- renderer
+        |   `-- UiRenderer.java **
+        |-- layout
+        |   `-- AppShell.java **
+        |-- components
+        |   |-- HeaderNavComponent.java **
+        |   |-- FooterComponent.java **
+        |   |-- NotificationBarComponent.java **
+        |   `-- ProductCardComponent.java **
+        |-- pages
+        |   |-- LoginPage.java **
+        |   |-- RegisterPage.java **
+        |   |-- GuestProductsPage.java **
+        |   |-- CustomerProductsPage.java **
+        |   |-- ProductDetailsPage.java **
+        |   |-- CartPage.java **
+        |   |-- CheckoutPage.java **
+        |   |-- AdminProductsPage.java **
+        |   |-- AdminProductEditorPage.java **
+        |   |-- AdminUsersPage.java **
+        |   `-- AdminReportsPage.java **
+        |-- screens
+        |   |-- AbstractScreen.java *
+        |   |-- AuthScreen.java *
+        |   |-- CustomerScreen.java *
+        |   `-- AdminScreen.java *
+        `-- styles
+            |-- app.css **
+            `-- theme.css **</code></pre>
+                </section>
+
+                <section id="v4-router">
+                    <h2>4) Router + Renderer Model</h2>
+                    <div class="method-card">
+                        <h3>4.1 Layout Model</h3>
+                        <p>Root is <code>BorderPane</code>:</p>
+                        <ul>
+                            <li><code>top</code>: header nav component (fixed)</li>
+                            <li><code>center</code>: <code>ScrollPane</code> containing <code>VBox pageFlow</code></li>
+                            <li><code>pageFlow</code> children always in order: (1) active page node, (2) footer node</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>4.2 Route Loop Model (replaces console while-loop)</h3>
+                        <ol>
+                            <li>User action creates <code>NavIntent</code>.</li>
+                            <li>Router evaluates user state and permissions.</li>
+                            <li>Router returns <code>RouteDecision</code>.</li>
+                            <li>Renderer swaps page content.</li>
+                            <li>Optional lifecycle hooks run (<code>onBeforeLeave</code>, <code>onAfterEnter</code>).</li>
+                        </ol>
+                    </div>
+                    <div class="method-card">
+                        <h3>4.3 Access Guards</h3>
+                        <ul>
+                            <li><strong>Guest routes:</strong> only when not logged in.</li>
+                            <li><strong>Customer routes:</strong> require logged-in non-admin user.</li>
+                            <li><strong>Admin routes:</strong> require admin user.</li>
+                            <li><strong>Invalid request:</strong> redirected with user-visible reason.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="v4-routes">
+                    <h2>5) Route Map</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Route ID</th><th>Owner Screen</th><th>Auth Required</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>AUTH_LOGIN</code></td><td>AuthScreen</td><td>Guest only</td></tr>
+                            <tr><td><code>AUTH_REGISTER</code></td><td>AuthScreen</td><td>Guest only</td></tr>
+                            <tr><td><code>GUEST_PRODUCTS</code></td><td>AuthScreen</td><td>Guest only</td></tr>
+                            <tr><td><code>CUSTOMER_PRODUCTS</code></td><td>CustomerScreen</td><td>Logged-in user</td></tr>
+                            <tr><td><code>CUSTOMER_PRODUCT_DETAILS</code></td><td>CustomerScreen</td><td>Logged-in user</td></tr>
+                            <tr><td><code>CUSTOMER_CART</code></td><td>CustomerScreen</td><td>Logged-in user</td></tr>
+                            <tr><td><code>CUSTOMER_CHECKOUT</code></td><td>CustomerScreen</td><td>Logged-in user</td></tr>
+                            <tr><td><code>ADMIN_PRODUCTS</code></td><td>AdminScreen</td><td>Admin only</td></tr>
+                            <tr><td><code>ADMIN_PRODUCT_EDITOR</code></td><td>AdminScreen</td><td>Admin only</td></tr>
+                            <tr><td><code>ADMIN_USERS</code></td><td>AdminScreen</td><td>Admin only</td></tr>
+                            <tr><td><code>ADMIN_REPORTS</code></td><td>AdminScreen</td><td>Admin only</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="v4-image">
+                    <h2>6) Product Image Refactor</h2>
+                    <div class="method-card">
+                        <h3>6.1 New Product Model Fields</h3>
+                        <pre><code>private String imageName;   // shown in UI
+private String imagePath;   // relative path persisted in CSV</code></pre>
+                    </div>
+                    <div class="method-card">
+                        <h3>6.2 CSV Schema Change</h3>
+                        <p><strong>Old header:</strong></p>
+                        <pre><code>id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage</code></pre>
+                        <p><strong>New header:</strong></p>
+                        <pre><code>id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath</code></pre>
+                        <div class="box box-success">
+                            <p><strong>Backward compatibility:</strong> If row has 8 columns, default image fields to empty strings.</p>
+                        </div>
+                    </div>
+                    <div class="method-card">
+                        <h3>6.3 File Storage Policy</h3>
+                        <ul>
+                            <li>Store image files under <code>data/images/</code>.</li>
+                            <li>Persist only relative path, never machine-specific absolute path.</li>
+                            <li>Remove file on delete/replace as best effort.</li>
+                            <li>Allowed extensions: <code>png</code>, <code>jpg</code>, <code>jpeg</code>, <code>webp</code>.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="v4-classes">
+                    <h2>7) New Class Reference</h2>
+
+                    <div class="method-card">
+                        <h3><code>MainFx</code> &mdash; <span style="font-size:0.8em;color:#888">com.university.shopping</span></h3>
+                        <p>JavaFX entry application. Builds dependency graph and root shell.</p>
+                        <pre><code>Fields:
+  AuthService authService
+  ShopService shopService
+  AdminService adminService
+  AppState appState
+  Router router
+  UiRenderer renderer
+
+Methods:
+  void start(Stage stage)         // initialize app, create scene, render initial route
+  static void main(String[] args) // launch JavaFX app</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>AppState</code> &mdash; <span style="font-size:0.8em;color:#888">app</span></h3>
+                        <p>Single source of UI state.</p>
+                        <pre><code>Fields:
+  User currentUser
+  Route currentRoute
+  Integer selectedProductId
+  String flashMessage
+  boolean loading
+
+Key method:
+  String consumeFlashMessage()  // returns flash message and clears it</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>NavIntent</code> &mdash; <span style="font-size:0.8em;color:#888">app</span></h3>
+                        <p>Immutable navigation input to router. Factory methods:</p>
+                        <pre><code>static NavIntent appStart()
+static NavIntent open(Route route)
+static NavIntent openProduct(int productId)
+static NavIntent loginSuccess()
+static NavIntent registerSuccess()
+static NavIntent checkoutSuccess()
+static NavIntent logout()</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>Router</code> &mdash; <span style="font-size:0.8em;color:#888">app</span></h3>
+                        <p>State-aware and role-aware route decision engine.</p>
+                        <pre><code>RouteDecision dispatch(NavIntent intent)
+RouteDecision evaluateCurrentState()
+boolean canAccess(Route route)</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>ScreenContext</code> &mdash; <span style="font-size:0.8em;color:#888">view.contracts</span></h3>
+                        <p>Shared dependency container for all screens and pages.</p>
+                        <pre><code>AppState appState
+Router router
+UiRenderer renderer
+AuthService authService
+ShopService shopService
+AdminService adminService
+ProductImageService productImageService</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>UiRenderer</code> &mdash; <span style="font-size:0.8em;color:#888">view.renderer</span></h3>
+                        <p>Route-to-screen resolution and center content swap.</p>
+                        <pre><code>void render(Route route, ScreenContext context)
+void setNotification(String message, boolean error)
+ScreenComponent resolveScreen(Route route)</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>AppShell</code> &mdash; <span style="font-size:0.8em;color:#888">view.layout</span></h3>
+                        <p>Owns stable regions and enforces header/footer layout behavior.</p>
+                        <pre><code>Fields:
+  BorderPane root
+  HeaderNavComponent header
+  ScrollPane scrollRoot
+  VBox pageFlow
+  FooterComponent footer
+
+Methods:
+  Parent buildRoot(ScreenContext context)
+  void setPageContent(Node pageNode)  // keeps order: [pageNode, footer]
+  BorderPane getRoot()</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3><code>ProductImageService</code> &mdash; <span style="font-size:0.8em;color:#888">service.media</span></h3>
+                        <p>Validates, copies, and removes product image files.</p>
+                        <pre><code>String storeProductImage(ProductImageUpdateRequest request)
+  // validate extension + copy file -> returns stored relative path
+
+boolean removeProductImage(String relativePath)
+  // delete file -> returns delete status
+
+boolean isSupportedImage(String fileName)
+  // checks extension validity (png, jpg, jpeg, webp)</code></pre>
+                    </div>
+
+                    <h3>View Components</h3>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>HeaderNavComponent</code></h4>
+                            <p>Role-aware top navigation with user badge. Methods: <code>render(context)</code>, <code>refresh(context)</code>.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>FooterComponent</code></h4>
+                            <p>Footer at bottom of page flow (scroll to reach). Method: <code>render(context)</code>.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>NotificationBarComponent</code></h4>
+                            <p>Success/error banner. Methods: <code>showSuccess()</code>, <code>showError()</code>, <code>clear()</code>.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>ProductCardComponent</code></h4>
+                            <p>Reusable catalog card with image thumbnail and fallback placeholder.</p>
+                        </div>
+                    </div>
+
+                    <h3>Page Classes &mdash; <code>view.pages</code></h3>
+                    <p>All pages implement <code>Node render(ScreenContext context)</code>. Each page owns its controls and event listeners, calls service methods, emits router intents on transitions, and shows notification messages.</p>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card"><code>LoginPage</code></div>
+                        <div class="blueprint-card"><code>RegisterPage</code></div>
+                        <div class="blueprint-card"><code>GuestProductsPage</code></div>
+                        <div class="blueprint-card"><code>CustomerProductsPage</code></div>
+                        <div class="blueprint-card"><code>ProductDetailsPage</code></div>
+                        <div class="blueprint-card"><code>CartPage</code></div>
+                        <div class="blueprint-card"><code>CheckoutPage</code></div>
+                        <div class="blueprint-card"><code>AdminProductsPage</code></div>
+                        <div class="blueprint-card"><code>AdminProductEditorPage</code></div>
+                        <div class="blueprint-card"><code>AdminUsersPage</code></div>
+                        <div class="blueprint-card"><code>AdminReportsPage</code></div>
+                    </div>
+                </section>
+
+                <section id="v4-existing">
+                    <h2>8) Existing Classes to Modify</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Class</th><th>Change Required</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>Product</code></td><td>Add <code>imageName</code>, <code>imagePath</code> fields, constructor overload, and accessors</td></tr>
+                            <tr><td><code>CsvPersistenceUtil</code></td><td>Update write logic for 10-column product rows</td></tr>
+                            <tr><td><code>CsvBootstrapInitializer</code></td><td>Parse 10-column rows; fallback for 8-column legacy rows (empty image fields)</td></tr>
+                            <tr><td><code>ProductRepository</code></td><td>Add image metadata mutation methods and persist CSV after mutation</td></tr>
+                            <tr><td><code>AdminService</code></td><td>Add <code>setProductImage()</code> and <code>removeProductImage()</code> methods</td></tr>
+                            <tr><td><code>AuthService / ShopService</code></td><td>Minor wiring updates; no major behavior change required</td></tr>
+                            <tr><td><code>ConsoleUI</code></td><td>Keep temporarily for fallback console mode during JavaFX migration</td></tr>
+                            <tr><td><code>AbstractScreen / AuthScreen / CustomerScreen / AdminScreen</code></td><td>Refactor from console rendering to JavaFX <code>ScreenComponent</code> wrappers</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="v4-phases">
+                    <h2>9) Phased Implementation Plan</h2>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4>Phase 1 &mdash; Foundation</h4>
+                            <p>Create <code>AppState</code>, <code>Route</code>, <code>NavIntent</code>, <code>Router</code>, <code>RouteDecision</code>. Build <code>AppShell</code> and <code>UiRenderer</code>. Confirm header/footer layout behavior.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 2 &mdash; Auth + Guest Catalog</h4>
+                            <p>Implement <code>LoginPage</code>, <code>RegisterPage</code>, <code>GuestProductsPage</code>. Add route guards and redirects.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 3 &mdash; Customer Flow</h4>
+                            <p>Implement customer products, details, cart, and checkout pages. Wire into router.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 4 &mdash; Admin Flow</h4>
+                            <p>Implement admin products table, product editor, users management, and reports pages.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 5 &mdash; Product Image Refactor</h4>
+                            <p>Add model fields, update CSV schema, implement <code>ProductImageService</code>, wire admin upload/remove workflows.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Phase 6 &mdash; Stabilization</h4>
+                            <p>Regression tests, manual UX checks, route guard verification, CSV backward-compatibility checks.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="v4-flow">
+                    <h2>10) High-Order Flowchart</h2>
+                    <div class="flow">
+                        <pre><code>App Launch
+  &rarr; MainFx: build services, state, router, renderer
+        &rarr; Router.evaluateCurrentState()
+              &rarr; UiRenderer.render(route, context)
+                    &rarr; AppShell: Header (fixed top) + ScrollPane (center)
+                          &rarr; pageFlow VBox:
+                                [1] active page Node
+                                [2] footer Node
+
+User action (click / submit)
+  &rarr; Create NavIntent (factory method)
+        &rarr; Router.dispatch(intent)
+              &rarr; Allowed?  &rarr; RouteDecision(target)          &rarr; UiRenderer.render()
+              &rarr; Denied?   &rarr; RouteDecision(fallback+reason) &rarr; UiRenderer.render()
+
+Admin image upload
+  &rarr; ProductImageService.storeProductImage(request)   [validate + copy]
+        &rarr; AdminService.setProductImage(productId, path, name)
+              &rarr; ProductRepository: update metadata + persist products.csv
+                    &rarr; Renderer: refresh current admin page</code></pre>
+                    </div>
+                </section>
+
+                <section id="v4-checklist">
+                    <h2>11) Definition of Done + Test Checklist</h2>
+                    <div class="box box-success">
+                        <h3>Definition of Done</h3>
+                        <ul>
+                            <li>JavaFX app runs from repository as Maven project.</li>
+                            <li>Router-driven navigation works for guest / customer / admin.</li>
+                            <li>Header is fixed at top across all route changes.</li>
+                            <li>Footer is always rendered at content bottom and scroll-reachable.</li>
+                            <li>Product images can be uploaded/removed by admin and are persisted to CSV.</li>
+                            <li>Existing core business behavior (auth, cart, checkout, reports) remains correct.</li>
+                        </ul>
+                    </div>
+                    <div class="box box-info">
+                        <h3>Manual Test Checklist</h3>
+                        <ol>
+                            <li>Launch JavaFX app &rarr; shell renders with header and footer visible.</li>
+                            <li>Header remains visible during all route changes.</li>
+                            <li>Footer appears after content; scrolling reveals it on long pages.</li>
+                            <li>Guest cannot navigate to customer or admin routes.</li>
+                            <li>Customer cannot access admin routes.</li>
+                            <li>Admin routes open correctly after admin login.</li>
+                            <li>Product image upload writes file to <code>data/images/</code> and updates <code>products.csv</code>.</li>
+                            <li>Product image remove updates CSV and deletes file (best effort).</li>
+                            <li>Old 8-column <code>products.csv</code> rows load without errors (image fields default to empty).</li>
+                        </ol>
+                    </div>
+                </section>
+
+            </div>
+            <!-- ==================== END V4 SCREEN ==================== -->
+
+            <!-- ==================== V3 SCREEN ==================== -->
+            <div id="screen-v3" class="doc-screen">
+                <section id="v3-goal">
+                    <h2>v3: Step 3 Implementation (CSV Persistence + Error Handling)</h2>
+                    <div class="box box-info">
+                        <h3>0) Goal and Requirement Mapping</h3>
+                        <p>This page is based on <code>STEP3_CSV_PERSISTENCE_IMPLEMENTATION.md</code>.</p>
+                        <ol>
+                            <li>Create 3 different files containing entity data.</li>
+                            <li>Use 4 different try-catch patterns for different error types.</li>
+                            <li>Use one try-catch with multiple <code>catch</code> blocks and a <code>finally</code> block.</li>
+                        </ol>
+                        <p><strong>Planned fulfillment:</strong> entity CSV files (<code>products.csv</code>, <code>users.csv</code>, <code>orders.csv</code>, optional <code>order_items.csv</code>), startup bootstrap from CSV to <code>MockDatabase</code>, and immediate repository-triggered persistence on every mutation.</p>
+                    </div>
+                </section>
+
+                <section id="v3-tree">
+                    <h2>1) New Files Tree</h2>
+                    <pre><code>.
+|-- STEP3_CSV_PERSISTENCE_IMPLEMENTATION.md **
+|-- data **
+|   |-- products.csv **
+|   |-- users.csv **
+|   |-- orders.csv **
+|   |-- order_items.csv **
+|   `-- errors.log **
+`-- src
+    `-- com/university/shopping
+        |-- Main.java *
+        |-- model
+        |   |-- MockDatabase.java *
+        |   |-- User.java *
+        |   |-- Product.java *
+        |   `-- Order.java *
+        |-- repository
+        |   |-- UserRepository.java *
+        |   |-- ProductRepository.java *
+        |   |-- OrderRepository.java *
+        |   `-- CartRepository.java *
+        |-- persistence **
+        |   |-- CsvPaths.java **
+        |   |-- CsvErrorLogger.java **
+        |   |-- CsvEscaper.java **
+        |   |-- CsvBootstrapInitializer.java **
+        |   |-- UserCsvStore.java **
+        |   |-- ProductCsvStore.java **
+        |   |-- OrderCsvStore.java **
+        |   `-- OrderItemCsvStore.java **
+        `-- service/report
+            `-- CsvReportService.java *</code></pre>
+                    <div class="box box-warning">
+                        <p><strong>Notes:</strong> <code>order_items.csv</code> is recommended for normalized order-item persistence. <code>errors.log</code> stores non-fatal parse/IO issues.</p>
+                    </div>
+                </section>
+
+                <section id="v3-workflows">
+                    <h2>2) New Workflow and Data Flow</h2>
+                    <div class="method-card">
+                        <h3>2.1 Startup Flow</h3>
+                        <ol>
+                            <li><code>Main.main</code> creates repositories.</li>
+                            <li>Repository static init delegates to <code>CsvBootstrapInitializer.initializeIfNeeded()</code>.</li>
+                            <li>Initializer ensures directory/files/headers.</li>
+                            <li>Initializer safely resets in-memory arrays/counts.</li>
+                            <li>Initializer loads users/products/orders/order_items CSV files.</li>
+                            <li>Initializer recalculates next IDs from loaded data.</li>
+                            <li>Application continues with normal service/UI startup.</li>
+                        </ol>
+                    </div>
+                    <div class="method-card">
+                        <h3>2.2 Runtime Read Flow</h3>
+                        <p>Services call repositories, repositories read from <code>MockDatabase</code> arrays, and no per-request disk reads are done.</p>
+                    </div>
+                    <div class="method-card">
+                        <h3>2.3 Runtime Write Flow (Triggered Persistence)</h3>
+                        <ol>
+                            <li>Service requests a mutation in repository.</li>
+                            <li>Repository mutates in-memory array/count.</li>
+                            <li>Repository immediately calls CSV store <code>writeAll(...)</code>.</li>
+                            <li>Store writes temp file and atomically replaces real file.</li>
+                            <li>On failure, repository returns failure and logs error.</li>
+                        </ol>
+                    </div>
+                    <div class="method-card">
+                        <h3>2.4 Report Export Flow</h3>
+                        <p><code>AdminService.exportSystemReport("csv")</code> delegates to <code>CsvReportService.exportReport()</code>, which returns <code>SUCCESS:&lt;path&gt;</code> or <code>ERROR:&lt;message&gt;</code>.</p>
+                    </div>
+                </section>
+
+                <section id="v3-schemas">
+                    <h2>3) CSV Schemas</h2>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>data/products.csv</code></h4>
+                            <pre><code>id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage</code></pre>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>data/users.csv</code></h4>
+                            <pre><code>id,username,password,isAdmin,createdDate</code></pre>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>data/orders.csv</code></h4>
+                            <pre><code>id,userId,orderDate,totalPrice,status</code></pre>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>data/order_items.csv</code></h4>
+                            <pre><code>orderId,productId,productName,quantity,priceAtPurchase</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="v3-errors">
+                    <h2>4) Error Handling Plan</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Exception</th>
+                                <th>Where</th>
+                                <th>Behavior</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Type A</td>
+                                <td><code>IOException</code></td>
+                                <td>CSV stores and <code>CsvReportService</code></td>
+                                <td>Return <code>false</code> or <code>ERROR:&lt;message&gt;</code>, log details.</td>
+                            </tr>
+                            <tr>
+                                <td>Type B</td>
+                                <td><code>NumberFormatException</code></td>
+                                <td>Numeric CSV fields</td>
+                                <td>Skip malformed row, log row/file, continue parsing.</td>
+                            </tr>
+                            <tr>
+                                <td>Type C</td>
+                                <td><code>DateTimeParseException</code></td>
+                                <td><code>createdDate</code>, <code>orderDate</code></td>
+                                <td>Skip malformed row, log parse error, continue initialization.</td>
+                            </tr>
+                            <tr>
+                                <td>Type D</td>
+                                <td><code>IllegalArgumentException</code></td>
+                                <td>Schema mismatch/invalid booleans/empty required fields</td>
+                                <td>Throw or map to parse error; log and continue per fail policy.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="method-card">
+                        <h3>4.5 Required Multi-Catch + Finally Block</h3>
+                        <pre><code>BufferedReader reader = null;
+try {
+    reader = new BufferedReader(new FileReader(path));
+    // parse rows
+} catch (NumberFormatException e) {
+    // row numeric issues
+} catch (DateTimeParseException e) {
+    // date issues
+} catch (IOException e) {
+    // file IO issues
+} finally {
+    if (reader != null) {
+        try {
+            reader.close();
+        } catch (IOException closeError) {
+            // log close error
+        }
+    }
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="v3-implementation">
+                    <h2>5) File-by-File Implementation Order and Specs</h2>
+                    <div class="method-card">
+                        <h3>Persistence Helpers</h3>
+                        <ul>
+                            <li><code>CsvPaths.java</code>: centralize paths for data files and error log.</li>
+                            <li><code>CsvEscaper.java</code>: CSV escaping and robust line splitting.</li>
+                            <li><code>CsvErrorLogger.java</code>: append structured non-fatal logs to <code>errors.log</code>.</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>Model Adjustments</h3>
+                        <ul>
+                            <li><code>User.java</code>: add overload/factory for persisted ID restore with optional auto-register control.</li>
+                            <li><code>Product.java</code>: add overload/factory for explicit persisted ID.</li>
+                            <li><code>Order.java</code>: add overload/factory for explicit persisted ID.</li>
+                            <li><code>MockDatabase.java</code>: add deterministic reset and next-ID recalculation helper(s).</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>CSV Stores</h3>
+                        <ul>
+                            <li><code>UserCsvStore</code>: <code>ensureFileWithHeader</code>, <code>loadAll</code>, <code>writeAll</code>.</li>
+                            <li><code>ProductCsvStore</code>: <code>ensureFileWithHeader</code>, <code>loadAll</code>, <code>writeAll</code>.</li>
+                            <li><code>OrderCsvStore</code>: <code>ensureFileWithHeader</code>, <code>loadAllWithoutItems</code>, <code>writeAll</code>.</li>
+                            <li><code>OrderItemCsvStore</code>: grouped loading by <code>orderId</code> and full write support.</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>Bootstrap + Repository Wiring</h3>
+                        <ul>
+                            <li><code>CsvBootstrapInitializer.java</code>: one-time idempotent CSV bootstrap with file ensuring, loading, and counter finalization.</li>
+                            <li><code>UserRepository.java</code>: call bootstrap; persist on <code>save</code>, <code>update</code>, <code>delete</code>.</li>
+                            <li><code>ProductRepository.java</code>: call bootstrap; persist on <code>save</code>, <code>update</code>, <code>delete</code>, <code>updateStock</code>.</li>
+                            <li><code>OrderRepository.java</code>: persist both <code>orders.csv</code> and <code>order_items.csv</code> on save/update path.</li>
+                            <li><code>CartRepository.java</code>: keep in-memory for this step (cart CSV is non-goal now).</li>
+                        </ul>
+                    </div>
+                    <div class="method-card">
+                        <h3>Service and Main Wiring</h3>
+                        <ul>
+                            <li><code>CsvReportService.java</code>: robust file write with defensive try/catch/finally and logging.</li>
+                            <li><code>Main.java</code>: preferred explicit bootstrap call for transparency/testability.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="v3-checklist">
+                    <h2>6-10) Integrity, Compatibility, Acceptance, Build Order, Non-Goals</h2>
+                    <div class="box box-success">
+                        <h3>Data Integrity and Safety</h3>
+                        <ul class="checklist">
+                            <li>Always write to temp file then replace target.</li>
+                            <li>Never partially rewrite target in-place.</li>
+                            <li>Keep headers in all CSV files.</li>
+                            <li>Validate column count before parsing.</li>
+                        </ul>
+                    </div>
+                    <div class="box box-info">
+                        <h3>Minimal Acceptance Checklist</h3>
+                        <ol>
+                            <li>Auto-create CSV files with headers in empty <code>data/</code>.</li>
+                            <li>Restore users/products/orders from existing CSV files.</li>
+                            <li>Persist product mutations immediately to <code>products.csv</code>.</li>
+                            <li>Persist user mutations immediately to <code>users.csv</code>.</li>
+                            <li>Persist checkout results immediately to <code>orders.csv</code> and <code>order_items.csv</code>.</li>
+                            <li>Return graceful error from CSV report export on IO failure.</li>
+                            <li>Use at least 4 distinct try-catch error types.</li>
+                            <li>Implement at least one multi-catch + finally code path.</li>
+                        </ol>
+                    </div>
+                    <div class="box box-warning">
+                        <h3>Suggested Practical Build Sequence</h3>
+                        <ol>
+                            <li>Add helpers: <code>CsvPaths</code>, <code>CsvEscaper</code>, <code>CsvErrorLogger</code>.</li>
+                            <li>Add model constructor/factory support for persisted IDs.</li>
+                            <li>Add CSV stores for users/products/orders/items.</li>
+                            <li>Add bootstrap initializer and wire startup.</li>
+                            <li>Modify repositories to persist on mutation.</li>
+                            <li>Harden <code>CsvReportService</code> with try/catch/finally.</li>
+                            <li>Run manual admin/customer/report scenarios.</li>
+                        </ol>
+                    </div>
+                    <div class="box">
+                        <h3>Non-Goals for This Step</h3>
+                        <ul>
+                            <li>Full relational DB migration.</li>
+                            <li>Full ACID transactions.</li>
+                            <li>Concurrent multi-process file locking strategy.</li>
+                        </ul>
+                        <p>This Step 3 plan keeps current architecture intact while adding durable CSV persistence with explicit error handling and low disruption risk.</p>
+                    </div>
+                </section>
+            </div>
+            <!-- ==================== END V3 SCREEN ==================== -->
+
+            <!-- ==================== V2 SCREEN ==================== -->
+            <div id="screen-v2" class="doc-screen">
+                <section id="oop-overview">
+                    <h2>OOP Extension Blueprint (v2)</h2>
+                    <div class="box box-info">
+                        <h3>Scope</h3>
+                        <p>This screen translates <code>OOP_EXTENSION_IMPLEMENTATION_PLAN.md</code> into implementation-ready architecture visuals and method-level behavior. It is designed for coding, QA execution, and design review.</p>
+                    </div>
+
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <span class="pill">Goal</span>
+                            <p>Add concrete OOP constructs with minimal regression risk and preserve current shop behavior.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <span class="pill">Out of Scope (Now)</span>
+                            <p>Replacing <code>MockDatabase</code> with CSV/file persistence in this milestone.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <span class="pill">Strategy</span>
+                            <p>Introduce role-based screens, pricing strategy interface, and report hierarchy while keeping existing data layer intact.</p>
+                        </div>
+                    </div>
+
+                    <div class="flow">
+                        <h3>Architecture Graph</h3>
+                        <pre><code>ConsoleUI (Coordinator)
+   |
+   +--> MenuActions (polymorphic)
+   |      +--> CustomerScreen extends AbstractScreen
+   |      +--> AdminScreen extends AbstractScreen
+   |
+    +--> ShopService --uses--> DiscountPolicy (interface)
+    |                        +--> StandardDiscountPolicy
+    |                        +--> SeasonalDiscountPolicy
+    |                        +--> PricingMode (LOCK_AT_ADD default)
+    |
+    +--> AdminService --uses--> reportServicesByFormat map
+                                     +--> "console" -> ConsoleReportService
+                                     +--> "csv" -> CsvReportService
+
+All services continue using repositories and MockDatabase as before.</code></pre>
+                    </div>
+                </section>
+
+                <section id="oop-tree">
+                    <h2>Class Tree (Exact Target)</h2>
+                    <pre><code>src/com/university/shopping/
+├── Main.java (MODIFY wiring)
+├── view/
+│   ├── ConsoleUI.java (MODIFY, delegate role menus)
+│   ├── contracts/
+│   │   └── MenuActions.java (NEW interface)
+│   └── screens/
+│       ├── AbstractScreen.java (NEW abstract)
+│       ├── CustomerScreen.java (NEW)
+│       └── AdminScreen.java (NEW)
+├── service/
+│   ├── AuthService.java (UNCHANGED)
+│   ├── ShopService.java (MODIFY)
+│   ├── AdminService.java (MODIFY)
+│   ├── pricing/
+│   │   ├── DiscountPolicy.java (NEW interface)
+│   │   ├── PricingMode.java (NEW enum)
+│   │   ├── StandardDiscountPolicy.java (NEW)
+│   │   └── SeasonalDiscountPolicy.java (NEW)
+│   └── report/
+│       ├── AbstractReportService.java (NEW abstract)
+│       ├── ConsoleReportService.java (NEW)
+│       └── CsvReportService.java (NEW)
+└── repository/
+    └── (NO mandatory changes)</code></pre>
+                </section>
+
+                <section id="oop-matrix">
+                    <h2>Requirement Matrix</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Requirement</th>
+                                <th>Concrete Implementation</th>
+                                <th>Where Demonstrated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2 Inheritance Examples</td>
+                                <td><code>CustomerScreen/AdminScreen extends AbstractScreen</code><br><code>ConsoleReportService/CsvReportService extends AbstractReportService</code></td>
+                                <td>UI role menus and report export flows</td>
+                            </tr>
+                            <tr>
+                                <td>2 Abstract Classes</td>
+                                <td><code>AbstractScreen</code>, <code>AbstractReportService</code></td>
+                                <td>Shared methods + abstract contracts</td>
+                            </tr>
+                            <tr>
+                                <td>2 Interfaces</td>
+                                <td><code>MenuActions</code>, <code>DiscountPolicy</code></td>
+                                <td>Role menu behavior + pricing strategy</td>
+                            </tr>
+                            <tr>
+                                <td>3 Overriding Examples</td>
+                                <td><code>CustomerScreen.showMenu()</code><br><code>AdminScreen.showMenu()</code><br><code>CsvReportService.exportReport()</code></td>
+                                <td>Menu rendering and report output</td>
+                            </tr>
+                            <tr>
+                                <td>3 Polymorphism Examples</td>
+                                <td><code>MenuActions active = ...</code><br><code>DiscountPolicy policy = ...</code><br><code>AbstractReportService reportService = reportServicesByFormat.get(format)</code></td>
+                                <td>Runtime role switching, policy switching, report destination switching</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="oop-packages">
+                    <h2>Package and Class Specifications</h2>
+
+                    <h3>Package: <code>view/contracts</code></h3>
+                    <div class="method-card">
+                        <h4><code>MenuActions</code> (interface)</h4>
+                        <p><strong>Methods:</strong> <code>void showMenu()</code>, <code>void handleOption(int option)</code></p>
+                        <pre><code>// Example polymorphic usage
+MenuActions active = authService.isAdmin() ? adminScreen : customerScreen;
+active.showMenu();
+int choice = getIntInput();
+active.handleOption(choice);</code></pre>
+                    </div>
+
+                    <h3>Package: <code>view/screens</code></h3>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>AbstractScreen</code> (abstract)</h4>
+                            <p><strong>Fields:</strong> <code>scanner</code>, <code>authService</code>, <code>shopService</code>, <code>adminService</code></p>
+                            <p><strong>Implemented:</strong> <code>printTitle</code>, <code>pause</code>, <code>readIntSafe</code>, <code>truncate</code></p>
+                            <p><strong>Abstract:</strong> <code>showMenu</code>, <code>handleOption</code></p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>CustomerScreen</code></h4>
+                            <p>Browse products, details, add/remove cart, checkout.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>AdminScreen</code></h4>
+                            <p>Manage products/users and export reports.</p>
+                        </div>
+                    </div>
+
+                    <h3>Package: <code>service/pricing</code></h3>
+                    <div class="method-card">
+                        <h4><code>DiscountPolicy</code> (interface)</h4>
+                        <pre><code>DiscountPolicy policy = new SeasonalDiscountPolicy(5.0);
+double finalPrice = policy.apply(product);</code></pre>
+                    </div>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>StandardDiscountPolicy</code></h4>
+                            <p>Mirrors current <code>Product.getFinalPrice()</code> behavior.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>SeasonalDiscountPolicy</code></h4>
+                            <p>Adds extra campaign percentage on top of standard discount.<br>Example: base 1000, product 10%, seasonal 5% =&gt; 850</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>PricingMode</code> (enum)</h4>
+                            <p><code>LOCK_AT_ADD</code> (default) locks price snapshot in cart.<br><code>RECALCULATE_AT_CHECKOUT</code> recalculates with active policy.</p>
+                        </div>
+                    </div>
+
+                    <h3>Package: <code>service/report</code></h3>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4><code>AbstractReportService</code> (abstract)</h4>
+                            <p>Implemented: <code>buildTimestamp</code>, <code>formatCurrency</code>, <code>buildHeader</code><br>Abstract: <code>exportReport()</code></p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>ConsoleReportService</code></h4>
+                            <p>Computes totals and prints report to terminal.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4><code>CsvReportService</code></h4>
+                            <p>Computes same metrics and writes CSV to configured path.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="oop-method-contracts">
+                    <h2>Method Contracts (Deep Dive)</h2>
+                    <div class="method-card">
+                        <h3>Modified Existing Classes</h3>
+                        <table>
+                            <thead>
+                                <tr><th>Class</th><th>New Fields</th><th>New/Updated Methods</th><th>Why</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>ShopService</code></td>
+                                    <td><code>DiscountPolicy discountPolicy</code>, <code>PricingMode pricingMode</code></td>
+                                    <td><code>setDiscountPolicy</code>, <code>setPricingMode</code></td>
+                                    <td>Pluggable pricing behavior</td>
+                                </tr>
+                                <tr>
+                                    <td><code>AdminService</code></td>
+                                    <td><code>Map&lt;String, AbstractReportService&gt; reportServicesByFormat</code></td>
+                                    <td><code>setReportService</code>, <code>exportSystemReport(format)</code></td>
+                                    <td>Pluggable report destination</td>
+                                </tr>
+                                <tr>
+                                    <td><code>ConsoleUI</code></td>
+                                    <td><code>MenuActions customerScreen/adminScreen</code></td>
+                                    <td>role delegation in <code>start()</code></td>
+                                    <td>Role polymorphism</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="oop-workflows">
+                    <h2>Workflows (Visual)</h2>
+                    <div class="flow">
+                        <h3>Workflow A: Role-Based Menu</h3>
+                        <pre><code>ConsoleUI.start()
+    -> MenuActions active = isAdmin ? adminScreen : customerScreen
+    -> active.showMenu()
+    -> choice = getIntInput()
+    -> active.handleOption(choice)</code></pre>
+                    </div>
+                    <div class="flow">
+                        <h3>Workflow B: Checkout with Pricing Policy</h3>
+                        <pre><code>CustomerScreen.checkout()
+  -> ShopService.checkout(userId)
+  -> default: use locked OrderItem.priceAtPurchase
+  -> optional mode: recalculate via discountPolicy.apply(product)</code></pre>
+                    </div>
+                    <div class="flow">
+                        <h3>Workflow C: Admin Report Export</h3>
+                        <pre><code>AdminScreen.exportReport()
+    -> AdminService.exportSystemReport(format)
+    -> reportService = reportServicesByFormat.get(format)
+    -> reportService.exportReport()
+    // ConsoleReportService (prints) or CsvReportService (writes CSV)</code></pre>
+                    </div>
+                </section>
+
+                <section id="oop-changes">
+                    <h2>Create, Modify, Rewrite, Improve</h2>
+                    <div class="blueprint-grid">
+                        <div class="blueprint-card">
+                            <h4 class="status-good">Create</h4>
+                            <p><code>MenuActions</code>, <code>AbstractScreen</code>, <code>CustomerScreen</code>, <code>AdminScreen</code>, <code>DiscountPolicy</code>, <code>PricingMode</code>, <code>StandardDiscountPolicy</code>, <code>SeasonalDiscountPolicy</code>, <code>AbstractReportService</code>, <code>ConsoleReportService</code>, <code>CsvReportService</code></p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4 class="status-change">Modify</h4>
+                            <p><code>ConsoleUI</code>, <code>ShopService</code>, <code>AdminService</code>, <code>Main</code></p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4>Remove</h4>
+                            <p>None required. Keep current repository/model persistence untouched.</p>
+                        </div>
+                        <div class="blueprint-card">
+                            <h4 class="status-change">Rewrite (Targeted)</h4>
+                            <p>Only role-menu handling in <code>ConsoleUI</code> rewritten into delegating screens.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="oop-audit">
+                    <h2>Engineering Decisions</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Decision Area</th><th>Behavior</th><th>Outcome</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Pricing lifecycle</td><td>Default: <code>LOCK_AT_ADD</code>; optional: <code>RECALCULATE_AT_CHECKOUT</code></td><td>Deterministic totals with configurable strategy</td></tr>
+                            <tr><td>Report format routing</td><td>Normalizes key and resolves via format map</td><td>Clear runtime polymorphism</td></tr>
+                            <tr><td>ID lookup</td><td>Repository operations resolve by id value, not array index</td><td>Reliable CRUD after deletions</td></tr>
+                            <tr><td>Money precision</td><td>Checkout and totals use decimal-safe arithmetic</td><td>Accurate order totals</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="oop-qa">
+                    <h2>QA Scenarios</h2>
+                    <div class="method-card">
+                        <h3>Scenario 1: Menu polymorphism</h3>
+                        <pre><code>login as admin   -> menu shows "Product Management", "User Management"
+login as customer -> menu shows "Add Product to Cart", "Checkout"</code></pre>
+                    </div>
+                    <div class="method-card">
+                        <h3>Scenario 2: Pricing strategy</h3>
+                        <pre><code>StandardDiscountPolicy:  base 1000, discount 10% -> charged: 900
+SeasonalDiscountPolicy(5): same product         -> charged: 850</code></pre>
+                    </div>
+                    <div class="method-card">
+                        <h3>Scenario 3: Report destination</h3>
+                        <pre><code>format = "console" -> report printed in terminal
+format = "csv"    -> SUCCESS:reports/system.csv
+format = "xml"    -> ERROR:Unsupported format</code></pre>
+                    </div>
+                </section>
+            </div>
+            <!-- ==================== END V2 SCREEN ==================== -->
+
+            <!-- ==================== V1 SCREEN ==================== -->
+            <div id="screen-v1" class="doc-screen">
+                <section id="overview">
+                    <h2>📐 Architecture Overview</h2>
+
+                    <div class="box box-info">
+                        <h3>Access Modifier Guidelines</h3>
+                        <ul>
+                            <li><code>private</code>: Accessible only within the same class</li>
+                            <li><code>default</code> (no modifier): Accessible within the same package</li>
+                            <li><code>protected</code>: Accessible within same package AND subclasses</li>
+                            <li><code>public</code>: Accessible from anywhere</li>
+                        </ul>
+                    </div>
+
+                    <div class="box box-success">
+                        <h3>Our Security Policy</h3>
+                        <ul>
+                            <li><strong>Fields:</strong> Always <code>private</code> (encapsulation)</li>
+                            <li><strong>Internal helper methods:</strong> <code>private</code></li>
+                            <li><strong>Methods called by other classes:</strong> <code>public</code></li>
+                            <li><strong>Model/Repository/Service classes:</strong> <code>public</code> (dependency injection)</li>
+                            <li><strong>Static usage:</strong> ONLY in MockDatabase (simulates shared database)</li>
+                        </ul>
+                    </div>
+
+                    <h3>4-Layer Architecture</h3>
+                    <ol>
+                        <li><strong>Model Layer</strong> — Pure data structures (POJOs) with no logic</li>
+                        <li><strong>Repository Layer</strong> — Data access and storage management (in-memory arrays)</li>
+                        <li><strong>Service Layer</strong> — Business logic and rules</li>
+                        <li><strong>View Layer</strong> — User interface and I/O (Console-based)</li>
+                    </ol>
+
+                    <pre><code>com.university.shopping/
+├── Main.java
+├── model/
+│   ├── User.java  /  Product.java  /  Order.java
+│   ├── OrderItem.java  /  Cart.java
+│   └── MockDatabase.java
+├── repository/
+│   ├── UserRepository.java  /  ProductRepository.java
+│   ├── OrderRepository.java  /  CartRepository.java
+├── service/
+│   ├── AuthService.java  /  ShopService.java  /  AdminService.java
+└── view/
+    └── ConsoleUI.java</code></pre>
+                </section>
+
+                <section id="model">
+                    <h2>📦 Layer 1: Model Package</h2>
+
+                    <div class="method-card">
+                        <h3>User.java</h3>
+                        <pre><code>private int userId;
+private String username;
+private String password;
+private boolean isAdmin;
+private String createdDate;
+
+// Getters for all fields
+// Setters: setUsername, setPassword, setIsAdmin (NO setUserId)</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>Product.java</h3>
+                        <pre><code>private int productId;
+private String name;
+private double price;
+private String category;
+private String description;
+private int stockQuantity;
+private boolean isDiscounted;
+private double discountPercentage;
+
+public double getFinalPrice()  // price * (1 - discountPct/100) if discounted</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>Order.java / OrderItem.java / Cart.java</h3>
+                        <p>Order holds <code>OrderItem[]</code>. OrderItem is fully immutable (no setters). Cart manages a 50-slot <code>OrderItem[]</code> with <code>addItem</code>, <code>removeItem</code>, <code>clear</code>, <code>getTotalPrice</code>.</p>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>MockDatabase.java <span class="badge badge-static">STATIC ONLY</span></h3>
+                        <pre><code>public static User[] users = new User[100];
+public static int userCount = 0;
+public static Product[] products = new Product[200];
+public static int productCount = 0;
+public static Order[] orders = new Order[500];
+public static int orderCount = 0;
+// ... nextUserId, nextProductId, nextOrderId
+
+private MockDatabase() {}  // No instantiation</code></pre>
+                    </div>
+                </section>
+
+                <section id="repository">
+                    <h2>📦 Layer 2: Repository Package</h2>
+                    <p>Only layer that directly accesses MockDatabase. Seeded via static initialization blocks.</p>
+
+                    <div class="method-card">
+                        <h3>UserRepository — key methods</h3>
+                        <pre><code>User findByUsername(String username)
+User findById(int userId)
+boolean save(User user)
+boolean update(User user)
+boolean delete(int userId)
+User[] getAllUsers()
+int getNextUserId()</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>ProductRepository — key methods</h3>
+                        <pre><code>Product findById(int productId)
+Product[] findAll()
+boolean save(Product product)
+boolean update(Product product)
+boolean delete(int productId)
+boolean updateStock(int productId, int quantityChange)  // critical
+Product[] searchByName(String keyword)
+int getNextProductId()</code></pre>
+                        <p>Seeded with 15 products (phones, laptops, accessories, tablets).</p>
+                    </div>
+                </section>
+
+                <section id="service">
+                    <h2>📦 Layer 3: Service Package</h2>
+
+                    <div class="method-card">
+                        <h3>AuthService</h3>
+                        <pre><code>String login(String username, String password)
+  // returns: "SUCCESS" | "WRONG_PASSWORD" | "USER_NOT_FOUND"
+String register(String username, String password)
+  // returns: "SUCCESS" | "USERNAME_EXISTS" | "INVALID_PASSWORD"
+void logout()
+User getCurrentUser()
+boolean isLoggedIn()
+boolean isAdmin()
+private boolean validatePassword(String password)
+  // 6+ chars, must have letter AND digit</code></pre>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>ShopService — Checkout Algorithm</h3>
+                        <div class="algorithm">
+                            <pre><code>1. Check isLoggedIn() or return "NOT_LOGGED_IN"
+2. Get cart; check itemCount > 0 or return "EMPTY_CART"
+3. VALIDATION: for each item, check stock >= quantity
+   -> any fail: return "STOCK_ERROR:&lt;productName&gt;"
+4. DEDUCTION: productRepository.updateStock(id, -qty) for each
+5. CREATE ORDER: generate id, timestamp, calculate total, save
+6. CLEAR CART: cartRepository.clear(userId)
+7. Return "SUCCESS"</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="method-card">
+                        <h3>AdminService</h3>
+                        <p>Every method checks <code>authService.isAdmin()</code> first, returns "NOT_ADMIN" if false.</p>
+                        <p>Product methods: <code>addNewProduct</code>, <code>addStockToExistingProduct</code>, <code>removeStock</code>, <code>deleteProduct</code>, <code>updateProductPrice</code>, <code>updateProductName</code>, <code>setProductDiscount</code>.</p>
+                        <p>User methods: <code>addUser</code>, <code>updateUser</code>, <code>deleteUser</code> (prevents self-deletion), <code>getAllUsers</code>.</p>
+                    </div>
+                </section>
+
+                <section id="view">
+                    <h2>📦 Layer 4: View Package</h2>
+                    <div class="method-card">
+                        <h3>ConsoleUI.java</h3>
+                        <p>Only public method: <code>start()</code> — main application loop. All UI methods are <code>private</code>.</p>
+                        <pre><code>public void start()   // while(true) loop -> mainMenu()
+private void mainMenu()
+private void showProductList()  // paginated, Z/M navigation
+private void showBasket()
+private void handleCheckout()
+private void adminMenu()
+private void adminProductMenu()
+private void adminUserMenu()
+// ... etc</code></pre>
+                    </div>
+                </section>
+
+                <section id="main">
+                    <h2>📍 Main Entry Point</h2>
+                    <pre><code>public static void main(String[] args) {
+    // 1. Initialize Repositories (triggers static seeding blocks)
+    UserRepository userRepo = new UserRepository();
+    ProductRepository productRepo = new ProductRepository();
+    OrderRepository orderRepo = new OrderRepository();
+    CartRepository cartRepo = new CartRepository();
+
+    // 2. Initialize Services (dependency injection)
+    AuthService authService = new AuthService(userRepo);
+    ShopService shopService = new ShopService(productRepo, orderRepo, cartRepo, authService);
+    AdminService adminService = new AdminService(productRepo, userRepo, orderRepo, authService);
+
+    // 3. Start UI loop
+    ConsoleUI ui = new ConsoleUI(authService, shopService, adminService);
+    ui.start();
+}</code></pre>
+                </section>
+
+                <section id="access-summary">
+                    <h2>🔐 Access Modifier Summary</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Layer</th><th>Fields</th><th>Constructor</th><th>Public Methods</th><th>Private Methods</th><th>Static</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Model (entities)</strong></td><td><code>private</code></td><td><code>public</code></td><td>Getters/Setters</td><td>None</td><td>None</td></tr>
+                            <tr style="background:#fff3cd"><td><strong>MockDatabase</strong></td><td><code>public static</code></td><td><code>private</code></td><td>None</td><td>None</td><td>ALL</td></tr>
+                            <tr><td><strong>Repository</strong></td><td>None</td><td><code>public</code></td><td>All CRUD</td><td>None</td><td>Init blocks only</td></tr>
+                            <tr><td><strong>Service</strong></td><td><code>private</code></td><td><code>public</code></td><td>Business logic</td><td>Helpers</td><td>None</td></tr>
+                            <tr><td><strong>View (ConsoleUI)</strong></td><td><code>private</code></td><td><code>public</code></td><td><code>start()</code> only</td><td>All UI methods</td><td>One constant</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+            <!-- ==================== END V1 SCREEN ==================== -->
+
+        </div>
+
+        <footer>
+            <p><strong>📱 Electronics Shop Project</strong></p>
+            <p>Layered Architecture with Maximum Encapsulation</p>
+            <p>Java Console Application — January 2026</p>
+            <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.8;">Complete Architecture Documentation</p>
+        </footer>
+    </div>
+
+    <div class="scroll-top" id="scrollTop">↑</div>
+
+    <script>
+        const screens = {
+            v5: document.getElementById('screen-v5'),
+            v1: document.getElementById('screen-v1'),
+            v2: document.getElementById('screen-v2'),
+            v3: document.getElementById('screen-v3'),
+            v4: document.getElementById('screen-v4')
+        };
+
+        const screenButtons = {
+            v5: document.getElementById('show-v5'),
+            v1: document.getElementById('show-v1'),
+            v2: document.getElementById('show-v2'),
+            v3: document.getElementById('show-v3'),
+            v4: document.getElementById('show-v4')
+        };
+
+        function activateScreen(screenName) {
+            Object.keys(screens).forEach((key) => {
+                const isActive = key === screenName;
+                screens[key].classList.toggle('active', isActive);
+                screenButtons[key].classList.toggle('active', isActive);
+            });
+        }
+
+        // Default view: project landing page screen.
+        activateScreen('v5');
+
+        screenButtons.v5.addEventListener('click', () => activateScreen('v5'));
+        screenButtons.v4.addEventListener('click', () => activateScreen('v4'));
+        screenButtons.v3.addEventListener('click', () => activateScreen('v3'));
+        screenButtons.v2.addEventListener('click', () => activateScreen('v2'));
+        screenButtons.v1.addEventListener('click', () => activateScreen('v1'));
+
+        // Scroll to top functionality
+        const scrollTopBtn = document.getElementById('scrollTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const screen = this.getAttribute('data-screen');
+                if (screen) activateScreen(screen);
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
