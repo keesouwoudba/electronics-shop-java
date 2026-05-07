@@ -1,0 +1,16 @@
+id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath
+1,iPhone 15 Pro,1200.0,mobile,Apple iPhone 15 Pro,100,true,20.0,Iphone 15.png, data/images/Iphone 15.png
+2,Samsung Galaxy S23,1000.0,mobile,Samsung Galaxy S23,99,false,0.0,S23.jpg, data/images/S23.jpg
+3,MacBook Pro,2500.0,laptop,Apple MacBook Pro,100,true,10.0,Macbook pro.png,data/images/Macbook pro.png
+4,Sony WH-1000XM5,399.99,Accessory,Noise-cancelling headphones,50,false,0.0,Sony WH-1000XM5.jfif,data/images/Sony WH-1000XM5.jfif
+5,AirPods Pro 2,249.99,Accessory,Apple wireless earbuds,60,false,0.0,AirPods Pro 2.jfif,data/images/AirPods Pro 2.jfif
+6,iPad Air M2,599.99,Tablet,10.9-inch tablet,40,true,8.0,iPad Air M2.jfif,data/images/iPad Air M2.jfif
+7,Samsung Galaxy Tab S9,799.99,Tablet,11-inch AMOLED display,35,false,0.0,Samsung Galaxy Tab.jfif,data/images/Samsung Galaxy Tab.jfif
+8,Logitech MX Master 3S,99.99,Accessory,Premium wireless mouse,80,false,0.0,Logitech MX Master 3S.jfif,data/images/Logitech MX Master 3S.jfif
+9,Apple Magic Keyboard,149.99,Accessory,Wireless keyboard,45,false,0.0,Apple Magic Keyboard.jpeg,data/images/Apple Magic Keyboard.jpeg
+10,LG UltraWide Monitor,499.99,Accessory,34-inch curved display,20,true,12.0,LG UltraWide Monitor.png,data/images/LG UltraWide Monitor.png
+11,Bose QuietComfort 45,329.99,Accessory,Wireless headphones,40,false,0.0,Bose QuietComfort 45.jpg,data/images/Bose QuietComfort 45.jpg
+12,Google Pixel 8 Pro,899.99,Phone,Google flagship phone,28,true,15.0,Google Pixel 8 Pro.jfif,data/images/Google Pixel 8 Pro.jfif
+13,ASUS ROG Gaming Laptop,1999.99,Laptop,RTX 4070 gaming laptop,12,false,0.0,ASUS ROG Gaming Laptop.png,data/images/ASUS ROG Gaming Laptop.png
+14,Apple Watch Series 9,399.99,Accessory,Smartwatch with health tracking,55,false,0.0,Apple Watch Series 9.png,data/images/Apple Watch Series 9.png
+15,Dell XPS 15,1799.99,Laptop,Windows ultrabook,20,true,5.0,Dell XPS 15.jfif,data/images/Dell XPS 15.jfif
