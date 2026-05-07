@@ -62,7 +62,7 @@ public class User {
     }
 
     @Override
-    public String toString() {
+    public String toString() {//serialize user
         return "User{id=" + id +
                 ", username='" + username + '\'' +
                 ", isAdmin=" + isAdmin +

@@ -35,6 +35,7 @@ public class AdminUsersPage implements ScreenComponent {
 
         User selectedUser = null;
         Integer selectedUserId = context.getAppState().getSelectedUserId();
+        //expose get user by id to the adminService so that it would call existing funcionality as facade api
         if (selectedUserId != null) {
             User[] users = context.getAdminService().getAllUsers();
             if (users != null) {

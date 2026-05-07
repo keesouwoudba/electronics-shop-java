@@ -43,11 +43,11 @@ public class Router {
                     return new RouteDecision(Route.LOGIN,true, "Please log in to access this page.");
                 }
 
-                if (req.name().startsWith("ADMIN_") && !isAdmin) {
+                if (req.name().startsWith("ADMIN_") && !isAdmin) { //to correct
                     return new RouteDecision(Route.CUSTOMER_PRODUCTS,true, "Unauthorized access.");
                 }
 
-                if (req.name().startsWith("CUSTOMER_") && !isCustomer) {
+                if (req.name().startsWith("CUSTOMER_") && !isCustomer) { //to correct
                     return new RouteDecision(Route.ADMIN_PRODUCTS,true, "Unauthorized access.");
                 }
 

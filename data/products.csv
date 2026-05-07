@@ -3,7 +3,7 @@ id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage
 2,Samsung Galaxy S23,1000.0,mobile,Samsung Galaxy S23,99,false,0.0,,
 3,MacBook Pro,2500.0,laptop,Apple MacBook Pro,100,true,10.0,,
 4,Sony WH-1000XM5,399.99,Accessory,Noise-cancelling headphones,50,false,0.0,,
-5,AirPods Pro 2,249.99,Accessory,Apple wireless earbuds,60,false,0.0,,
+5,AirPods Pro 2,249.99,Accessory,Apple wireless earbuds,59,false,0.0,,
 6,iPad Air M2,599.99,Tablet,10.9-inch tablet,40,true,8.0,,
 7,Samsung Galaxy Tab S9,799.99,Tablet,11-inch AMOLED display,35,false,0.0,,
 8,Logitech MX Master 3S,99.99,Accessory,Premium wireless mouse,80,false,0.0,,

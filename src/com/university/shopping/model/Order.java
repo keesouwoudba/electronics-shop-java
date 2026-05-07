@@ -17,7 +17,7 @@ public class Order {
         this.status = status;
         this.items = items;
     }
-
+        //difference is that the second is based on order id.
     public Order(int orderId, int userId, String orderDate, double totalPrice, String status, OrderItem[] items){
         this.orderId = orderId;
         this.userId = userId;
