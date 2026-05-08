@@ -101,7 +101,7 @@ public class ProductDetailsPage implements ScreenComponent {
         // Action Row
         HBox actionRow = new HBox(15);
         actionRow.setAlignment(Pos.CENTER_LEFT);
-
+        /*
         // Quantity options represented as a primitive array (no other data structures)
         int[] qtyOptions;
         if (stock > 0) {
@@ -146,12 +146,12 @@ public class ProductDetailsPage implements ScreenComponent {
             noQty.setDisable(true);
             qtyBox.getChildren().add(noQty);
         }
-
+*/
         Button addToCartBtn = new Button("Add to Cart");
         addToCartBtn.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 10px 20px;");
         addToCartBtn.setDisable(stock == 0);
         addToCartBtn.setOnAction(e -> {
-            int qty = selectedQty[0];
+            int qty = 1;
             int userId = context.getAppState().getCurrentUser().getUserId();
             boolean success = context.getShopService().addToCart(p.getProductId(), qty, userId);
             if (success) {
@@ -162,7 +162,7 @@ public class ProductDetailsPage implements ScreenComponent {
             }
         });
 
-        actionRow.getChildren().addAll(new Label("Quantity:"), qtyBox, addToCartBtn);
+        actionRow.getChildren().addAll(new Label("Quantity: 1"), addToCartBtn);
         pricingBox.getChildren().add(actionRow);
 
         detailsBox.getChildren().addAll(skuLabel, title, desc, pricingBox);

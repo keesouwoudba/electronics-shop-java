@@ -13,4 +13,4 @@ id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage
 12,Google Pixel 8 Pro,899.99,Phone,Google flagship phone,28,true,15.0,Google Pixel 8 Pro.jfif,data/images/Google Pixel 8 Pro.jfif
 13,ASUS ROG Gaming Laptop,1999.99,Laptop,RTX 4070 gaming laptop,12,false,0.0,ASUS ROG Gaming Laptop.png,data/images/ASUS ROG Gaming Laptop.png
 14,Apple Watch Series 9,399.99,Accessory,Smartwatch with health tracking,55,false,0.0,Apple Watch Series 9.png,data/images/Apple Watch Series 9.png
-15,Dell XPS 15,1799.99,Laptop,Windows ultrabook,20,true,5.0,Dell XPS 15.png,data/images/Dell XPS 15.png
+15,Dell XPS 15,1799.99,Laptop,Windows ultrabook,20,true,5.0,Dell XPS 15.jfif,data/images/Dell XPS 15.jfif

@@ -151,7 +151,9 @@ public class AdminService {
     public String updateUser(int userId, String newUsername, String newPassword, boolean isAdmin){
         if (!this.authService.isAdmin()) return "Not Admin";
         if (!authService.validatePassword(newPassword)) return "Create  better Password";
-        if (userRepository.findByUsername(newUsername)!=null) return "This Username already exists!";
+        if (userRepository.findByUsername(newUsername)!=null &&
+                !userRepository.findById(userId).getUsername().equals(newUsername)
+        ) return "This Username already exists!";
 
         User tmp_user = userRepository.findById(userId);
         if (tmp_user == null) return "This User doesn't exist!";

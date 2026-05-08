@@ -12,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.Priority;
 
 public class ProductCardComponent {
     private final Product product;
@@ -24,9 +26,11 @@ public class ProductCardComponent {
         VBox card = new VBox(8);
         card.setPadding(new Insets(10));
         card.setPrefWidth(220);
+        card.setPrefHeight(290);
+        card.setMinHeight(290);
         card.setStyle("-fx-border-color: #c1c6d6; -fx-border-radius: 8px; -fx-background-color: white; -fx-background-radius: 8px;");
 
-        Node imageNode = ImageHelper.createProductImageView(product, 180, 120);
+        Node imageNode = ImageHelper.createProductImageView(product, 180, 150);
         HBox imageBox = new HBox(imageNode);
         imageBox.setAlignment(Pos.CENTER);
 
@@ -37,7 +41,7 @@ public class ProductCardComponent {
         name.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         name.setWrapText(true);
 
-        HBox actions = new HBox(8);
+        VBox actions = new VBox(8);
         actions.setAlignment(Pos.CENTER_LEFT);
 
         if (context.getAppState().getCurrentUser() == null) {
@@ -62,21 +66,34 @@ public class ProductCardComponent {
             actions.getChildren().addAll(price, editBtn);
         } else {
             Label price = new Label();
+            HBox priceRow = new HBox(8);
+            priceRow.setAlignment(Pos.CENTER_LEFT);
+
             if (product.isDiscounted()) {
                 price.setText(String.format("$%.2f", product.getFinalPrice()));
                 price.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #005bbf;");
+                price.setMinWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
+
                 Label oldPrice = new Label(String.format("$%.2f", product.getPrice()));
                 oldPrice.setStyle("-fx-strikethrough: true; -fx-text-fill: grey; -fx-font-size: 11px;");
-                actions.getChildren().add(oldPrice);
+                oldPrice.setMinWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
+
+                priceRow.getChildren().addAll(oldPrice, price);
             } else {
                 price.setText(String.format("$%.2f", product.getPrice()));
                 price.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+                price.setMinWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
+
+                priceRow.getChildren().add(price);
             }
 
             Label stock = new Label(product.getStockQuantity() > 0
                     ? "In Stock (" + product.getStockQuantity() + ")"
                     : "Out of Stock");
             stock.setStyle("-fx-font-size: 11px; -fx-text-fill: " + (product.getStockQuantity() > 0 ? "#00c853" : "#ba1a1a") + ";");
+            stock.setMinWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
+
+            priceRow.getChildren().add(stock);
 
             Button detailsBtn = new Button("View Details");
             detailsBtn.setStyle("-fx-background-color: white; -fx-border-color: #005bbf; -fx-text-fill: #005bbf;");
@@ -96,7 +113,11 @@ public class ProductCardComponent {
                 }
             });
 
-            actions.getChildren().addAll(price, stock, detailsBtn, addCartBtn);
+            HBox buttonRow = new HBox(8);
+            buttonRow.setAlignment(Pos.CENTER);
+            buttonRow.getChildren().addAll(detailsBtn, addCartBtn);
+
+            actions.getChildren().addAll(priceRow, buttonRow);
         }
 
         card.getChildren().addAll(imageBox, category, name, actions);
