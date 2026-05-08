@@ -48,6 +48,14 @@ public class LoginPage implements ScreenComponent {
             .withFooter(footer)
             .build();
         
-        return form.root;
+        javafx.scene.control.Button backBtn = new javafx.scene.control.Button("← Back to Catalog");
+        backBtn.getStyleClass().add("secondary-btn");
+        backBtn.setStyle("-fx-border-color: transparent; -fx-padding: 10 20;");
+        backBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.open(Route.GUEST_PRODUCTS)));
+
+        javafx.scene.layout.VBox wrapper = new javafx.scene.layout.VBox();
+        wrapper.getChildren().addAll(backBtn, form.root);
+        
+        return wrapper;
     }
 }

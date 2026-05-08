@@ -1,5 +1,5 @@
 id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath
-1,iPhone 15 Pro,1200.0,mobile,Apple iPhone 15 Pro,99,true,20.0,Iphone 15.png,data/images/Iphone 15.png
+1,iPhone 15 Pro,1200.0,mobile,Apple iPhone 15 Pro,99,true,20.0,screen.png,data/images/1778211434217_screen.png
 2,Samsung Galaxy S23,1000.0,mobile,Samsung Galaxy S23,99,false,0.0,S23.jpg,data/images/S23.jpg
 3,MacBook Pro,2500.0,laptop,Apple MacBook Pro,98,true,10.0,Macbook pro.png,data/images/Macbook pro.png
 4,Sony WH-1000XM5,399.99,Accessory,Noise-cancelling headphones,50,false,0.0,Sony WH-1000XM5.jfif,data/images/Sony WH-1000XM5.jfif

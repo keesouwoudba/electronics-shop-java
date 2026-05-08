@@ -18,6 +18,11 @@ public class ContactPage implements ScreenComponent {
         content.setPadding(new Insets(40));
         content.setSpacing(20);
 
+        javafx.scene.control.Button backBtn = new javafx.scene.control.Button("← Back to Catalog");
+        backBtn.getStyleClass().add("secondary-btn");
+        backBtn.setStyle("-fx-border-color: transparent; -fx-padding: 0 0 10 0;");
+        backBtn.setOnAction(e -> context.getRenderer().navigate(com.university.shopping.app.NavIntent.appStart()));
+
         Label title = new Label("Contact Us");
         title.getStyleClass().add("page-title");
 
@@ -36,7 +41,7 @@ public class ContactPage implements ScreenComponent {
         text.setWrapText(true);
         text.getStyleClass().add("page-text");
 
-        content.getChildren().addAll(title, text);
+        content.getChildren().addAll(backBtn, title, text);
         root.getChildren().add(content);
         return root;
     }

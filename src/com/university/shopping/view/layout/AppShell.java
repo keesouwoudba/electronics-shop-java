@@ -20,6 +20,7 @@ public class AppShell {
     private final VBox pageFlow;
     private final FooterComponent footer;
     private final VBox topContainer;
+    private ScreenContext context;
 
     public AppShell() {
         this.root = new BorderPane();
@@ -36,6 +37,7 @@ public class AppShell {
     }
 
     public Parent buildRoot(ScreenContext context) {
+        this.context = context;
         topContainer.getChildren().clear();
         topContainer.getChildren().addAll(header.render(context), notificationBar.getNode());
         root.setTop(topContainer);
@@ -69,7 +71,7 @@ public class AppShell {
             pageFlow.getChildren().add(pageNode);
         }
         // Footer is always rendered at bottom of page flow
-        pageFlow.getChildren().add(footer.render(null)); // We'll pass context later or cache it
+        pageFlow.getChildren().add(footer.render(this.context)); 
     }
 
     public BorderPane getRoot() {
