@@ -75,9 +75,12 @@ public class AdminUsersPage implements ScreenComponent {
 
             String result;
             if (activeSelectedUser == null) {
+                //System.out.println("New User");
                 result = context.getAdminService().addUser(username, password, isAdmin);
             } else {
+                //System.out.println("Edit User");
                 result = context.getAdminService().updateUser(activeSelectedUser.getUserId(), username, password, isAdmin);
+                //System.out.println(result);
             }
 
             context.getRenderer().setNotification((activeSelectedUser == null ? "Create user: " : "Update user: ") + result, "SUCCESS".equals(result) ? false : true);
