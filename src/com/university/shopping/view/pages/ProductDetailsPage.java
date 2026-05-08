@@ -43,12 +43,12 @@ public class ProductDetailsPage implements ScreenComponent {
 
         HBox mainLayout = new HBox(40);
         
-        // Image (with placeholder fallback)
+        // Image (loaded in high quality)
         VBox imageBox = new VBox();
         imageBox.setPrefSize(400, 400);
         imageBox.setStyle("-fx-background-color: #f2f3fd; -fx-border-color: #e0e2ec; -fx-border-radius: 12px; -fx-background-radius: 12px;");
         imageBox.setAlignment(Pos.CENTER);
-        Node imgNode = com.university.shopping.view.util.ImageHelper.createProductImageView(p, 400, 400);
+        Node imgNode = com.university.shopping.view.util.ImageHelper.createProductImageView(p, 400, 400, false);
         imageBox.getChildren().add(imgNode);
 
         // Details Column

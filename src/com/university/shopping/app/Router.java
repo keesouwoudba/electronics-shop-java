@@ -33,6 +33,12 @@ public class Router {
 
             case OPEN_ROUTE:
                 Route req = intent.getRequestedRoute();
+                
+                // Allow these routes for everyone (Guest, Customer, Admin)
+                if (req == Route.ABOUT_US || req == Route.CONTACT || req == Route.PRIVACY_POLICY) {
+                    return new RouteDecision(req, true, null);
+                }
+
                 // Access Control Let's be explicit
                 if (req == Route.LOGIN || req == Route.REGISTER || req == Route.GUEST_PRODUCTS) {
                     if (isLoggedIn) return dispatch(NavIntent.appStart()); // Already logged in

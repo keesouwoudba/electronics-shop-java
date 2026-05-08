@@ -1,0 +1,45 @@
+/* Application specific layouts and rules */
+
+.guest-banner {
+    -fx-background-color: #f2f3fd;
+    -fx-border-color: #adc7ff;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.guest-banner-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #16324f;
+}
+
+.list-container {
+    -fx-border-color: #e0e2ec;
+    -fx-border-radius: 8px;
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+}
+
+.table-header {
+    -fx-border-color: transparent transparent #e0e2ec transparent;
+}
+
+.table-row {
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+}
+
+.footer-container {
+    -fx-background-color: #f2f5f9;
+    -fx-border-color: #e0e2ec;
+    -fx-border-width: 1 0 0 0;
+}
+
+.footer-copyright {
+    -fx-font-size: 11px;
+    -fx-text-fill: grey;
+}
+
+.footer-tagline {
+    -fx-font-size: 10px;
+    -fx-text-fill: grey;
+    -fx-opacity: 0.7;
+}

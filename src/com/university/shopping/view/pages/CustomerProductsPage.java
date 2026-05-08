@@ -23,15 +23,16 @@ public class CustomerProductsPage implements ScreenComponent {
 
         VBox headerBox = new VBox(5);
         Label title = new Label("Product Catalog");
-        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        title.getStyleClass().add("page-title");
         Label subtitle = new Label("Explore our high-fidelity electronics and components.");
+        subtitle.getStyleClass().add("page-subtitle");
         headerBox.getChildren().addAll(title, subtitle);
 
         FlowPane grid = new FlowPane();
         grid.setHgap(15);
         grid.setVgap(15);
         grid.setPrefWrapLength(1000);
-        grid.setAlignment(Pos.TOP_LEFT);
+        grid.setAlignment(Pos.CENTER);
 
         Product[] products = context.getShopService().getAllProducts();
         if (products == null || products.length == 0) {

@@ -28,34 +28,37 @@ public class ProductCardComponent {
         card.setPrefWidth(220);
         card.setPrefHeight(290);
         card.setMinHeight(290);
-        card.setStyle("-fx-border-color: #c1c6d6; -fx-border-radius: 8px; -fx-background-color: white; -fx-background-radius: 8px;");
+        card.getStyleClass().add("product-card");
 
         Node imageNode = ImageHelper.createProductImageView(product, 180, 150);
         HBox imageBox = new HBox(imageNode);
         imageBox.setAlignment(Pos.CENTER);
 
         Label category = new Label(product.getCategory());
-        category.setStyle("-fx-font-size: 10px; -fx-text-fill: grey;");
+        category.getStyleClass().add("product-category");
 
         Label name = new Label(product.getName());
-        name.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        name.getStyleClass().add("product-name");
         name.setWrapText(true);
+
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
 
         VBox actions = new VBox(8);
         actions.setAlignment(Pos.CENTER_LEFT);
 
         if (context.getAppState().getCurrentUser() == null) {
             Label price = new Label("Login to view");
-            price.setStyle("-fx-text-fill: #005bbf;");
+            price.getStyleClass().add("text-primary");
 
             Button detailsBtn = new Button("Login");
-            detailsBtn.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white;");
+            detailsBtn.getStyleClass().add("primary-btn");
             detailsBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.open(Route.LOGIN)));
 
             actions.getChildren().addAll(price, detailsBtn);
         } else if (context.getAppState().getCurrentUser().isAdmin()) {
             Label price = new Label(String.format("$%.2f", product.getPrice()));
-            price.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #005bbf;");
+            price.getStyleClass().add("product-price");
 
             Button editBtn = new Button("Edit");
             editBtn.setOnAction(e -> {
@@ -71,17 +74,17 @@ public class ProductCardComponent {
 
             if (product.isDiscounted()) {
                 price.setText(String.format("$%.2f", product.getFinalPrice()));
-                price.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #005bbf;");
+                price.getStyleClass().add("product-price");
                 price.setMinWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
 
                 Label oldPrice = new Label(String.format("$%.2f", product.getPrice()));
-                oldPrice.setStyle("-fx-strikethrough: true; -fx-text-fill: grey; -fx-font-size: 11px;");
+                oldPrice.getStyleClass().add("product-price-old");
                 oldPrice.setMinWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
 
                 priceRow.getChildren().addAll(oldPrice, price);
             } else {
                 price.setText(String.format("$%.2f", product.getPrice()));
-                price.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+                price.getStyleClass().add("product-price-standard");
                 price.setMinWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
 
                 priceRow.getChildren().add(price);
@@ -90,17 +93,17 @@ public class ProductCardComponent {
             Label stock = new Label(product.getStockQuantity() > 0
                     ? "In Stock (" + product.getStockQuantity() + ")"
                     : "Out of Stock");
-            stock.setStyle("-fx-font-size: 11px; -fx-text-fill: " + (product.getStockQuantity() > 0 ? "#00c853" : "#ba1a1a") + ";");
+            stock.getStyleClass().add(product.getStockQuantity() > 0 ? "stock-in" : "stock-out");
             stock.setMinWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
 
             priceRow.getChildren().add(stock);
 
             Button detailsBtn = new Button("View Details");
-            detailsBtn.setStyle("-fx-background-color: white; -fx-border-color: #005bbf; -fx-text-fill: #005bbf;");
+            detailsBtn.getStyleClass().add("secondary-btn");
             detailsBtn.setOnAction(e -> context.getRenderer().navigate(NavIntent.openProduct(product.getProductId())));
 
             Button addCartBtn = new Button("Add to Cart");
-            addCartBtn.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white;");
+            addCartBtn.getStyleClass().add("primary-btn");
             addCartBtn.setDisable(product.getStockQuantity() == 0);
             addCartBtn.setOnAction(e -> {
                 int userId = context.getAppState().getCurrentUser().getUserId();
@@ -120,7 +123,7 @@ public class ProductCardComponent {
             actions.getChildren().addAll(priceRow, buttonRow);
         }
 
-        card.getChildren().addAll(imageBox, category, name, actions);
+        card.getChildren().addAll(imageBox, category, name, spacer, actions);
         return card;
     }
 }

@@ -17,12 +17,12 @@ import java.nio.file.Path;
 public final class ImageHelper {
     private ImageHelper() {}
 
-    public static Node createProductImageView(Product p, double width, double height) {
+    public static Node createProductImageView(Product p, double width, double height, boolean loadThumbnail) {
         String path = p.getImagePath();
         if (path != null && !path.isEmpty()) {
             try {
                 File orig = new File(path);
-                File toLoad = findThumbnail(orig);
+                File toLoad = loadThumbnail ? findThumbnail(orig) : orig;
                 String uri = toLoad.exists() ? toLoad.toURI().toString() : "file:" + path;
                 Image img = new Image(uri, width, height, true, true, false);
                 if (!img.isError()) {
@@ -49,6 +49,10 @@ public final class ImageHelper {
         StackPane sp = new StackPane(rect, lbl);
         sp.setAlignment(Pos.CENTER);
         return sp;
+    }
+    
+    public static Node createProductImageView(Product p, double width, double height) {
+        return createProductImageView(p, width, height, true);
     }
 
     private static File findThumbnail(File original) {

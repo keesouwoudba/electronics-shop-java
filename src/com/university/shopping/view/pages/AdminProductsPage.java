@@ -30,14 +30,15 @@ public class AdminProductsPage implements ScreenComponent {
         headerBox.setAlignment(Pos.CENTER_LEFT);
         
         Label title = new Label("Product Management");
-        title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
+        title.getStyleClass().add("page-title");
         
         // Spacer
         HBox spacer = new HBox();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         
         Button addBtn = new Button("+ Add New Product");
-        addBtn.setStyle("-fx-background-color: #005bbf; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8px 16px;");
+        addBtn.getStyleClass().add("primary-btn");
+        addBtn.setStyle("-fx-font-weight: bold; -fx-padding: 8px 16px;"); // Keep specific padding
         addBtn.setOnAction(e -> {
             context.getAppState().setSelectedProductId(null); // Clear selected product for a new one
             context.getRenderer().navigate(NavIntent.open(Route.ADMIN_PRODUCT_EDITOR));
@@ -47,11 +48,13 @@ public class AdminProductsPage implements ScreenComponent {
         content.getChildren().add(headerBox);
 
         VBox listContainer = new VBox(10);
-        listContainer.setStyle("-fx-border-color: #e0e2ec; -fx-border-radius: 8px; -fx-padding: 20px; -fx-background-color: white;");
+        listContainer.getStyleClass().add("list-container");
+        listContainer.setStyle("-fx-padding: 20px;"); // Keep specific padding
 
         // Header Row
         HBox tableHeader = new HBox(15);
-        tableHeader.setStyle("-fx-border-color: transparent transparent #e0e2ec transparent; -fx-padding: 0 0 10 0;");
+        tableHeader.getStyleClass().add("table-header");
+        tableHeader.setStyle("-fx-padding: 0 0 10 0;");
         
         Label idHeader = new Label("ID"); idHeader.setPrefWidth(50); idHeader.setStyle("-fx-font-weight: bold;");
         Label thumbHeader = new Label("IMG"); thumbHeader.setPrefWidth(60); thumbHeader.setStyle("-fx-font-weight: bold;");
@@ -70,7 +73,8 @@ public class AdminProductsPage implements ScreenComponent {
             for (Product p : products) {
                 HBox row = new HBox(15);
                 row.setAlignment(Pos.CENTER_LEFT);
-                row.setStyle("-fx-padding: 10 0; -fx-border-color: transparent transparent #f0f0f0 transparent;");
+                row.getStyleClass().add("table-row");
+                row.setStyle("-fx-padding: 10 0;");
 
                 Label idCol = new Label(String.valueOf(p.getProductId())); 
                 idCol.setPrefWidth(50);

@@ -21,7 +21,7 @@ public class FooterComponent {
         this.root = new VBox(12);
         this.root.setPadding(new Insets(20));
         this.root.setAlignment(Pos.CENTER);
-        this.root.setStyle("-fx-background-color: #f2f5f9; -fx-border-color: #e0e2ec; -fx-border-width: 1 0 0 0;");
+        this.root.getStyleClass().add("footer-container");
     }
 
     public Node render(ScreenContext context) {
@@ -37,17 +37,17 @@ public class FooterComponent {
 
         aboutLink.setOnAction(e -> {
             if (context != null && context.getRenderer() != null) {
-                context.getRenderer().setNotification("About Us page is not implemented yet.", false);
+                context.getRenderer().navigate(NavIntent.open(Route.ABOUT_US));
             }
         });
         contactLink.setOnAction(e -> {
             if (context != null && context.getRenderer() != null) {
-                context.getRenderer().navigate(NavIntent.open(Route.GUEST_PRODUCTS));
+                context.getRenderer().navigate(NavIntent.open(Route.CONTACT));
             }
         });
         policyLink.setOnAction(e -> {
             if (context != null && context.getRenderer() != null) {
-                context.getRenderer().setNotification("Privacy Policy page is not implemented yet.", false);
+                context.getRenderer().navigate(NavIntent.open(Route.PRIVACY_POLICY));
             }
         });
         
@@ -56,12 +56,12 @@ public class FooterComponent {
         
         // Copyright info
         Label copyright = new Label("© 2026 TechVolt Electronics. All rights reserved.");
-        copyright.setStyle("-fx-font-size: 11px; -fx-text-fill: grey;");
+        copyright.getStyleClass().add("footer-copyright");
         root.getChildren().add(copyright);
         
         // Additional info
         Label tagline = new Label("Powered by JavaFX | Version 1.0");
-        tagline.setStyle("-fx-font-size: 10px; -fx-text-fill: grey; -fx-opacity: 0.7;");
+        tagline.getStyleClass().add("footer-tagline");
         root.getChildren().add(tagline);
         
         return root;

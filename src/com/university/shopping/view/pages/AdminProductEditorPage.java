@@ -215,6 +215,7 @@ public class AdminProductEditorPage implements ScreenComponent {
             new Label("Description:"), descFld,
             new Label("Price:"), priceFld,
             new Label("Stock:"), stockFld,
+            new Label("Product Image:"), imageRow,
             stockAdjustRow,
             saveBtn
         );

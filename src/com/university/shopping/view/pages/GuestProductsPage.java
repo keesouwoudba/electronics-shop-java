@@ -28,11 +28,11 @@ public class GuestProductsPage implements ScreenComponent {
         // Guest Banner
         HBox banner = new HBox(15);
         banner.setAlignment(Pos.CENTER_LEFT);
-        banner.setStyle("-fx-background-color: #f2f3fd; -fx-border-color: #adc7ff; -fx-border-radius: 8px; -fx-background-radius: 8px;");
+        banner.getStyleClass().add("guest-banner");
         banner.setPadding(new Insets(15));
         Label infoTxt = new Label("Please login or register to add items to cart and view pricing details.");
         infoTxt.setWrapText(true);
-        infoTxt.setStyle("-fx-font-size: 13px; -fx-text-fill: #16324f;");
+        infoTxt.getStyleClass().add("guest-banner-text");
         
         Button loginBtn = StyleHelper.createPrimaryButton("Login");
         loginBtn.setPrefWidth(110);
@@ -47,9 +47,9 @@ public class GuestProductsPage implements ScreenComponent {
         // Header
         VBox headerBox = new VBox(5);
         Label title = new Label("Product Catalog");
-        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        title.getStyleClass().add("page-title");
         Label subtitle = new Label("Browse our extensive collection of premium electronics.");
-        subtitle.setStyle("-fx-text-fill: grey;");
+        subtitle.getStyleClass().add("page-subtitle");
         headerBox.getChildren().addAll(title, subtitle);
 
         // Products Grid
@@ -57,7 +57,7 @@ public class GuestProductsPage implements ScreenComponent {
         grid.setHgap(15);
         grid.setVgap(15);
         grid.setPrefWrapLength(1000);
-        grid.setAlignment(Pos.TOP_LEFT);
+        grid.setAlignment(Pos.CENTER);
 
         Product[] products = context.getShopService().getAllProducts();
         if (products == null || products.length == 0) {

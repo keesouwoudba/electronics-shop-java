@@ -72,6 +72,15 @@ public class UiRenderer {
             case ADMIN_REPORTS:
                 content = new AdminReportsPage().render(context);
                 break;
+            case ABOUT_US:
+                content = new AboutPage().render(context);
+                break;
+            case CONTACT:
+                content = new ContactPage().render(context);
+                break;
+            case PRIVACY_POLICY:
+                content = new PrivacyPage().render(context);
+                break;
             default:
                 content = new GuestProductsPage().render(context); // Fallback
         }

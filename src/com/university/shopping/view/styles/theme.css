@@ -1,0 +1,78 @@
+/* Global theme variables and generic component classes */
+
+.product-card {
+    -fx-border-color: #c1c6d6;
+    -fx-border-radius: 8px;
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+}
+
+.product-category {
+    -fx-font-size: 10px;
+    -fx-text-fill: grey;
+}
+
+.product-name {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.product-price {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #005bbf;
+}
+
+.product-price-standard {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.product-price-old {
+    -fx-strikethrough: true;
+    -fx-text-fill: grey;
+    -fx-font-size: 11px;
+}
+
+.text-primary {
+    -fx-text-fill: #005bbf;
+}
+
+.primary-btn {
+    -fx-background-color: #005bbf;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.secondary-btn {
+    -fx-background-color: white;
+    -fx-border-color: #005bbf;
+    -fx-text-fill: #005bbf;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.stock-in {
+    -fx-font-size: 11px;
+    -fx-text-fill: #00c853;
+}
+
+.stock-out {
+    -fx-font-size: 11px;
+    -fx-text-fill: #ba1a1a;
+}
+
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.page-subtitle {
+    -fx-text-fill: grey;
+}
+
+.page-text {
+    -fx-font-size: 14px;
+    -fx-line-spacing: 5px;
+}

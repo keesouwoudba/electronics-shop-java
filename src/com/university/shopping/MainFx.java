@@ -93,6 +93,15 @@ public class MainFx extends Application {
         
         // Set up the primary stage
         Scene scene = new Scene(shell.buildRoot(context), 1100, 760);
+        
+        try {
+            String appCss = getClass().getResource("/com/university/shopping/view/styles/app.css").toExternalForm();
+            String themeCss = getClass().getResource("/com/university/shopping/view/styles/theme.css").toExternalForm();
+            scene.getStylesheets().addAll(themeCss, appCss);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not load CSS files. Ensure they are in the correct classpath location.");
+        }
+
         stage.setTitle("TechVolt Electronics - JavaFX");
         stage.setScene(scene);
         

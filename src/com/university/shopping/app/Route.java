@@ -16,5 +16,10 @@ public enum Route {
     ADMIN_PRODUCTS,
     ADMIN_PRODUCT_EDITOR,
     ADMIN_USERS,
-    ADMIN_REPORTS
+    ADMIN_REPORTS,
+
+    // Common (Footer links)
+    ABOUT_US,
+    CONTACT,
+    PRIVACY_POLICY
 }
