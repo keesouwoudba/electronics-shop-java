@@ -1,90 +1,276 @@
+# Electronics Shop - Java Application
 
-# Electronics Shop (Java Console Application)
+> A modern **layered architecture** electronics shop application demonstrating professional Java development patterns and best practices.
 
-A simple **console-based electronics shop** written in Java. The project demonstrates a layered architecture (Model–Repository–Service–View) with basic authentication, product browsing, cart management, and order placement.
+## 📋 Project Overview
 
-## ✨ Features
+This is an educational software engineering project showcasing a clean, layered architecture implementation of an e-commerce platform. The project includes comprehensive architecture documentation and is designed to teach software design patterns and enterprise Java development principles.
 
-* User authentication (login/register)
-* Product catalog
-* Shopping cart (add/remove items)
-* Order creation
-* Admin capabilities (manage products)
-* Console UI (text-based interface)
+**Status**: Core architecture defined with detailed documentation in `index.html`
 
-## 🧱 Architecture
+## ✨ Key Features
 
-The project follows a layered structure:
+- 🔐 **User Authentication** - Login/Register with validation
+- 🛍️ **Product Catalog** - Browse electronics with pagination
+- 🛒 **Shopping Cart** - Add/remove items with real-time management
+- 📦 **Order Management** - Complete checkout and order tracking
+- 👨‍💼 **Admin Panel** - Product and user management
+- 💾 **In-Memory Database** - MockDatabase with full CRUD operations
+
+## 🏗️ Architecture
+
+The project follows a **4-layer architecture** pattern:
 
 ```
-src/com/university/shopping
+src/com/university/shopping/
 │
-├── model        # Core data classes (Product, User, Cart, Order, etc.)
-├── repository   # Data access layer (simulated with MockDatabase)
-├── service      # Business logic (AuthService, ShopService, AdminService)
-├── view         # Console UI (ConsoleUI)
-└── Main.java    # Application entry point
+├── model/              # Data models and in-memory database
+│   ├── Product.java
+│   ├── User.java
+│   ├── Cart.java
+│   ├── Order.java
+│   ├── OrderItem.java
+│   └── MockDatabase.java
+│
+├── repository/         # Data access abstraction layer
+│   ├── ProductRepository.java
+│   ├── UserRepository.java
+│   ├── CartRepository.java
+│   └── OrderRepository.java
+│
+├── service/            # Business logic layer
+│   ├── AuthService.java
+│   ├── ShopService.java
+│   └── AdminService.java
+│
+├── view/               # Presentation layer
+│   └── ConsoleUI.java
+│
+└── Main.java           # Application entry point
 ```
 
 ### Layer Responsibilities
 
-* **Model** — Data structures used across the app
-* **Repository** — CRUD operations and data storage abstraction
-* **Service** — Business logic and workflows
-* **View** — User interaction through console
+| Layer | Purpose | Examples |
+|-------|---------|----------|
+| **Model** | Data structures and storage | Product, User, Cart, Order, MockDatabase |
+| **Repository** | CRUD operations & persistence abstraction | ProductRepository, UserRepository, CartRepository |
+| **Service** | Business logic & workflows | Authentication, shopping, admin operations |
+| **View** | User interface & interactions | Console menus, product listings, checkout flow |
 
-## 📦 Main Classes
+## 📊 Design Patterns Used
 
-* `Product` — Represents an item in the shop
-* `User` — Represents a registered user
-* `Cart` — Stores selected products
-* `Order` & `OrderItem` — Represent completed purchases
-* `MockDatabase` — In‑memory storage
+- ✅ **Repository Pattern** - Abstract data access layer
+- ✅ **Service Layer Pattern** - Encapsulate business logic
+- ✅ **MVC-inspired** - Separation of concerns
+- ✅ **DAO Pattern** - Data access objects
+- ✅ **Singleton Pattern** - MockDatabase instance management
 
-## ▶️ How to Run
+## 🎯 Core Workflows
+
+### User Registration & Purchase Flow
+```
+Start App → Browse Products → Add to Cart → 
+Forced Login → Register → Confirm Purchase → Order Created
+```
+
+### Checkout Process
+```
+View Cart → Validate Stock → Deduct Inventory → 
+Create Order → Clear Cart → Confirmation
+```
+
+### Admin Operations
+```
+Login (Admin Account) → Access Admin Panel → 
+Manage Products/Users → Update Statistics
+```
+
+## 📚 Detailed Documentation
+
+**Complete architecture documentation is available in `index.html`**
+- Full class specifications
+- Method signatures and descriptions
+- Data flows and sequences
+- Critical workflows with pseudo-code
+- Database schema and relationships
+
+To view the documentation:
+1. Open `index.html` in a web browser, or
+2. Check the repository's GitHub Pages (if enabled)
+
+## 🚀 Getting Started
 
 ### Requirements
 
-* Java 17+ (or Java 11+ depending on your setup)
-* IntelliJ IDEA / any Java IDE
+- **Java 17+** (or Java 11+)
+- **IDE**: IntelliJ IDEA, Eclipse, or VS Code with Java extensions
+- **No external dependencies** - Pure Java standard library
 
-### Run from IDE
+### Quick Start
 
-1. Open the project in IntelliJ IDEA
-2. Navigate to:
+#### From IDE (IntelliJ IDEA)
 
-```
-src/com/university/shopping/Main.java
-```
+1. Open project folder in IntelliJ IDEA
+2. Navigate to: `src/com/university/shopping/Main.java`
+3. Click **Run** or press `Shift + F10`
 
-3. Run the `Main` class
-
-### Run from Terminal
+#### From Terminal
 
 ```bash
-javac -d out src/com/university/shopping/Main.java
+# Compile
+javac -d out src/com/university/shopping/**/*.java
+
+# Run
 java -cp out com.university.shopping.Main
 ```
 
-## 🔐 Demo Accounts
+#### From Gradle (if configured)
 
-If preconfigured in `MockDatabase`, you may use sample users for testing.
+```bash
+./gradlew run
+```
 
-## 🎯 Purpose
+## 🔓 Demo Accounts
 
-This project was created for educational purposes to practice:
+Sample user accounts are configured in `MockDatabase`:
 
-* Object-Oriented Programming (OOP)
-* Layered architecture
-* Repository & Service patterns
-* Console application design
+| Username | Password | Role |
+|----------|----------|------|
+| `admin` | `admin123` | Admin |
+| `user1` | `pass123` | Customer |
+| `user2` | `pass123` | Customer |
 
-## 🚀 Possible Improvements
+*Note: Create new accounts through the registration flow*
 
-* Replace MockDatabase with a real database (MySQL/PostgreSQL)
-* Add GUI (JavaFX/Swing)
-* Implement REST API (Spring Boot)
-* Add unit tests (JUnit)
+## 🧪 Testing the Application
+
+1. **Register** a new account
+2. **Browse products** with pagination
+3. **Add items** to cart
+4. **Proceed to checkout** and complete purchase
+5. **Login as admin** and manage products/users
+6. **View statistics** and order history
+
+## 📖 Learning Outcomes
+
+This project demonstrates:
+
+- ✅ Object-Oriented Programming (OOP) principles
+- ✅ Clean code and architectural patterns
+- ✅ Separation of concerns (layered architecture)
+- ✅ Data persistence and in-memory databases
+- ✅ Business logic encapsulation
+- ✅ Console application development
+- ✅ User authentication flows
+- ✅ Error handling and validation
+
+## 🔄 Data Models
+
+### Product
+```java
+- productId (unique identifier)
+- name, price, category
+- description
+- stockQuantity
+- discount support (isDiscounted, discountPercentage)
+- getFinalPrice() - calculates discounted price
+```
+
+### User
+```java
+- userId (auto-generated)
+- username (unique)
+- password (encrypted/validated)
+- isAdmin (role flag)
+```
+
+### Cart
+```java
+- cartId
+- userId (owner)
+- items (OrderItem array)
+- addItem(), removeItem(), clear()
+```
+
+### Order
+```java
+- orderId (auto-generated)
+- userId (customer reference)
+- orderDate (timestamp)
+- totalPrice
+- status
+- items (OrderItem array)
+```
+
+## 🚀 Possible Future Enhancements
+
+### Database Integration
+- [ ] Replace MockDatabase with **MySQL/PostgreSQL**
+- [ ] Implement JPA/Hibernate ORM
+- [ ] Add database migrations (Flyway/Liquibase)
+
+### API & Backend
+- [ ] Build **REST API** with Spring Boot
+- [ ] Add authentication (JWT, OAuth2)
+- [ ] Implement caching (Redis)
+
+### Frontend & UI
+- [ ] **JavaFX GUI** application
+- [ ] **Web UI** (React/Vue.js)
+- [ ] Mobile app (Android/iOS)
+
+### Quality & Testing
+- [ ] Unit tests (JUnit 5)
+- [ ] Integration tests (Testcontainers)
+- [ ] CI/CD pipeline (GitHub Actions)
+- [ ] Code coverage reports (JaCoCo)
+
+### Features
+- [ ] Product search & filtering
+- [ ] User reviews & ratings
+- [ ] Order history & tracking
+- [ ] Wishlist functionality
+- [ ] Payment gateway integration
+- [ ] Email notifications
+
+## 📁 Project Structure
+
+```
+electronics-shop-java/
+├── src/com/university/shopping/
+│   ├── model/
+│   ├── repository/
+│   ├── service/
+│   ├── view/
+│   └── Main.java
+├── out/                        # Compiled output
+├── .idea/                      # IntelliJ configuration
+├── README.md                   # This file
+├── index.html                  # Full documentation
+├── electronics.iml             # Module file
+└── .gitignore
+```
+
+## 🎓 Use Cases
+
+- **Learning OOP** - Study clean code patterns
+- **Design Patterns** - Repository, Service, DAO patterns
+- **Interview Prep** - Demonstrate architectural knowledge
+- **Teaching Tool** - Use as curriculum example
+- **Springboard** - Base for more advanced projects
+
+## 🤝 Contributing
+
+This is an educational project. Feel free to:
+- Fork and extend with new features
+- Create pull requests with improvements
+- Add tests and documentation
+- Refactor with design patterns
+
+## 📝 License
+
+Educational project - use freely for learning purposes.
 
 ## 👨‍💻 Author
 
@@ -92,4 +278,10 @@ Student Software Engineering Project
 
 ---
 
-If you find this project useful, feel free to fork and improve it.
+**📌 Pro Tips:**
+- Read `index.html` for detailed architecture documentation
+- Study the layered structure - it's a professional pattern used in enterprise apps
+- Try adding a persistence layer (Database) for learning
+- Extend with REST API for web development practice
+
+**Need Help?** Check the `index.html` documentation or review the architecture diagrams.
