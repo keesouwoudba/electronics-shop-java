@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Users Page - TechVolt Electronics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary": "#ffffff",
+                      "surface-tint": "#005bc0",
+                      "secondary": "#515f74",
+                      "error-container": "#ffdad6",
+                      "tertiary": "#9e4300",
+                      "on-primary-fixed-variant": "#004493",
+                      "on-primary-fixed": "#001a41",
+                      "primary-fixed-dim": "#adc7ff",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#2d3038",
+                      "outline-variant": "#c1c6d6",
+                      "on-tertiary-fixed": "#341100",
+                      "on-surface-variant": "#414754",
+                      "surface-dim": "#d8d9e3",
+                      "secondary-fixed-dim": "#b9c7df",
+                      "surface-container": "#ecedf7",
+                      "on-primary-container": "#ffffff",
+                      "on-secondary-fixed": "#0d1c2e",
+                      "on-error": "#ffffff",
+                      "primary-container": "#1a73e8",
+                      "tertiary-fixed": "#ffdbcb",
+                      "background": "#f9f9ff",
+                      "surface-container-low": "#f2f3fd",
+                      "on-secondary-container": "#57657a",
+                      "on-surface": "#191c23",
+                      "outline": "#727785",
+                      "primary-fixed": "#d8e2ff",
+                      "inverse-primary": "#adc7ff",
+                      "surface": "#f9f9ff",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed-variant": "#783100",
+                      "surface-variant": "#e0e2ec",
+                      "inverse-on-surface": "#eff0fa",
+                      "surface-container-highest": "#e0e2ec",
+                      "on-error-container": "#93000a",
+                      "on-secondary": "#ffffff",
+                      "on-background": "#191c23",
+                      "primary": "#005bbf",
+                      "on-tertiary-container": "#0e0200",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb691",
+                      "surface-bright": "#f9f9ff",
+                      "secondary-fixed": "#d5e3fc",
+                      "secondary-container": "#d5e3fc",
+                      "surface-container-high": "#e6e8f2",
+                      "on-secondary-fixed-variant": "#3a485b",
+                      "tertiary-container": "#c55500"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "12px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "xs": "8px",
+                      "gutter": "24px",
+                      "base": "4px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "catalog-title": [
+                              "Inter"
+                      ],
+                      "data-tabular": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-main": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "catalog-title": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "data-tabular": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-main": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #f8f9fa; /* Level 0 Background */
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-main text-body-main min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-white dark:bg-slate-900 font-inter antialiased text-sm font-medium border-b border-slate-200 dark:border-slate-800 shadow-sm fixed top-0 left-0 w-full h-[72px] z-50 flex items-center justify-between px-8 mx-auto w-full">
+<div class="flex items-center gap-lg">
+<div class="text-xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
+                TechVolt Electronics
+            </div>
+<nav class="hidden md:flex gap-lg h-full items-center">
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 h-full flex items-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors px-xs" href="#">Catalog</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 h-full flex items-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors px-xs" href="#">Deals</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 h-full flex items-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors px-xs" href="#">Support</a>
+<a class="text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 pb-1 h-full flex items-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors px-xs" href="#">Admin</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<!-- Search Bar (on_right) -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 border border-outline-variant rounded-xl bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-shadow w-64 text-on-surface" placeholder="Search..." type="text"/>
+</div>
+<!-- Icons -->
+<div class="flex items-center gap-sm">
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-sm ml-sm border-l border-outline-variant pl-md">
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-medium hover:opacity-90 transition-opacity">Cart</button>
+<button class="px-4 py-2 border border-outline text-secondary rounded-lg font-medium hover:bg-surface-variant transition-colors">Logout</button>
+</div>
+<!-- Mobile Menu Trigger -->
+<button class="md:hidden p-2 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[72px] pb-xl px-4 sm:px-8 max-w-container-max mx-auto w-full">
+<!-- Page Header -->
+<div class="mb-lg mt-lg flex flex-col sm:flex-row sm:items-center justify-between gap-md">
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">User Management</h1>
+<p class="text-secondary mt-1">Manage system access, roles, and user profiles.</p>
+</div>
+<div class="flex gap-sm">
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg font-medium shadow-[0_2px_4px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.12)] transition-shadow">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                    New User
+                </button>
+</div>
+</div>
+<!-- Filters & Search Toolbar -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.04)] border border-outline-variant mb-lg flex flex-col sm:flex-row gap-md justify-between items-center">
+<div class="flex gap-sm w-full sm:w-auto">
+<div class="relative flex-grow sm:flex-grow-0">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 border border-outline-variant rounded-lg bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-shadow w-full sm:w-80 text-data-tabular font-data-tabular" placeholder="Search users by name, email, or ID..." type="text"/>
+</div>
+<button class="px-4 py-2 border border-outline-variant text-secondary rounded-lg font-medium hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="filter_list">filter_list</span>
+<span class="hidden sm:inline">Filters</span>
+</button>
+</div>
+<div class="flex gap-sm text-data-tabular font-data-tabular w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+<button class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-medium whitespace-nowrap">All Users (1,248)</button>
+<button class="px-3 py-1 rounded-full border border-outline-variant text-secondary hover:bg-surface-variant transition-colors whitespace-nowrap">Admins (12)</button>
+<button class="px-3 py-1 rounded-full border border-outline-variant text-secondary hover:bg-surface-variant transition-colors whitespace-nowrap">Active (1,105)</button>
+<button class="px-3 py-1 rounded-full border border-outline-variant text-secondary hover:bg-surface-variant transition-colors whitespace-nowrap">Suspended (4)</button>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.04)] border border-outline-variant overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider w-12 text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider">User</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider">Role</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider">Department</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider">Status</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider">Last Login</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-data-tabular text-data-tabular divide-y divide-[#f1f5f9]">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors group">
+<td class="p-sm text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+</td>
+<td class="p-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs shrink-0">
+                                        JD
+                                    </div>
+<div>
+<div class="font-medium text-on-surface">John Doe</div>
+<div class="text-xs text-secondary">john.doe@techvolt.com</div>
+</div>
+</div>
+</td>
+<td class="p-sm">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-container text-on-secondary-container">
+                                    Admin
+                                </span>
+</td>
+<td class="p-sm text-secondary">IT Operations</td>
+<td class="p-sm">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#00c853]"></div>
+<span class="text-on-surface">Active</span>
+</div>
+</td>
+<td class="p-sm text-secondary">Today, 09:41 AM</td>
+<td class="p-sm text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-secondary hover:text-primary hover:bg-surface-variant rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 text-secondary hover:text-error hover:bg-error-container/50 rounded transition-colors" title="Suspend">
+<span class="material-symbols-outlined text-[18px]" data-icon="block">block</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors group">
+<td class="p-sm text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+</td>
+<td class="p-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-bold text-xs shrink-0">
+                                        AS
+                                    </div>
+<div>
+<div class="font-medium text-on-surface">Alice Smith</div>
+<div class="text-xs text-secondary">alice.smith@techvolt.com</div>
+</div>
+</div>
+</td>
+<td class="p-sm">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-outline-variant text-secondary">
+                                    Editor
+                                </span>
+</td>
+<td class="p-sm text-secondary">Marketing</td>
+<td class="p-sm">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#00c853]"></div>
+<span class="text-on-surface">Active</span>
+</div>
+</td>
+<td class="p-sm text-secondary">Yesterday, 14:22 PM</td>
+<td class="p-sm text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-secondary hover:text-primary hover:bg-surface-variant rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 text-secondary hover:text-error hover:bg-error-container/50 rounded transition-colors" title="Suspend">
+<span class="material-symbols-outlined text-[18px]" data-icon="block">block</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 (Inactive) -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors group bg-surface-container-lowest/50">
+<td class="p-sm text-center">
+<input class="rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+</td>
+<td class="p-sm">
+<div class="flex items-center gap-sm opacity-60">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-bold text-xs shrink-0">
+                                        RJ
+                                    </div>
+<div>
+<div class="font-medium text-on-surface">Robert Johnson</div>
+<div class="text-xs text-secondary">r.johnson@techvolt.com</div>
+</div>
+</div>
+</td>
+<td class="p-sm opacity-60">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-outline-variant text-secondary">
+                                    Viewer
+                                </span>
+</td>
+<td class="p-sm text-secondary opacity-60">Customer Support</td>
+<td class="p-sm">
+<div class="flex items-center gap-1.5 opacity-60">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+<span class="text-secondary">Offline</span>
+</div>
+</td>
+<td class="p-sm text-secondary opacity-60">Oct 12, 2023</td>
+<td class="p-sm text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-secondary hover:text-primary hover:bg-surface-variant rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 text-secondary hover:text-error hover:bg-error-container/50 rounded transition-colors" title="Suspend">
+<span class="material-symbols-outlined text-[18px]" data-icon="block">block</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="bg-surface-container-low px-md py-sm border-t border-outline-variant flex items-center justify-between">
+<div class="text-data-tabular font-data-tabular text-secondary hidden sm:block">
+                    Showing <span class="font-medium text-on-surface">1</span> to <span class="font-medium text-on-surface">10</span> of <span class="font-medium text-on-surface">1,248</span> users
+                </div>
+<div class="flex gap-2">
+<button class="px-3 py-1 border border-outline-variant rounded-md text-secondary hover:bg-surface-variant transition-colors text-sm disabled:opacity-50" disabled="">Previous</button>
+<button class="px-3 py-1 border border-outline-variant rounded-md text-secondary hover:bg-surface-variant transition-colors text-sm">Next</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 text-xs font-normal text-slate-500 border-t border-slate-200 dark:border-slate-800 w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center max-w-[1280px] mx-auto mt-auto">
+<div class="mb-4 md:mb-0">
+            © 2024 TechVolt Electronics. All rights reserved.
+        </div>
+<div class="flex gap-md flex-wrap justify-center">
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4" href="#">Support Center</a>
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4" href="#">Terms of Service</a>
+<span class="text-slate-500 ml-4">v2.4.0-stable</span>
+</div>
+</footer>
+</body></html>

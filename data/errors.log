@@ -1,0 +1,6 @@
+[2026-05-02T08:28:31.490288959] Invalid products CSV schema/state
+java.lang.IllegalArgumentException: Header mismatch in data/products.csv. expected='id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage' actual='id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath'
+
+[2026-05-02T08:31:43.158874673] Invalid products CSV schema/state
+java.lang.IllegalArgumentException: Header mismatch in data/products.csv. expected='id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage' actual='id,name,price,category,description,stockQuantity,isDiscounted,discountPercentage,imageName,imagePath'
+

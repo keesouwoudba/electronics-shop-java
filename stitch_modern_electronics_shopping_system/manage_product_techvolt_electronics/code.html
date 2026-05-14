@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Product Editor - TechVolt Electronics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#005bc0",
+                        "secondary": "#515f74",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#9e4300",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-primary-fixed": "#001a41",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2d3038",
+                        "outline-variant": "#c1c6d6",
+                        "on-tertiary-fixed": "#341100",
+                        "on-surface-variant": "#414754",
+                        "surface-dim": "#d8d9e3",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "surface-container": "#ecedf7",
+                        "on-primary-container": "#ffffff",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "on-error": "#ffffff",
+                        "primary-container": "#1a73e8",
+                        "tertiary-fixed": "#ffdbcb",
+                        "background": "#f9f9ff",
+                        "surface-container-low": "#f2f3fd",
+                        "on-secondary-container": "#57657a",
+                        "on-surface": "#191c23",
+                        "outline": "#727785",
+                        "primary-fixed": "#d8e2ff",
+                        "inverse-primary": "#adc7ff",
+                        "surface": "#f9f9ff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "surface-variant": "#e0e2ec",
+                        "inverse-on-surface": "#eff0fa",
+                        "surface-container-highest": "#e0e2ec",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#191c23",
+                        "primary": "#005bbf",
+                        "on-tertiary-container": "#0e0200",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "surface-bright": "#f9f9ff",
+                        "secondary-fixed": "#d5e3fc",
+                        "secondary-container": "#d5e3fc",
+                        "surface-container-high": "#e6e8f2",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "tertiary-container": "#c55500"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "base": "4px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "catalog-title": ["Inter"],
+                        "data-tabular": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-main": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "catalog-title": ["18px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "600"}],
+                        "data-tabular": ["14px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-main": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-main antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant shadow-[0_1px_2px_rgba(0,0,0,0.04)] fixed top-0 left-0 w-full h-[72px] z-50">
+<div class="h-full flex items-center justify-between px-8 max-w-container-max mx-auto">
+<div class="flex items-center gap-xl">
+<a class="text-xl font-bold tracking-tight text-primary font-display-lg" href="#" style="font-size: 24px;">TechVolt Electronics</a>
+<nav class="hidden md:flex items-center gap-lg h-full pt-1">
+<a class="font-catalog-title text-catalog-title text-on-surface-variant hover:text-primary transition-colors h-full flex items-center border-b-2 border-transparent" href="#">Catalog</a>
+<a class="font-catalog-title text-catalog-title text-on-surface-variant hover:text-primary transition-colors h-full flex items-center border-b-2 border-transparent" href="#">Deals</a>
+<a class="font-catalog-title text-catalog-title text-on-surface-variant hover:text-primary transition-colors h-full flex items-center border-b-2 border-transparent" href="#">Support</a>
+<a class="font-catalog-title text-catalog-title text-primary border-b-2 border-primary pb-1 h-full flex items-center" href="#">Admin</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="bg-surface-container-low border border-outline-variant rounded-[12px] pl-10 pr-4 py-2 text-data-tabular font-data-tabular focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64" placeholder="Search..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-px h-6 bg-outline-variant mx-2"></div>
+<button class="text-data-tabular font-data-tabular font-medium text-on-surface-variant hover:text-primary transition-colors">Logout</button>
+<button class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-catalog-title text-data-tabular px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ml-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="shopping_cart">shopping_cart</span>
+                    Cart
+                </button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[104px] pb-xl px-8 max-w-container-max mx-auto w-full">
+<div class="flex items-center justify-between mb-lg">
+<div>
+<div class="flex items-center gap-2 text-data-tabular font-data-tabular text-on-surface-variant mb-2">
+<a class="hover:text-primary transition-colors" href="#">Admin</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Products</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface">Edit Product</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Edit Product: ProBook 15 G9</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="px-6 py-2 border border-outline text-on-surface font-catalog-title text-data-tabular rounded-lg hover:bg-surface-variant transition-colors">Cancel</button>
+<button class="px-6 py-2 bg-primary text-on-primary font-catalog-title text-data-tabular rounded-lg hover:bg-on-primary-fixed-variant transition-colors shadow-[0_2px_4px_rgba(0,91,191,0.2)]">Save Changes</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Left Column: Form Details -->
+<div class="lg:col-span-2 space-y-lg">
+<!-- Basic Info Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+<h2 class="font-catalog-title text-catalog-title text-on-surface mb-md">Basic Information</h2>
+<div class="space-y-md">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Product Name</label>
+<input class="w-full bg-surface border border-outline-variant rounded-[12px] px-4 py-3 text-body-main font-body-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow" type="text" value="ProBook 15 G9 Enterprise Edition"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Price (USD)</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+<input class="w-full bg-surface border border-outline-variant rounded-[12px] pl-8 pr-4 py-3 text-body-main font-body-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow" type="number" value="1299.00"/>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Category</label>
+<select class="w-full bg-surface border border-outline-variant rounded-[12px] px-4 py-3 text-body-main font-body-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow appearance-none">
+<option>Laptops</option>
+<option>Desktops</option>
+<option>Accessories</option>
+<option>Servers</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Description</label>
+<textarea class="w-full bg-surface border border-outline-variant rounded-[12px] px-4 py-3 text-body-main font-body-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow" rows="4">High-performance business laptop designed for enterprise professionals. Features a 15.6-inch anti-glare display, 12th Gen Intel Core processor, and robust security features including TPM 2.0 and fingerprint reader.</textarea>
+</div>
+</div>
+</div>
+<!-- Inventory Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+<h2 class="font-catalog-title text-catalog-title text-on-surface mb-md">Inventory &amp; Status</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md items-start">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Stock Quantity</label>
+<input class="w-full bg-surface border border-outline-variant rounded-[12px] px-4 py-3 text-body-main font-body-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow" type="number" value="45"/>
+</div>
+<div class="bg-surface-container-low rounded-[12px] p-4 border border-outline-variant flex items-center justify-between">
+<div>
+<span class="block font-catalog-title text-catalog-title text-on-surface">Is Discounted</span>
+<span class="block font-data-tabular text-data-tabular text-on-surface-variant mt-1">Apply active promotional pricing</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Image Management -->
+<div class="lg:col-span-1 space-y-lg">
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)] sticky top-[104px]">
+<h2 class="font-catalog-title text-catalog-title text-on-surface mb-md">Image Management</h2>
+<!-- Current Image Preview -->
+<div class="aspect-video w-full bg-surface-container rounded-[12px] border border-outline-variant overflow-hidden mb-4 relative group">
+<img alt="Current product image showing a sleek silver laptop on a minimalist desk setup." class="w-full h-full object-cover" data-alt="A high-resolution product shot of a sleek, premium silver laptop resting on a pristine white desk surface. The lighting is bright and even, highlighting the brushed metal texture and sharp modern edges of the device. The background is a soft, minimal studio gray, ensuring the focus remains entirely on the high-end technology. The overall aesthetic is clean, professional, and sophisticated, perfectly aligned with a premium corporate tech catalog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT3aoSUINQd2GqkTuZFWckMkoL-ZCD1XDFppPHpv_Ic3xgsGYrX25AP8ZiJrkVCGpjrgTcftePVIOoCIKkZoIapxqQnoXGaMxhBLOzbpD4MWfA8K9eV1oQcZnoYxP00_IjsHGaBlgMubQKLtQ8R95GVN8NcfjBmDNbamTUPPaHF0eb95KAH56yg0_FgcP_fAUhzFYDpFmZ_G7MQUdAs0b7FnhZJlUwY6ekLz2HvrIloJKpKd6aunc27bhjy1nozYnACgnltfcnK9Pi"/>
+<div class="absolute inset-0 bg-inverse-surface/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+<button class="bg-surface text-on-surface p-2 rounded-full hover:bg-surface-container-high transition-colors" title="Replace">
+<span class="material-symbols-outlined">sync</span>
+</button>
+<button class="bg-error text-on-error p-2 rounded-full hover:bg-error/90 transition-colors" title="Remove">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Image Details -->
+<div class="bg-surface-container-low rounded-lg p-4 mb-4">
+<div class="mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Current Image Name</span>
+<p class="font-data-tabular text-data-tabular text-on-surface mt-1 truncate">probook-15-g9-hero-front.jpg</p>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Relative Path</span>
+<p class="font-data-tabular text-data-tabular text-on-surface mt-1 text-sm truncate font-mono bg-surface px-2 py-1 rounded border border-outline-variant">/assets/products/laptops/probook-15-g9-hero-front.jpg</p>
+</div>
+</div>
+<!-- Upload Area -->
+<div class="border-2 border-dashed border-outline-variant rounded-[12px] p-6 flex flex-col items-center justify-center text-center hover:border-primary hover:bg-surface-container-low transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[32px] text-outline mb-2">cloud_upload</span>
+<h3 class="font-catalog-title text-data-tabular text-on-surface mb-1">Upload New Image</h3>
+<p class="font-data-tabular text-[12px] text-on-surface-variant">Drag and drop or click to browse. Max size 5MB (JPG, PNG, WebP).</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-outline-variant mt-auto">
+<div class="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto gap-4">
+<div class="text-data-tabular font-data-tabular text-on-surface-variant">
+                © 2024 TechVolt Electronics. All rights reserved.
+            </div>
+<div class="flex items-center gap-6">
+<a class="text-data-tabular font-data-tabular text-on-surface-variant hover:text-on-surface underline underline-offset-4 transition-colors" href="#">Support Center</a>
+<a class="text-data-tabular font-data-tabular text-on-surface-variant hover:text-on-surface underline underline-offset-4 transition-colors" href="#">Privacy Policy</a>
+<a class="text-data-tabular font-data-tabular text-on-surface-variant hover:text-on-surface underline underline-offset-4 transition-colors" href="#">Terms of Service</a>
+<span class="text-data-tabular font-data-tabular text-outline">v2.4.0-stable</span>
+</div>
+</div>
+</footer>
+</body></html>

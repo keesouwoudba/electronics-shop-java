@@ -1,4 +1,214 @@
 package com.university.shopping.service;
 
+import com.university.shopping.model.Product;
+import com.university.shopping.model.User;
+import com.university.shopping.repository.OrderRepository;
+import com.university.shopping.repository.ProductRepository;
+import com.university.shopping.repository.UserRepository;
+import com.university.shopping.service.report.AbstractReportService;
+import com.university.shopping.service.report.ConsoleReportService;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class AdminService {
+    private ProductRepository productRepository;
+    private UserRepository userRepository;
+    private OrderRepository orderRepository;
+    private AuthService authService;
+    private AbstractReportService reportService;
+    private String[] reportFormats;
+    private AbstractReportService[] reportServices;
+
+    // Constructor
+    public AdminService(ProductRepository productRepo, UserRepository userRepo, OrderRepository orderRepo, AuthService authService){
+        this(productRepo, userRepo, orderRepo, authService, null, null);
+    }
+
+    public AdminService(ProductRepository productRepo, UserRepository userRepo, OrderRepository orderRepo, AuthService authService,
+                        String[] reportFormats, AbstractReportService[] reportServices){
+        this.productRepository = productRepo;
+        this.userRepository = userRepo;
+        this.orderRepository = orderRepo;
+        this.authService = authService;
+
+        if (reportFormats == null || reportServices == null || reportFormats.length == 0 || reportServices.length == 0
+                || reportFormats.length != reportServices.length) {
+            this.reportFormats = new String[] {"console"};
+            this.reportServices = new AbstractReportService[] {
+                    new ConsoleReportService(productRepo, userRepo, orderRepo)
+            };
+        } else {
+            this.reportFormats = reportFormats;
+            this.reportServices = reportServices;
+        }
+
+        this.reportService = findReportServiceByFormat("console");
+        if (this.reportService == null && this.reportServices.length > 0) {
+            this.reportService = this.reportServices[0];
+        }
+    }
+
+    //----------------------------------------------------
+    // Product Management Methods
+    //----------------------------------------------------
+
+    public String addNewProduct(Product product) { //Returns: "SUCCESS", "NOT_ADMIN", "INVALID_DATA"
+        if (!this.authService.isAdmin()) return "NOT_ADMIN";
+        if (!productRepository.save(product)) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
+    public String addStockToExistingProduct(int productId, int quantityToAdd){
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (productRepository.findById(productId) == null) return "Product not exists";
+
+        boolean updated = productRepository.updateStock(productId,
+            productRepository.findById(productId).getStockQuantity() + quantityToAdd
+        );
+        if (!updated) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
+    public String removeStock(int productId, int quantityToRemove){
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (productRepository.findById(productId) == null) return "Product not exists";
+
+        if (productRepository.findById(productId).getStockQuantity() < quantityToRemove){
+            if (!productRepository.updateStock(productId, 0)) return "PERSISTENCE_ERROR";
+        }
+        else {
+            if (!productRepository.updateStock(productId,
+                    productRepository.findById(productId).getStockQuantity() - quantityToRemove
+            )) return "PERSISTENCE_ERROR";
+        }
+        return "SUCCESS";
+    }
+    public String deleteProduct(int productId){
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (productRepository.findById(productId) == null) return "Product not exists";
+
+        if (!productRepository.deleteById(productId)) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
+
+    public String updateProductPrice(int productId, double newPrice){
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (productRepository.findById(productId) == null) return "Product not exists";
+
+        Product tmp_prod = productRepository.findById(productId);
+        tmp_prod.setPrice(newPrice);
+        if (!productRepository.update(tmp_prod)) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
+
+    public String updateProductName(int productId, String newName){
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (productRepository.findById(productId) == null) return "Product not exists";
+
+        Product tmp_prod = productRepository.findById(productId);
+        tmp_prod.setName(newName);
+        if (!productRepository.update(tmp_prod)) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
+
+    public String setProductDiscount(int productId, boolean isDiscounted, double discountPercentage){
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (productRepository.findById(productId) == null) return "Product not exists";
+
+        Product tmp_prod = productRepository.findById(productId);
+        tmp_prod.setIsDiscounted(isDiscounted);
+        tmp_prod.setDiscountPercentage(discountPercentage);
+        if (!productRepository.update(tmp_prod)) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
+    public String updateProduct(com.university.shopping.model.Product product) {
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (product == null) return "INVALID_DATA";
+        if (productRepository.findById(product.getProductId()) == null) return "Product not exists";
+
+        if (!productRepository.update(product)) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
+    public Product[] getAllProducts(){
+        if (!this.authService.isAdmin()) return null;
+        return productRepository.findAll();
+    }
+
+    //----------------------------------------------------
+    // User Management Methods:
+    //----------------------------------------------------
+    public String addUser(String username, String password, boolean isAdmin){
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (!authService.validatePassword(password)) return "Create  better Password";
+        if (userRepository.findByUsername(username)!=null) return "This Username already exists!";
+
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = today.format(formatter);
+        User tmp_user = new User(username, password, isAdmin, formattedDate);
+        if (!userRepository.save(tmp_user)) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
+    public String updateUser(int userId, String newUsername, String newPassword, boolean isAdmin){
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (!authService.validatePassword(newPassword)) return "Create  better Password";
+        if (userRepository.findByUsername(newUsername)!=null &&
+                !userRepository.findById(userId).getUsername().equals(newUsername)
+        ) return "This Username already exists!";
+
+        User tmp_user = userRepository.findById(userId);
+        if (tmp_user == null) return "This User doesn't exist!";
+        tmp_user.setUsername(newUsername);
+        tmp_user.setPassword(newPassword);
+        tmp_user.setIsAdmin(isAdmin);
+        if (!userRepository.update(tmp_user)) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    }
+    public String deleteUser(int userId){
+        if (!this.authService.isAdmin()) return "Not Admin";
+        if (userRepository.findById(userId)==null) return "This User doesn't exist!";
+        if (userRepository.findById(userId).getUsername().equals(authService.getCurrentUser().getUsername()))
+            return "Unable to delete yourself";
+        if (!userRepository.delete(userRepository.findById(userId))) return "PERSISTENCE_ERROR";
+        return "SUCCESS";
+    } //Prevents self-deletion
+
+
+    public User[] getAllUsers(){
+        if (!this.authService.isAdmin()) return null;
+        return userRepository.getAllUsers();
+    }
+
+    public void setReportService(AbstractReportService reportService) {
+        if (reportService != null) {
+            this.reportService = reportService;
+        }
+    }
+
+    public String exportSystemReport(String format) {
+        if (!this.authService.isAdmin()) return "Not Admin";
+
+        String key = format == null ? "" : format.trim().toLowerCase();
+        AbstractReportService resolved = findReportServiceByFormat(key);
+        if (resolved == null) {
+            return "ERROR:Unsupported format";
+        }
+
+        setReportService(resolved);
+        return this.reportService.exportReport();
+    }
+
+    private AbstractReportService findReportServiceByFormat(String format) {
+        if (format == null) {
+            return null;
+        }
+        for (int i = 0; i < reportFormats.length; i++) {
+            String candidate = reportFormats[i];
+            if (candidate != null && candidate.trim().equalsIgnoreCase(format.trim())) {
+                return reportServices[i];
+            }
+        }
+        return null;
+    }
+
+
 }
