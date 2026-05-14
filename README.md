@@ -1,12 +1,15 @@
-# 🛒 Electronics Shop - Java Console Application
+# 🛒 Electronics Shop - Java Application
 
-> A professional **layered architecture** electronics shop system demonstrating enterprise-grade Java development patterns, clean code principles, and comprehensive OOP design.
+> A professional **layered architecture** electronics shop system demonstrating enterprise-grade Java development patterns, clean code principles, and comprehensive OOP design. Available in **two versions**: Console and JavaFX GUI.
 
 ## 📋 Project Overview
 
-This is an educational software engineering project showcasing a **production-ready console application** for an e-commerce platform. The system implements a clean, maintainable 4-layer architecture with advanced features including pricing policies, CSV data persistence, reporting services, and role-based access control.
+This is an educational software engineering project showcasing a **production-ready e-commerce platform** with two distinct implementations:
 
-**Status**: Fully functional console application with professional enterprise architecture patterns.
+1. **Console Application** (`Main.java`) - Traditional text-based interface with professional enterprise architecture patterns
+2. **JavaFX GUI Application** (`Launcher.java` → `MainFx.java`) - Modern graphical interface with reactive components
+
+**Status**: Fully functional dual-mode application with professional enterprise architecture patterns.
 
 ## ✨ Key Features
 
@@ -42,6 +45,10 @@ This is an educational software engineering project showcasing a **production-re
   - In-Memory repository pattern abstraction
   - Atomic operations with transactional rollback
 
+- 🎨 **Multi-UI Support**
+  - Console version for terminal-based interaction
+  - JavaFX GUI for modern desktop application experience
+
 ## 🏗️ Architecture
 
 The project follows a **4-layer architecture** pattern ensuring separation of concerns and maintainability:
@@ -50,7 +57,8 @@ The project follows a **4-layer architecture** pattern ensuring separation of co
 src/com/university/shopping/
 │
 ├── app/                    # Application state management
-│   └── AppState.java
+│   ├── AppState.java
+│   └── Router.java         # SPA routing (JavaFX only)
 │
 ├── model/                  # Data models and in-memory database
 │   ├── Product.java        # Electronics product entity
@@ -77,21 +85,42 @@ src/com/university/shopping/
 │   │   ├── StandardDiscountPolicy.java # Default implementation
 │   │   └── PricingModeConstants.java   # Pricing mode configuration
 │   │
-│   └── report/              # Reporting services
-│       ├── AbstractReportService.java   # Base report class
-│       ├── ConsoleReportService.java    # Console output
-│       └── CsvReportService.java        # CSV file export
+│   ├── report/              # Reporting services
+│   │   ├── AbstractReportService.java   # Base report class
+│   │   ├── ConsoleReportService.java    # Console output
+│   │   └── CsvReportService.java        # CSV file export
+│   │
+│   ├── media/               # Media handling (JavaFX)
+│   │   └── ProductImageService.java    # Product image management
+│   │
+│   └── ui/                  # UI utilities (JavaFX)
 │
 ├── view/                   # Presentation layer
-│   ├── ConsoleUI.java          # Main UI controller
-│   ├── contracts/
-│   │   └── MenuActions.java    # Menu interface
-│   └── screens/
-│       ├── AuthScreen.java     # Login/Register UI
-│       ├── CustomerScreen.java # Shopping UI
-│       └── AdminScreen.java    # Admin UI
+│   │
+│   ├── Console (Console version)
+│   │   ├── ConsoleUI.java          # Main UI controller
+│   │   ├── contracts/
+│   │   │   └── MenuActions.java    # Menu interface
+│   │   └── screens/
+│   │       ├── AuthScreen.java     # Login/Register UI
+│   │       ├── CustomerScreen.java # Shopping UI
+│   │       └── AdminScreen.java    # Admin UI
+│   │
+│   └── JavaFX (JavaFX version)
+│       ├── layout/                # Layout components
+│       │   └── AppShell.java      # Main application shell
+│       ├── screens/               # Page components
+│       ├── contracts/
+│       │   └── ScreenContext.java # Context for screens
+│       ├── renderer/
+│       │   └── UiRenderer.java    # Component renderer
+│       └── styles/
+│           ├── app.css            # Application styles
+│           └── theme.css          # Theme styles
 │
-└── Main.java              # Application entry point with DI
+├── Main.java               # Console application entry point
+├── Launcher.java           # JavaFX application launcher
+└── MainFx.java            # JavaFX application entry point
 ```
 
 ### Architecture Layers Explained
@@ -101,7 +130,7 @@ src/com/university/shopping/
 | **Model** | Data representation | Entity definitions, business object state |
 | **Repository** | Data access abstraction | CRUD operations, persistence, query logic |
 | **Service** | Business logic | Workflows, validations, orchestration, pricing |
-| **View** | User interface | Console menus, user interaction, input/output |
+| **View** | User interface | Console menus or JavaFX components, user interaction |
 
 ## 📊 Design Patterns & Principles
 
@@ -114,12 +143,13 @@ src/com/university/shopping/
 - ✅ **DAO (Data Access Object)** - Data persistence abstraction
 - ✅ **Singleton-like** - MockDatabase centralized state management
 - ✅ **Template Method** - AbstractReportService for report generation
+- ✅ **Router Pattern** - SPA-style routing in JavaFX version
 
 ### SOLID Principles Applied
 - **S**ingle Responsibility - Each class has one reason to change
-- **O**pen/Closed - Open for extension (new report types), closed for modification
-- **L**iskov Substitution - Report services are interchangeable
-- **I**nterface Segregation - MenuActions interface focuses on UI concerns
+- **O**pen/Closed - Open for extension (new report types, UI versions), closed for modification
+- **L**iskov Substitution - Report services and UI components are interchangeable
+- **I**nterface Segregation - MenuActions and ScreenContext interfaces focus on specific concerns
 - **D**ependency Inversion - High-level modules don't depend on low-level modules
 
 ## 🔄 Core Workflows
@@ -170,25 +200,31 @@ Export Reports → Logout
 - Atomic inventory updates with rollback capability
 - Prevents double-booking and stock inconsistencies
 
+### Multi-UI Architecture
+- **Console Version**: Traditional text-based interface with full feature parity
+- **JavaFX GUI Version**: Modern graphical interface with reactive components and styling
+- **Shared Services**: Both versions share the same business logic and data models
+
 ## 🚀 Getting Started
 
 ### Requirements
 
 - **Java 17+** (or Java 11+ with compatibility flags)
+- **JavaFX SDK 17+** (for JavaFX version only)
 - **IDE**: IntelliJ IDEA, Eclipse, VS Code with Java extensions, or NetBeans
 - **Build Tool** (optional): Maven, Gradle, or javac CLI
-- **No external dependencies** - Pure Java standard library
+- **No external dependencies** (except JavaFX for GUI version) - Pure Java standard library
 
 ### Quick Start
 
-#### Option 1: From IDE (IntelliJ IDEA)
+#### 📱 Option 1: Run Console Version (Text-based Interface)
 
+From IDE (IntelliJ IDEA):
 1. Open project folder in IntelliJ IDEA
 2. Navigate to: `src/com/university/shopping/Main.java`
 3. Click **Run** or press `Shift + F10`
 
-#### Option 2: From Terminal (Compile & Run)
-
+From Terminal:
 ```bash
 # Navigate to project directory
 cd electronics-shop-java
@@ -196,21 +232,71 @@ cd electronics-shop-java
 # Compile all Java files
 javac -d out src/com/university/shopping/**/*.java
 
-# Run the application
+# Run the console application
 java -cp out com.university.shopping.Main
 ```
 
-#### Option 3: From Gradle (if configured)
-
+With Gradle:
 ```bash
-./gradlew run
+./gradlew runConsole
 ```
 
-#### Option 4: From Maven (if configured)
-
+With Maven:
 ```bash
 mvn clean compile exec:java -Dexec.mainClass="com.university.shopping.Main"
 ```
+
+---
+
+#### 🎨 Option 2: Run JavaFX GUI Version (Graphical Interface)
+
+From IDE (IntelliJ IDEA):
+1. Open project folder in IntelliJ IDEA
+2. Navigate to: `src/com/university/shopping/Launcher.java`
+3. Click **Run** or press `Shift + F10`
+
+**Note**: Make sure JavaFX is configured in your IDE:
+- **IntelliJ**: Add JavaFX SDK via Project Structure → Libraries
+- **Eclipse**: Install e(fx)clipse plugin
+- **VS Code**: Install Extension Pack for Java
+
+From Terminal:
+```bash
+# Navigate to project directory
+cd electronics-shop-java
+
+# Compile all Java files (including JavaFX classes)
+javac --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml \
+      -d out src/com/university/shopping/**/*.java
+
+# Run the JavaFX application via Launcher
+java --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml \
+     -cp out com.university.shopping.Launcher
+```
+
+With Gradle:
+```bash
+./gradlew runFx
+```
+
+With Maven:
+```bash
+mvn clean compile exec:java -Dexec.mainClass="com.university.shopping.Launcher"
+```
+
+**Replace `/path/to/javafx-sdk` with your actual JavaFX SDK installation path.**
+
+---
+
+### Which Version Should I Use?
+
+| Feature | Console | JavaFX GUI |
+|---------|---------|-----------|
+| **Setup Complexity** | ⭐ Easier | ⭐⭐ Requires JavaFX |
+| **Learning Focus** | Business logic, architecture | UI design, reactive patterns |
+| **User Experience** | Text-based menus | Modern graphical interface |
+| **Performance** | Minimal overhead | Full GUI overhead |
+| **Best For** | Learning architecture patterns | Understanding UI frameworks |
 
 ## 🔓 Demo Accounts
 
@@ -280,7 +366,7 @@ if (!orderRepository.save(order)) {
 }
 ```
 
-### Example: Dependency Injection in Main
+### Example: Dependency Injection in Main (Console)
 ```java
 public class Main {
     public static void main(String[] args) {
@@ -297,6 +383,24 @@ public class Main {
         
         ConsoleUI ui = new ConsoleUI(authService, shopService, adminService);
         ui.start();
+    }
+}
+```
+
+### Example: JavaFX Application Initialization
+```java
+public class MainFx extends Application {
+    @Override
+    public void start(Stage stage) {
+        initializeServices();    // Setup all business logic
+        buildAndShowSPA(stage);  // Build and display UI
+    }
+
+    private void initializeServices() {
+        // All services initialized here with dependency injection
+        this.appState = new AppState();
+        this.authService = new AuthService(userRepository, appState);
+        // ... more services
     }
 }
 ```
@@ -335,6 +439,8 @@ This project demonstrates mastery of:
 - ✅ Professional reporting systems
 - ✅ User authentication and validation
 - ✅ Error handling and recovery
+- ✅ Multi-UI implementation (Console & JavaFX)
+- ✅ GUI frameworks and reactive patterns (JavaFX)
 
 ## 🚀 Possible Future Enhancements
 
@@ -350,11 +456,12 @@ This project demonstrates mastery of:
 - [ ] **OAuth2** for third-party integrations
 - [ ] **WebSocket** for real-time notifications
 
-### Frontend & UI
-- [ ] **JavaFX GUI application** (mentioned in repo description)
+### UI Enhancements
 - [ ] **Web UI** (React, Vue.js, or Angular)
 - [ ] Mobile app (React Native, Flutter, or Android/iOS native)
 - [ ] Progressive Web App (PWA)
+- [ ] Dark mode for JavaFX GUI
+- [ ] Internationalization (i18n) support
 
 ### Quality & Testing
 - [ ] **Unit tests** (JUnit 5)
@@ -386,17 +493,19 @@ This project demonstrates mastery of:
 ```
 electronics-shop-java/
 ├── src/com/university/shopping/
-│   ├── app/
-│   ├── model/
-│   ├── repository/
-│   ├── service/
-│   ├── view/
-│   └── Main.java
-├── out/                        # Compiled bytecode
-├── .idea/                      # IntelliJ IDEA configuration
-├── electronics.iml             # Module file
-├── README.md                   # This file
-├── index.html                  # Architecture documentation
+│   ├── app/                 # State management & routing
+│   ├── model/               # Data models
+│   ├── repository/          # Data access layer
+│   ├── service/             # Business logic
+│   ├── view/                # UI components (Console & JavaFX)
+│   ├── Main.java            # Console app entry point
+│   ├── Launcher.java        # JavaFX launcher
+│   └── MainFx.java          # JavaFX app entry point
+├── out/                     # Compiled bytecode
+├── .idea/                   # IntelliJ IDEA configuration
+├── electronics.iml          # Module file
+├── README.md                # This file
+├── index.html               # Architecture documentation
 └── .gitignore
 ```
 
@@ -407,6 +516,7 @@ electronics-shop-java/
 - **Interview Preparation** - Demonstrate architectural knowledge
 - **Teaching Reference** - Use as curriculum example for students
 - **Springboard Project** - Base for more advanced applications
+- **UI Framework Learning** - Understand JavaFX and GUI development
 - **Refactoring Exercise** - Practice improving existing code
 - **Testing Practice** - Foundation for unit/integration tests
 
@@ -427,6 +537,7 @@ This is an open educational project. Contributions welcome:
 - Add tests for new features
 - Update documentation
 - Maintain layer separation
+- Test both Console and JavaFX versions
 
 ## 📝 License
 
@@ -441,30 +552,46 @@ Student Software Engineering Project - Demonstrating Professional Java Developme
 ## 📌 Quick Tips
 
 **For Developers:**
-- The code is heavily commented - read through `Main.java` first
+- The code is heavily commented - start with `Main.java` or `Launcher.java`
 - Study the layered structure; it's a professional pattern used in enterprise applications
 - Try adding a new discount policy by implementing `DiscountPolicy` interface
 - Extend reporting with new report formats
+- Compare Console and JavaFX implementations to understand different UI paradigms
 
 **For Students:**
 - Review architecture layers to understand separation of concerns
 - Analyze `ShopService.checkout()` for transaction safety patterns
-- Study dependency injection in `Main.java`
+- Study dependency injection in `Main.java` and `MainFx.java`
 - Examine how repositories abstract data access
+- Learn how `Router` and `UiRenderer` implement SPA patterns in JavaFX
+
+**Choosing Your Version:**
+- **New to Java?** Start with Console version (`Main.java`)
+- **Learning GUI frameworks?** Start with JavaFX version (`Launcher.java`)
+- **Advanced learner?** Study both to see shared architecture differences
 
 **Need Help?**
 - Check the inline code comments for implementation details
 - Review the architecture layers section above
 - Look at design patterns section for pattern explanations
 - Study the service layer for business logic organization
+- Compare the two Main classes to see architectural differences
 
 **Recommended Reading Order:**
+
+*For Console Version:*
 1. `Main.java` - See the big picture with dependency injection
 2. `ConsoleUI.java` - Understand the user interaction layer
 3. `ShopService.java` - Study the business logic and transaction handling
 4. `Repository` classes - Learn data access abstraction
 5. `Model` classes - Understand entity design
-6. Test the application with demo accounts
+
+*For JavaFX Version:*
+1. `Launcher.java` → `MainFx.java` - JavaFX app initialization
+2. `AppShell.java` - Main layout and routing
+3. `ScreenContext.java` & `UiRenderer.java` - UI rendering and navigation
+4. Individual screen components - Learn component architecture
+5. `service/` layer - Same business logic as console version
 
 ---
 
